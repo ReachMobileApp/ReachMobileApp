@@ -19,13 +19,9 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                 <View className="flex-row justify-between items-center pt-2 mb-2 px-3">
                     {/* Menu icon */}
                     <TouchableOpacity
-                        onPress={() =>
-                            navigation.navigate("SideMenuNavigator", {
-                                screen: "MenuScreen",
-                            })
-                        }
-                        className="p-2">
-                        <Ionicons name="menu" size={24} color="white" />
+                        onPress={() => navigation.goBack()}
+                        className="">
+                        <Ionicons name="arrow-back" size={24} color="white" />
                     </TouchableOpacity>
                     {/* Notification icon */}
                     <TouchableOpacity
@@ -49,7 +45,7 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                         header="INTRODUCTION"
                         subheader="Introduction to Remote Consulting - Full lecture"
                         videoId="IS1U3OtNMVc"
-                        duration="1 hr"
+                        duration="21 minutes"
                         learningOutcome={
                             "Welcome to this training course on how to deliver healthcare remotely to your patients and communities and why it is important during the COVID-19 pandemic. This training program has been developed following research and teaching collaborations between St Francis University College of Health and Allied Sciences (Tanzania), the University of Warwick & King’s College London (UK), and the University of Ibadan’(Nigeria)"
                         }

@@ -31,7 +31,7 @@ const MenuScreen = ({ navigation }: any) => {
       {/* Menu items */}
       <View className="bg-white rounded-t-2xl h-full mt-10">
         {/* Introduction */}
-        <TouchableOpacity className="flex-row items-center px-4 py-6 border-b border-gray-300">
+        <TouchableOpacity className="flex-row items-center px-4 py-6 border-b border-gray-300" onPress={()=>navigation.navigate('ModulesNavigator', { screen: 'Introduction' })}>
           <Image source={Introduction} className="w-3 h-3 mr-4" />
           <Text>Introduction</Text>
           <Image source={ArrowRight} className="ml-auto w-3 h-3" />
@@ -65,12 +65,7 @@ const MenuScreen = ({ navigation }: any) => {
           <Image source={ArrowRight} className="ml-auto w-3 h-3" />
         </TouchableOpacity>
 
-        {/* Reviews */}
-        <TouchableOpacity className="flex-row items-center px-4 py-6 border-b border-gray-300">
-          <Image source={Review} className="w-3 h-3 mr-4" />
-          <Text>Reviews</Text>
-          <Image source={ArrowRight} className="ml-auto w-3 h-3" />
-        </TouchableOpacity>
+       
 
         {/* Logout */}
         <TouchableOpacity className="flex-row items-center px-4 py-6">

@@ -72,7 +72,7 @@ const ModuleScreen = ({
                         <Card
                             header="Introduction"
                             subheader="Introduction to Remote Consulting - Full lecture"
-                            duration="1 hr"
+                            duration="21 mins"
                             completionPercentage={40}
                         />
                     </TouchableOpacity>
@@ -84,8 +84,9 @@ const ModuleScreen = ({
                         }>
                         <Card
                             header="Module 1"
-                            subheader="Introduction to Remote Consulting - Full lecture"
-                            duration="1 hr"
+                            subheader="What digital devices, services, and apps can be used for 
+                            remote consulting?"
+                            duration="7 mins"
                             completionPercentage={60}
                         />
                     </TouchableOpacity>
@@ -97,8 +98,9 @@ const ModuleScreen = ({
                         }>
                         <Card
                             header="Module 2"
-                            subheader="Introduction to Remote Consulting - Full lecture"
-                            duration="1 hr"
+                            subheader="How does my role change and the care I provide my
+                            patients?"
+                            duration="9 mins"
                             completionPercentage={70}
                         />
                     </TouchableOpacity>
@@ -110,7 +112,8 @@ const ModuleScreen = ({
                         }>
                         <Card
                             header="Module 3"
-                            subheader="Introduction to Remote Consulting - Full lecture"
+                            subheader="Remote Consulting for Healthcare: ReaCH Training
+                            CourseBook"
                             duration="1 hr"
                             completionPercentage={89}
                         />
@@ -123,7 +126,8 @@ const ModuleScreen = ({
                         }>
                         <Card
                             header="Module 4"
-                            subheader="Introduction to Remote Consulting - Full lecture"
+                            subheader="What patient outcomes can I expect beyond avoiding
+                            COVID-19 and other similar health challenges?"
                             duration="1 hr"
                             completionPercentage={100}
                         />
@@ -136,7 +140,8 @@ const ModuleScreen = ({
                         }>
                         <Card
                             header="Module 5"
-                            subheader="Introduction to Remote Consulting - Full lecture"
+                            subheader="What is my plan for delivering my healthcare work
+                            remotely?"
                             duration="1 hr"
                             completionPercentage={40}
                         />
@@ -149,7 +154,8 @@ const ModuleScreen = ({
                         }>
                         <Card
                             header="Module 6"
-                            subheader="Introduction to Remote Consulting - Full lecture"
+                            subheader="What behaviors will help or hinder a successful
+                            transition to remote consulting?"
                             duration="1 hr"
                             completionPercentage={40}
                         />
@@ -162,7 +168,8 @@ const ModuleScreen = ({
                         }>
                         <Card
                             header="Module 7"
-                            subheader="Introduction to Remote Consulting - Full lecture"
+                            subheader="What qualities do you have and need to deliver
+                            remote healthcare and support your colleagues/teams?"
                             duration="1 hr"
                             completionPercentage={40}
                         />

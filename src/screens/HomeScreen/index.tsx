@@ -12,6 +12,12 @@ import { Ionicons } from "@expo/vector-icons";
 import Card from "@/src/components/Card";
 import Image1 from "@/assets/images/image1.png";
 import Image2 from "@/assets/images/image2.png";
+import UI from "@/assets/images/UI.png";
+import sfuchas from "@/assets/images/sfuchas.png";
+import UB from "@/assets/images/Uni Berm.png";
+import Taleguru from "@/assets/images/Taleguru.png";
+import APHRC from "@/assets/images/aphrc.png";
+import KC from "@/assets/images/King's College.png";
 
 const HomeScreen = ({
     navigation,
@@ -199,35 +205,37 @@ const HomeScreen = ({
                             Our Partners:
                         </Text>
                     </View>
-                   {/* <ScrollView 
+                   <ScrollView 
                     horizontal
                     showsHorizontalScrollIndicator={false}
-                    className="gap-2">
-                   <View className="w-1/6 justify-center">
+                    >
+               <View className="flex flex-row gap-3 px-2 items-center justify-center pb-4">
+               <View className=" justify-center flex items-center">
                             <Image source={UI} />
-                            <Text className="text-xs">University of Ibadan</Text>
+                            <Text className="text-xs mt-2 text-center">University of Ibadan</Text>
                         </View>
-                        <View className="w-1/6 justify-center">
+                        <View className="w-32 justify-center flex items-center">
                             <Image source={sfuchas} />
-                            <Text className="text-xs">University of Ibadan</Text>
+                            <Text className="text-xs mt-2 text-center">Saint Frances University College of Health and Applied Sciences</Text>
                         </View>
-                        <View className="w-1/6 justify-center">
+                        <View className=" justify-center flex items-center">
                             <Image source={UB} />
-                            <Text className="text-xs">University of Ibadan</Text>
+                            <Text className="text-xs mt-2 text-center">University of Birmingham</Text>
                         </View>
-                        <View className="w-1/6 justify-center">
+                        <View className=" justify-center flex items-center">
                             <Image source={Taleguru} />
-                            <Text className="text-xs">University of Ibadan</Text>
+                            <Text className="text-xs mt-2">Makerere University</Text>
                         </View>
-                        <View className="w-1/6 justify-center">
+                        <View className="w-32 justify-center flex items-center">
                             <Image source={APHRC} />
-                            <Text className="text-xs">University of Ibadan</Text>
+                            <Text className="text-xs mt-2 text-center">African Population and Health Research Center</Text>
                         </View>
-                        <View className="w-1/6 justify-center flex ">
+                        <View className=" justify-center flex items-center">
                             <Image source={KC} />
-                            <Text className="text-xs">University of Ibadan</Text>
+                            <Text className="text-xs mt-2">King's College, London</Text>
                         </View>
-                    </ScrollView> */}
+               </View>
+                    </ScrollView>
                 </View>
             </View>
         </ScrollView>
