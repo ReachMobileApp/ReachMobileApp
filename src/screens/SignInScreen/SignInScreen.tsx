@@ -1,4 +1,4 @@
-import { View, Text, StatusBar,Image,TouchableOpacity } from "react-native";
+import { View, Text, StatusBar,Image,TouchableOpacity, Pressable } from "react-native";
 import React from "react";
 import {
   HeadingsSemibold24,
@@ -33,11 +33,9 @@ const SignInScreen = ({ navigation }: StackNavigationProps) => {
           <View className="mt-5">
             <CustomPaperTextInput label="Email Address"  />
             <CustomPaperTextInput label="Password" />
-            <InputAssistive
-              text="Forgot Password?"
-              customClassName="p-0 text-right"
-               navigation={navigation} 
-            />
+            <Pressable onPress={()=>navigation.navigate('AuthNavigator',{ screen: 'ResetPasswordScreen' })}>
+              <Text className="p-0 text-right font-medium text-[16px] leading-[16px] text-[#E13332] flex-shrink">Forgot Password? </Text>
+            </Pressable>
           </View>
           <View className="flex mt-3 justify-center items-center">
             <View className="flex flex-row ">
