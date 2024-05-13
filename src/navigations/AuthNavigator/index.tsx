@@ -42,7 +42,7 @@ const AuthNavigator = () => {
         options={{title:''}}
       />
       <Stack.Screen name="SignInScreen" component={SignInScreen} options={{
-            headerTitle: () => <Header name="REaCH" names="Here" />,
+            headerTitle: () => <Header name="REaCH" names="TRAINING" />,
             headerStyle: {
               backgroundColor: '#064D7D',
               height: 100

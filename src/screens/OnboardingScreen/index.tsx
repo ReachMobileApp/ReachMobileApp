@@ -46,30 +46,30 @@ const OnboardingScreen = ({ navigation }: StackNavigationProps) => {
         />
       }
       paginationStyle={{
-        bottom: 200
+        bottom: 270
       }}
       loop={false}
     >
-      <View className='flex-1 pt-5 relative'>
+      <View className='flex-1 pt-2 relative'>
         <Image
           source={Image1}
           resizeMode="cover"
-          className="mx-16 absolute top-10 z-20 w-60 h-52"
+          className="mx-10 absolute top-5 z-20 w-60 h-52"
         />
-        <View className='mx-9 mt-44 bg-[#2061C7]  flex justify-center border border-red-800 h-44 rounded-[50px] items-center z-10'>
+        <View className='mx-9 mt-40 bg-[#2061C7]  flex justify-center border border-red-800 h-44 rounded-[50px] items-center z-10'>
           <Text className='text-[13px] text-center pt-10 text-white px-2'>Determining trustworthiness and safety of remote {'\n'} consulting in primary healthcare for chronic disease {'\n'} populations in Africa</Text>
         </View> 
         <TouchableOpacity onPress={()=> navigation.navigate('SignInScreen')} >
      <View className='mt-40 h-11 bg-[#2061C7] w-[70%] mx-14 rounded-[50px]'><Text className='text-center text-[13px] text-white py-3'>Let's Get Started</Text></View>
     </TouchableOpacity>
       </View>
-      <View className='flex-1 pt-5 relative'>
+      <View className='flex-1 pt-2 relative'>
         <Image
           source={Image3}
           resizeMode="cover"
-          className="mx-20 absolute top-10 z-20 w-56 h-56"
+          className="mx-20 absolute top-2 z-20 w-56 h-56"
         />
-        <View className='mx-9 mt-44 bg-[#2061C7]  flex justify-center border border-red-800 h-44 rounded-[50px] items-center z-10'>
+        <View className='mx-9 mt-40 bg-[#2061C7]  flex justify-center border border-red-800 h-44 rounded-[50px] items-center z-10'>
           <Text className='text-[13px] text-center pt-10 text-white px-2'>Determining trustworthiness and safety of remote {'\n'} consulting in primary healthcare for chronic disease {'\n'} populations in Africa</Text>
         </View>
         <TouchableOpacity onPress={()=> navigation.navigate('SignInScreen')} >

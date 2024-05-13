@@ -57,9 +57,11 @@ const CustomPaperTextInput = ({
         }
         else if (label === "City/Town") {
           return <TextInput.Icon icon="account-cowboy-hat" size={20} />;
-          }else if (label === " ") {
-            return <TextInput.Icon icon="email" size={20} />;
-            }
+          }else if (label === "Occupation") {
+            return <TextInput.Icon icon="tools" size={20} />;
+            }else if (label === " ") {
+              return <TextInput.Icon icon="email" size={20} />;
+              }
      else {
       return null;
     }
