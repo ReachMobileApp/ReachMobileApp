@@ -1,5 +1,5 @@
-import { View, Text, StatusBar,Image,TouchableOpacity, Pressable } from "react-native";
-import React from "react";
+import { View, Text, StatusBar,Image,TouchableOpacity, Pressable, ActivityIndicator } from "react-native";
+import React, {useState} from "react";
 import {
   HeadingsSemibold24,
   InputAssistive,
@@ -14,7 +14,57 @@ import Image1 from "@/assets/images/Group 57.png";
 import face from "@/assets/images/face.png";
 import github from "@/assets/images/github.png";
 import google from "@/assets/images/google.png";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import Toast from 'react-native-toast-message'
+import { firebaseAuth } from "@/firebaseConfig";
+
+
 const SignInScreen = ({ navigation }: StackNavigationProps) => {
+
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const auth = firebaseAuth;
+
+  const SigninUser = async() => {
+    if (email && password) {
+      setLoading(true);
+      try {
+        await signInWithEmailAndPassword(auth, email, password).then((cred) => {
+          if(cred.user.emailVerified === false){
+            setLoading(false);
+            Toast.show({
+              type: 'error',
+              text1: 'Error!',
+              text2: 'Please verify your email address to login'
+            });
+          }else{
+            setLoading(false);
+            Toast.show({
+              type: 'success',
+              text1: 'Success!',
+              text2: 'Login Successful'
+            });
+            navigation.navigate('BottomTabNavigator',{ screen: 'Home' });
+          }
+        })
+      } catch (error: any) {
+        Toast.show({
+          type: 'error',
+          text1: 'Error!',
+          text2: error.message
+        });
+        setLoading(false);
+      }
+    }else{
+      Toast.show({
+        type: 'error',
+        text1: 'Error!',
+        text2: 'Please fill all fields'
+      });
+    }
+  }
+
   return (
     
       <View className="flex-1 bg-white px-4 pt-2">
@@ -31,8 +81,8 @@ const SignInScreen = ({ navigation }: StackNavigationProps) => {
           />
           <Text className="font-bold text-2xl text-center">Welcome Back!</Text>
           <View className="mt-5">
-            <CustomPaperTextInput label="Email Address"  />
-            <CustomPaperTextInput label="Password" />
+            <CustomPaperTextInput label="Email Address" value={email} onChangeText={setEmail}  />
+            <CustomPaperTextInput label="Password" value={password} onChangeText={setPassword} />
             <Pressable onPress={()=>navigation.navigate('AuthNavigator',{ screen: 'ResetPasswordScreen' })}>
               <Text className="p-0 text-right font-medium text-[16px] leading-[16px] text-[#E13332] flex-shrink">Forgot Password? </Text>
             </Pressable>
@@ -55,9 +105,9 @@ const SignInScreen = ({ navigation }: StackNavigationProps) => {
           </View>
         </View>
         <View className="flex justify-center items-center">
-            <TouchableOpacity className="text-center border-[#064D7D] bg-[#064D7D] rounded-[8px] px-10 mt-10 py-2 border w-32">
-              <Text onPress={()=>navigation.navigate('BottomTabNavigator',{ screen: 'Home' })} className="text-white font-extrabold text-[16px]">Login</Text>
-            </TouchableOpacity>
+          <TouchableOpacity onPress={SigninUser} className="text-center border-[#064D7D] bg-[#064D7D] rounded-[8px] px-10 mt-10 py-2 border w-32">
+            <Text className="text-white font-extrabold text-[16px]">{loading ? <ActivityIndicator /> : 'Login'}</Text>
+          </TouchableOpacity>
         </View>
       </View>
       
