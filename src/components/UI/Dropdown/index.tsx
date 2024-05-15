@@ -13,12 +13,14 @@ const _data: DropdownData[] = [
 
 const CustomDropdown = ({
   placeholder,
-  data = _data,
+  data = _data, value, setValue
 }: {
   placeholder?: string;
   data?: DropdownData[];
+  value: string | null;
+  setValue: (value: string) => void;
 }) => {
-  const [value, setValue] = useState<string | null>(null);
+  // const [value, setValue] = useState<string | null>(null);
   const [isFocus, setIsFocus] = useState(false);
 
   return (

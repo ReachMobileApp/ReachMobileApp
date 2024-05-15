@@ -8,6 +8,7 @@ import ModulesNavigator from "./src/navigations/ModulesNavigator";
 import SideMenuNavigator from "./src/navigations/SideMenuNavigator";
 import BottomTabNavigator from "./src/navigations/BottomTabNavigator";
 // import BaseNavigator from "./src/navigations/BaseNavigator";
+import Toast from 'react-native-toast-message'
 
 export default function App() {
   const Stack = createStackNavigator();
@@ -22,6 +23,7 @@ export default function App() {
           {/* <Stack.Screen name="BaseNavigator" component={BaseNavigator} /> */}
         </Stack.Navigator>
       </NavigationContainer>
+      <Toast />
     </PaperProvider>
   );
 }

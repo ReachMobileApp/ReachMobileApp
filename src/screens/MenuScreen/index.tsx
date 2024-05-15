@@ -12,7 +12,31 @@ import Settings from "@/assets/images/menuIcons/settings.png";
 import TrackProgress from "@/assets/images/menuIcons/TrackProgress.png";
 import ArrowRight from "@/assets/images/menuIcons/arrowRight.png";
 import ModuleScreen from "../ModuleScreen";
+import { signOut, getAuth } from "firebase/auth";
+import Toast from 'react-native-toast-message';
+
+
 const MenuScreen = ({ navigation }: any) => {
+  const auth = getAuth();
+
+  const SignOut = async () => {
+    try {
+      await signOut(auth);
+      Toast.show({
+        type: 'success',
+        text1: 'Success!',
+        text2: 'Logged out successfully'
+      });
+      navigation.navigate("SignInScreen");
+    } catch (error: any) {
+      Toast.show({
+        type: 'error',
+        text1: 'Error!',
+        text2: error.message
+      });
+      console.log(error.message);
+    }
+  }
 
   return (
     <View className="flex-1 bg-[#064D7D]">
@@ -68,7 +92,7 @@ const MenuScreen = ({ navigation }: any) => {
        
 
         {/* Logout */}
-        <TouchableOpacity className="flex-row items-center px-4 py-6">
+        <TouchableOpacity onPress={SignOut} className="flex-row items-center px-4 py-6">
           <Image source={Logout} className="w-3 h-3 mr-4" />
           <Text>Logout</Text>
           <Image source={ArrowRight} className="ml-auto w-3 h-3" />
