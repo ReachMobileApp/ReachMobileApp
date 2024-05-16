@@ -299,6 +299,8 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
             {score !== null && score >= 80 && (
                 <View className="items-center mt-4 border px-5 mx-5 py-5 text-center flex justify-center">
                     <Text>Congratulations!</Text>
+                    <Text>You scored {score}% to earn yourself a completion badge for this module</Text>
+                    <Text>You can check it out on the badges screen</Text>
                     <TouchableOpacity
                         onPress={() =>
                             navigation.navigate("BottomTabNavigator", {
@@ -307,7 +309,7 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
                         }
                         className="bg-[#064d7d] mt-4 py-2 px-10 rounded-full">
                         <Text className="text-white font-bold">
-                            Go to Modules
+                            Go to Badges
                         </Text>
                     </TouchableOpacity>
                 </View>
