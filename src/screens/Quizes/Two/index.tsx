@@ -30,7 +30,7 @@ const quizQuestions = [
 ];
 
 const correctAnswers = [
-    { options: ["true", "false", "false", "false", "true", "false", "false", "false","true", "true"] }, // Assuming Phone Calls is correct for Question 1
+    { options: ["true", "true", "false", "false", "true", "true", "true", "true","true", "true"] }, // Assuming Phone Calls is correct for Question 1
 ];
 
 const QuizScreen = ({ navigation }: QuizScreenProps) => {

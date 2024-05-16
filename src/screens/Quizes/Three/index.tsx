@@ -45,9 +45,9 @@ const quizQuestions = [
 ];
 
 const correctAnswers = [
-    { options: ["true", "false", "false", "false"] }, // Assuming Phone Calls is correct for Question 1
-    { options: ["false", "false", "false", "true"] }, // Assuming Synchronous Interaction is correct for Question 2
-    { options: ["false", "false", "true", "false"] }, // Assuming all options are correct for Question 3
+    { options: ["true", "false", "false", "true"] }, // Assuming Phone Calls is correct for Question 1
+    { options: ["true", "true", "false", "true"] }, // Assuming Synchronous Interaction is correct for Question 2
+    { options: ["false", "true", "false", "false"] }, // Assuming all options are correct for Question 3
 ];
 
 const QuizScreen = ({ navigation }: QuizScreenProps) => {

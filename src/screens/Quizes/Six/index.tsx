@@ -75,10 +75,10 @@ const quizQuestions = [
 ];
 
 const correctAnswers = [
-    { options: ["true", "false", "false", "false", "true", "false", "true"] }, // Assuming Phone Calls is correct for Question 1
-    { options: ["false", "false", "false", "true"] }, // Assuming Synchronous Interaction is correct for Question 2
-    { options: ["true", "true", "true", "false", "false"] }, // Assuming all options are correct for Question 3
-    { options: ["false", "true", "true", "true"] }, // Assuming Audio, Photo-Video, Audio-Visual are correct for Question 4
+    { options: ["true", "true", "true", "true", "true", "true", "false"] },
+    { options: ["false", "true", "false", "true"] },
+    { options: ["true", "true", "true", "true", "false"] },
+    { options: ["false", "true", "false", "false"] },
 ];
 
 const QuizScreen = ({ navigation }: QuizScreenProps) => {

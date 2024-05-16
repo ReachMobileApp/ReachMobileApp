@@ -17,6 +17,7 @@ const quizQuestions = [
             { text: "Communicating with the community how health care can be provided remotely" },
             { text: "Explaining why remote consulting is important especially during the covid-19 pandemic" },
             { text: "Sharing the health service package to be offered through remote consulting" },
+            
         ],
     },
     {
@@ -36,8 +37,8 @@ const quizQuestions = [
 ];
 
 const correctAnswers = [
-    { options: ["true", "false", "false", "false"] }, // Assuming Phone Calls is correct for Question 1
-    { options: ["false", "false", "false", "true", "false", "true"] }, // Assuming Synchronous Interaction is correct for Question 2
+    { options: ["false", "true", "true", "true"] }, // Assuming Phone Calls is correct for Question 1
+    { options: ["true", "true", "true", "false", "true", "true"] }, // Assuming Synchronous Interaction is correct for Question 2
   ];
 
 const QuizScreen = ({ navigation }: QuizScreenProps) => {
