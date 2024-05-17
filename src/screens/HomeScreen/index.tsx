@@ -6,11 +6,14 @@ import {
     ScrollView,
     Image,
     TextInput,
+    ActivityIndicator,
 } from "react-native";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
 import Card from "@/src/components/Card";
-import Image1 from "@/assets/images/image1.png";
+import { getAuth } from "firebase/auth";
+import { getFirestore, collection, query, getDocs } from "firebase/firestore";
+import Video from "@/assets/images/menuIcons/Video.png";
 import Image2 from "@/assets/images/image2.png";
 import UI from "@/assets/images/UI.png";
 import sfuchas from "@/assets/images/sfuchas.png";
@@ -19,13 +22,44 @@ import Taleguru from "@/assets/images/Taleguru.png";
 import APHRC from "@/assets/images/aphrc.png";
 import KC from "@/assets/images/King's College.png";
 
+// Initialize Firestore
+const db = getFirestore();
+const auth = getAuth();
+
+const fetchModuleStatuses = async (userId: string) => {
+    const colRef = collection(db, "users_data", userId, "modules");
+    const q = query(colRef);
+    const querySnapshot = await getDocs(q);
+    const statuses: { [key: string]: string } = {}; // Add index signature to the statuses object
+
+    querySnapshot.forEach((doc) => {
+        statuses[doc.id] = doc.data().status || "not started";
+    });
+
+    return statuses;
+};
+
 const HomeScreen = ({
     navigation,
 }: {
     navigation: DrawerNavigationProp<any, any>;
 }) => {
-    // Initialize state to hold the current date
+    // Initialize state to hold the current date and module statuses
     const [currentDate, setCurrentDate] = useState(new Date());
+    const [statuses, setStatuses] = useState<{ [key: string]: string }>({});
+    const [loading, setLoading] = useState(true);
+    const user = auth.currentUser;
+
+    useEffect(() => {
+        if (user) {
+            const fetchStatuses = async () => {
+                const moduleStatuses = await fetchModuleStatuses(user.uid);
+                setStatuses(moduleStatuses);
+                setLoading(false);
+            };
+            fetchStatuses();
+        }
+    }, [user]);
 
     // Effect to update the current date when component mounts and every time the month changes
     useEffect(() => {
@@ -42,7 +76,74 @@ const HomeScreen = ({
         return date;
     };
 
-    
+    // Function to get the module title
+    const getModuleTitle = (moduleId: any) => {
+        switch (moduleId) {
+            case "introduction":
+                return "Introduction";
+            case "module1":
+                return "Module 1";
+            case "module2":
+                return "Module 2";
+            case "module3":
+                return "Module 3";
+            case "module4":
+                return "Module 4";
+            case "module5":
+                return "Module 5";
+            case "module6":
+                return "Module 6";
+            case "module7":
+                return "Module 7";
+            default:
+                return "";
+        }
+    };
+    const getModuleNavigator = (moduleId: any) => {
+        switch (moduleId) {
+            case "introduction":
+                return "Introduction";
+            case "module1":
+                return "ModuleOne";
+            case "module2":
+                return "ModuleTwo";
+            case "module3":
+                return "ModuleThree";
+            case "module4":
+                return "ModuleFour";
+            case "module5":
+                return "ModuleFive";
+            case "module6":
+                return "ModuleSix";
+            case "module7":
+                return "ModuleSeven";
+            default:
+                return "";
+        }
+    };
+
+    if (!user) {
+        navigation.navigate("LoginScreen");
+        return null;
+    }
+
+    if (loading) {
+        return (
+            <View className="flex-1 justify-center items-center">
+                <ActivityIndicator size="large" color="#064d7d" />
+            </View>
+        );
+    }
+
+    const handleModulePress = (moduleId: string) => {
+        navigation.navigate("ModulesNavigator", {
+            screen: getModuleNavigator(moduleId),
+        });
+    };
+
+    const inProgressModules = Object.keys(statuses).filter(
+        (moduleId) => statuses[moduleId] === "In progress"
+    );
 
     return (
         <ScrollView className="flex-1 bg-white  ">
@@ -50,7 +151,11 @@ const HomeScreen = ({
             <View className="flex-row justify-between items-center mb-2 px-3">
                 {/* Menu icon */}
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('SideMenuNavigator',{ screen: 'MenuScreen' })}
+                    onPress={() =>
+                        navigation.navigate("SideMenuNavigator", {
+                            screen: "MenuScreen",
+                        })
+                    }
                     className="p-2">
                     <Ionicons name="menu" size={24} color="#064D7D" />
                 </TouchableOpacity>
@@ -100,25 +205,14 @@ const HomeScreen = ({
                 })}
             </ScrollView>
             {/* Search Bar */}
-            <View className="flex-row items-center my-4 mx-3">
-                {/* Search input */}
-                <TextInput
-                    placeholder="Search"
-                    className="flex-1 border border-[#064d7d] rounded-lg py-2 px-4"
-                />
-                {/* Filter button */}
-                <TouchableOpacity className="ml-2 bg-[#064d7d] rounded-lg py-2 px-4">
-                    <Text className="text-white">Filter</Text>
-                </TouchableOpacity>
-            </View>
-
-            {/* Main content */}
-            <View className="bg-gray-200 ">
-                <View className="px-3 mb-4 mt-4 ">
+                <View className="px-3 mb-2 mt-4 ">
                     <Text className="text-lg font-semibold mb-2">
                         Continue where you stopped
                     </Text>
                 </View>
+
+            {/* Main content */}
+            <View className="bg-gray-200  pt-4">
                 {/* Add your content here */}
                 {/* Cards section */}
                 <ScrollView
@@ -127,48 +221,17 @@ const HomeScreen = ({
                     className="">
                     {/* Cards */}
 
-                    <Card
-                        image={Image1}
-                        header="Course 1 of 6"
-                        subheader="How to cure pneumonia in a toddler child"
-                        rating="★ 4.0/5.0"
-                        completionPercentage={80}
-                    />
-                    <Card
-                        image={Image2}
-                        header="Course 2 of 6"
-                        subheader="How to cure pneumonia in a toddler child"
-                        rating="★ 4.0/5.0"
-                        completionPercentage={80}
-                    />
-                    <Card
-                        image={Image1}
-                        header="Course 3 of 6"
-                        subheader="How to cure pneumonia in a toddler child"
-                        rating="★ 4.0/5.0"
-                        completionPercentage={80}
-                    />
-                    <Card
-                        image={Image2}
-                        header="Course 4 of 6"
-                        subheader="How to cure pneumonia in a toddler child"
-                        rating="★ 4.0/5.0"
-                        completionPercentage={80}
-                    />
-                    <Card
-                        image={Image1}
-                        header="Course 5 of 6"
-                        subheader="How to cure pneumonia in a toddler child"
-                        rating="★ 4.0/5.0"
-                        completionPercentage={80}
-                    />
-                    <Card
-                        image={Image2}
-                        header="Course 6 of 6"
-                        subheader="How to cure pneumonia in a toddler child"
-                        rating="★ 4.0/5.0"
-                        completionPercentage={80}
-                    />
+                    {inProgressModules.map((moduleId) => (
+                        <Card
+                            key={moduleId}
+                            image={Image2} // Replace with appropriate image for each module
+                            header={getModuleTitle(moduleId)}
+                            status={statuses[moduleId]}
+                            duration="1 hr"
+                            onPress={() => handleModulePress(moduleId)}
+
+                        />
+                    ))}
                 </ScrollView>
             </View>
             <View className="bg-gray-200">
@@ -205,36 +268,49 @@ const HomeScreen = ({
                             Our Partners:
                         </Text>
                     </View>
-                   <ScrollView 
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    >
-               <View className="flex flex-row gap-3 px-2 items-center justify-center pb-4">
-               <View className=" justify-center flex items-center">
-                            <Image source={UI} />
-                            <Text className="text-xs mt-2 text-center">University of Ibadan</Text>
+                    <ScrollView
+                        horizontal
+                        showsHorizontalScrollIndicator={false}>
+                        <View className="flex flex-row gap-3 px-2 items-center justify-center pb-4">
+                            <View className=" justify-center flex items-center">
+                                <Image source={UI} />
+                                <Text className="text-xs mt-2 text-center">
+                                    University of Ibadan
+                                </Text>
+                            </View>
+                            <View className="w-32 justify-center flex items-center">
+                                <Image source={sfuchas} />
+                                <Text className="text-xs mt-2 text-center">
+                                    Saint Frances University College of Health
+                                    and Applied Sciences
+                                </Text>
+                            </View>
+                            <View className=" justify-center flex items-center">
+                                <Image source={UB} />
+                                <Text className="text-xs mt-2 text-center">
+                                    University of Birmingham
+                                </Text>
+                            </View>
+                            <View className=" justify-center flex items-center">
+                                <Image source={Taleguru} />
+                                <Text className="text-xs mt-2">
+                                    Makerere University
+                                </Text>
+                            </View>
+                            <View className="w-32 justify-center flex items-center">
+                                <Image source={APHRC} />
+                                <Text className="text-xs mt-2 text-center">
+                                    African Population and Health Research
+                                    Center
+                                </Text>
+                            </View>
+                            <View className=" justify-center flex items-center">
+                                <Image source={KC} />
+                                <Text className="text-xs mt-2">
+                                    King's College, London
+                                </Text>
+                            </View>
                         </View>
-                        <View className="w-32 justify-center flex items-center">
-                            <Image source={sfuchas} />
-                            <Text className="text-xs mt-2 text-center">Saint Frances University College of Health and Applied Sciences</Text>
-                        </View>
-                        <View className=" justify-center flex items-center">
-                            <Image source={UB} />
-                            <Text className="text-xs mt-2 text-center">University of Birmingham</Text>
-                        </View>
-                        <View className=" justify-center flex items-center">
-                            <Image source={Taleguru} />
-                            <Text className="text-xs mt-2">Makerere University</Text>
-                        </View>
-                        <View className="w-32 justify-center flex items-center">
-                            <Image source={APHRC} />
-                            <Text className="text-xs mt-2 text-center">African Population and Health Research Center</Text>
-                        </View>
-                        <View className=" justify-center flex items-center">
-                            <Image source={KC} />
-                            <Text className="text-xs mt-2">King's College, London</Text>
-                        </View>
-               </View>
                     </ScrollView>
                 </View>
             </View>

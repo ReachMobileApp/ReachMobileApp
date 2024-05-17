@@ -50,7 +50,7 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                     <Module
                         header="MODULE 4"
                         subheader="What patient outcomes can I expect beyond avoiding COVID-19 and other similar health challenges?"
-                        videoId="_3NNdRV1ff0"
+                        videoId="UHCtz49VBks"
                         duration="1 hr"
                         learningOutcomeHeader="Learning Outcome:"
                         learningOutcome={

@@ -3,6 +3,8 @@ import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
 import Card from "../../../components/QuizCard";
+import { getFirestore, doc, updateDoc } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
 type QuizScreenProps = {
     navigation: DrawerNavigationProp<any, any>;
@@ -74,7 +76,25 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
         setSelectedAnswers(updatedAnswers as { options: null[] }[]);
     };
 
-    const handleSubmit = () => {
+    const updateModuleStatus = async (moduleId: string, status: string) => {
+        try {
+            const db = getFirestore();
+            const auth = getAuth();
+            const user = auth.currentUser;
+    
+            if (user) {
+                const userDocRef = doc(db, "users_data", user.uid, "modules", moduleId);
+                await updateDoc(userDocRef, { status });
+                console.log("Document successfully updated");
+            } else {
+                console.error("No user is signed in");
+            }
+        } catch (error) {
+            console.error("Error updating document: ", error);
+        }
+    };
+
+    const handleSubmit = async () => {
         let correctCount = 0;
         let totalCount = 0;
         selectedAnswers.forEach((answer, index) => {
@@ -89,10 +109,12 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
             });
         });
 
-        const scorePercentage = Math.round((correctCount / totalCount) * 100); 
+        const scorePercentage = Math.round((correctCount / totalCount) * 100);
         setScore(scorePercentage);
-        if (scorePercentage < 80) {
-            setShowQuiz(false); // Hide the quiz questions
+
+        if (scorePercentage >= 80) {
+            setShowQuiz(false)
+            await updateModuleStatus("module5", "completed");
         }
     };
 
@@ -298,6 +320,19 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
             )}
 
             {/* Render Start Quiz button */}
+            {score !== null && score >= 80 && (
+                <View className="items-center mt-4 border px-5 mx-5 py-5 text-center flex justify-center">
+                    <Text>Congratulations! you scored {score}%</Text>
+                    <Text>You have successfully completed this module</Text>
+                    <Text>You have earned yourself a badge</Text>
+                    <Text>Click the button below to view </Text>
+                    <TouchableOpacity
+                        onPress={() => navigation.navigate('BottomTabNavigator', { screen: 'Module' })}
+                        className="bg-[#064d7d] mt-4 py-2 px-10 rounded-full">
+                        <Text className="text-white font-bold">Go to Badges</Text>
+                    </TouchableOpacity>
+                </View>
+            )}
         </ScrollView>
     );
 };

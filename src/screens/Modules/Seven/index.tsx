@@ -50,7 +50,7 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                     <Module
                         header="MODULE 7"
                         subheader="What qualities do you have and need to deliver remote healthcare and support your colleagues/teams?"
-                        videoId="Nc8rLTwo_cE"
+                        videoId="MhVXBzftSr0"
                         duration="1 hr"
                         learningOutcomeHeader="Learning Outcome:"
                         learningOutcome={

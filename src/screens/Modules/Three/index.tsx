@@ -50,7 +50,7 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                     <Module
                         header="MODULE 3"
                         subheader="Remote Consulting for Healthcare: ReaCH Training CourseBook"
-                        videoId="jZ9yeIi9tI0"
+                        videoId="0s54enQUO_Q"
                         duration="1 hr"
                         learningOutcomeHeader="Learning Outcome:"
                         learningOutcome={

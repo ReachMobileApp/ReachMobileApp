@@ -3,6 +3,8 @@ import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
 import Card from "../../../components/QuizCard";
+import { getFirestore, doc, updateDoc } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
 type QuizScreenProps = {
     navigation: DrawerNavigationProp<any, any>;
@@ -10,13 +12,18 @@ type QuizScreenProps = {
 const quizQuestions = [
     {
         header: "Question 1:",
-        question:
-            "Patient safety in remote consulting entails the following: ",
+        question: "Patient safety in remote consulting entails the following: ",
         options: [
             { text: "Ensuring that you speak to the right patient" },
-            { text: "Ensuring that the internet connection displays a strong signal and does not interfere communication" },
-            { text: "Ensuring that the technology that is used is familiar to the patient" },
-            { text: "Ensuring that the text message is not seen by another person apart from the patient" },
+            {
+                text: "Ensuring that the internet connection displays a strong signal and does not interfere communication",
+            },
+            {
+                text: "Ensuring that the technology that is used is familiar to the patient",
+            },
+            {
+                text: "Ensuring that the text message is not seen by another person apart from the patient",
+            },
         ],
     },
     {
@@ -25,9 +32,15 @@ const quizQuestions = [
             "The following statements are true about ethical consideration in remote consulting: ",
         options: [
             { text: "Confidentiality is a problem in text messages" },
-            { text: "Short messages with emojis can make the health worker uncomfortable" },
-            { text: "It is not right to provide remote consulting via a family intermediary" },
-            { text: "Duty of care is particularly relevant when asynchronous remote" },
+            {
+                text: "Short messages with emojis can make the health worker uncomfortable",
+            },
+            {
+                text: "It is not right to provide remote consulting via a family intermediary",
+            },
+            {
+                text: "Duty of care is particularly relevant when asynchronous remote",
+            },
         ],
     },
     {
@@ -41,7 +54,6 @@ const quizQuestions = [
             { text: "Consent" },
         ],
     },
-   
 ];
 
 const correctAnswers = [
@@ -82,8 +94,31 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
         });
         setSelectedAnswers(updatedAnswers as { options: null[] }[]);
     };
+    const updateModuleStatus = async (moduleId: string, status: string) => {
+        try {
+            const db = getFirestore();
+            const auth = getAuth();
+            const user = auth.currentUser;
 
-    const handleSubmit = () => {
+            if (user) {
+                const userDocRef = doc(
+                    db,
+                    "users_data",
+                    user.uid,
+                    "modules",
+                    moduleId
+                );
+                await updateDoc(userDocRef, { status });
+                console.log("Document successfully updated");
+            } else {
+                console.error("No user is signed in");
+            }
+        } catch (error) {
+            console.error("Error updating document: ", error);
+        }
+    };
+
+    const handleSubmit = async () => {
         let correctCount = 0;
         let totalCount = 0;
         selectedAnswers.forEach((answer, index) => {
@@ -98,10 +133,12 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
             });
         });
 
-        const scorePercentage = Math.round((correctCount / totalCount) * 100); 
+        const scorePercentage = Math.round((correctCount / totalCount) * 100);
         setScore(scorePercentage);
-        if (scorePercentage < 80) {
-            setShowQuiz(false); // Hide the quiz questions
+
+        if (scorePercentage >= 80) {
+            setShowQuiz(false);
+            await updateModuleStatus("module3", "completed");
         }
     };
 
@@ -135,7 +172,7 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
                     MODULE 3
                 </Text>
                 <Text className="text-sm mb-1 text-gray-500 ">
-                Remote Consulting for Healthcare: ReaCH Training CourseBook
+                    Remote Consulting for Healthcare: ReaCH Training CourseBook
                 </Text>
                 <Text className="text-sm text-red-500 mb-3">1 hr</Text>
 
@@ -163,7 +200,9 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
                                             <View
                                                 key={optionIndex}
                                                 className="flex flex-row justify-between items-center my-2">
-                                                <Text className="w-9/12">{option.text}</Text>
+                                                <Text className="w-9/12">
+                                                    {option.text}
+                                                </Text>
                                                 <View className="flex flex-row gap-4">
                                                     <TouchableOpacity
                                                         onPress={() =>
@@ -238,45 +277,47 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
                         </TouchableOpacity>
                     </View>
                 ) : score === null ? (
-                    
                     <View className="py-5 px-2">
                         {/* Render your card component here */}
                         <Card attempt={3} time="20 mins" />
-                                <View
+                        <View
+                            style={{
+                                justifyContent: "center",
+                                alignItems: "center",
+                                marginTop: 20,
+                            }}>
+                            {!showQuiz && (
+                                <TouchableOpacity
+                                    onPress={toggleQuiz}
                                     style={{
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                        marginTop: 20,
+                                        backgroundColor: "#064d7d",
+                                        width: "80%",
+                                        padding: 10,
+                                        borderRadius: 10,
                                     }}>
-                                    {!showQuiz && (
-                                        <TouchableOpacity
-                                            onPress={toggleQuiz}
-                                            style={{
-                                                backgroundColor: "#064d7d",
-                                                width: "80%",
-                                                padding: 10,
-                                                borderRadius: 10,
-                                            }}>
-                                            <Text
-                                                style={{
-                                                    color: "white",
-                                                    textAlign: "center",
-                                                    fontSize: 18,
-                                                    fontWeight: "bold",
-                                                }}>
-                                                Start Quiz
-                                            </Text>
-                                        </TouchableOpacity>
-                                    )}
-                                </View>
+                                    <Text
+                                        style={{
+                                            color: "white",
+                                            textAlign: "center",
+                                            fontSize: 18,
+                                            fontWeight: "bold",
+                                        }}>
+                                        Start Quiz
+                                    </Text>
+                                </TouchableOpacity>
+                            )}
+                        </View>
                     </View>
-                ): null}
+                ) : null}
             </View>
 
             {score !== null && score < 80 && (
                 <View className="items-center mt-4 border px-5 mx-5 py-5 text-center flex justify-center">
                     <Text className="text-lg">{score}%,</Text>
-                    <Text className="text-lg text-center"> You have to score up to 80% before you can continue</Text>
+                    <Text className="text-lg text-center">
+                        {" "}
+                        You have to score up to 80% before you can continue
+                    </Text>
                     <TouchableOpacity
                         onPress={() => {
                             setScore(null);
@@ -295,12 +336,19 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
 
             {score !== null && score >= 80 && (
                 <View className="items-center mt-4 border px-5 mx-5 py-5 text-center flex justify-center">
-                <Text>Congratulations!</Text>
-                    <TouchableOpacity
-                        onPress={() => navigation.navigate('BottomTabNavigator',{ screen: 'Module' })}
+                    <Text>Congratulations! you scored {score}%</Text>
+                    <Text>You have successfully completed this module</Text>
+                    <Text>You have earned yourself a badge</Text>
+                    <Text>Click the button below to view </Text>
+                  <TouchableOpacity
+                        onPress={() =>
+                            navigation.navigate("BottomTabNavigator", {
+                                screen: "Module",
+                            })
+                        }
                         className="bg-[#064d7d] mt-4 py-2 px-10 rounded-full">
                         <Text className="text-white font-bold">
-                            Go to Modules
+                            Go to Badges
                         </Text>
                     </TouchableOpacity>
                 </View>

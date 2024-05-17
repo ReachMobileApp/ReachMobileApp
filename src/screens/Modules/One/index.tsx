@@ -50,7 +50,7 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                     <Module
                         header="MODULE 1"
                         subheader="What digital devices, services, and apps can be used for remote consulting?"
-                        videoId="jKj0eHngEa8"
+                        videoId="yQYGSYppNkw"
                         duration="1 hr"
                         learningOutcomeHeader="Learning Outcome:"
                         learningOutcome={

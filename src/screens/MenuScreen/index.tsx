@@ -1,5 +1,5 @@
 // MenuScreen.js
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
@@ -13,11 +13,16 @@ import TrackProgress from "@/assets/images/menuIcons/TrackProgress.png";
 import ArrowRight from "@/assets/images/menuIcons/arrowRight.png";
 import ModuleScreen from "../ModuleScreen";
 import { signOut, getAuth } from "firebase/auth";
+import { firebaseAuth } from "@/firebaseConfig";
+import { getFirestore, query, where, getDocs, collection } from 'firebase/firestore'
 import Toast from 'react-native-toast-message';
 
 
 const MenuScreen = ({ navigation }: any) => {
   const auth = getAuth();
+  const [userDetails, setUserDetails] = useState<any>([]);
+  const db = getFirestore();
+  const userRef = collection(db, 'users_data');
 
   const SignOut = async () => {
     try {
@@ -37,6 +42,33 @@ const MenuScreen = ({ navigation }: any) => {
       console.log(error.message);
     }
   }
+  const getCurrentUser = async (): Promise<void> => {
+    try {
+        firebaseAuth.onAuthStateChanged((user) => {
+            const q = query(userRef, where('user_id', '==', user?.uid));
+            if (user) {
+                getDocs(q).then(async (snapshot) => {
+                    let user_data: any = [];
+                    snapshot.docs.map((item) => {
+                        user_data.push({ ...item.data(), id: item.id });
+                        return setUserDetails(user_data);
+                    })
+                });
+            }
+        })
+    } catch (error: any) {
+        Toast.show({
+            type: 'error',
+            text1: 'Error!',
+            text2: error.message
+        });
+    }
+};
+
+
+useEffect(() => {
+    getCurrentUser()
+}, []);
 
   return (
     <View className="flex-1 bg-[#064D7D]">
@@ -50,7 +82,7 @@ const MenuScreen = ({ navigation }: any) => {
         <Image source={Avatar} className="w-8 h-8 rounded-full" />
       </View>
 
-      <Text className="text-white mt-8 mb-4 px-4 text-xl font-bold">Hello, Musa!</Text>
+      <Text className="text-white mt-8 mb-4 px-4 text-xl font-bold">Hello, {userDetails[0]?.username}!</Text>
       
       {/* Menu items */}
       <View className="bg-white rounded-t-2xl h-full mt-10">

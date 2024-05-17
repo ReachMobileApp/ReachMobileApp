@@ -50,7 +50,7 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                     <Module
                         header="MODULE 6"
                         subheader="What behaviors will help or hinder a successful transition to remote consulting?"
-                        videoId="Mj9dTRbPfhw"
+                        videoId="jOCKUJsnyJw"
                         duration="1 hr"
                         learningOutcomeHeader="Learning Outcome:"
                         learningOutcome={

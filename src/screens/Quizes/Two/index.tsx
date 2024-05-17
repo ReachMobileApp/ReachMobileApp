@@ -3,6 +3,9 @@ import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
 import Card from "../../../components/QuizCard";
+import { getFirestore, doc, updateDoc } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+
 
 type QuizScreenProps = {
     navigation: DrawerNavigationProp<any, any>;
@@ -30,7 +33,20 @@ const quizQuestions = [
 ];
 
 const correctAnswers = [
-    { options: ["true", "true", "false", "false", "true", "true", "true", "true","true", "true"] }, // Assuming Phone Calls is correct for Question 1
+    {
+        options: [
+            "true",
+            "true",
+            "false",
+            "false",
+            "true",
+            "true",
+            "true",
+            "true",
+            "true",
+            "true",
+        ],
+    }, // Assuming Phone Calls is correct for Question 1
 ];
 
 const QuizScreen = ({ navigation }: QuizScreenProps) => {
@@ -66,7 +82,25 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
         setSelectedAnswers(updatedAnswers as { options: null[] }[]);
     };
 
-    const handleSubmit = () => {
+    const updateModuleStatus = async (moduleId: string, status: string) => {
+        try {
+            const db = getFirestore();
+            const auth = getAuth();
+            const user = auth.currentUser;
+    
+            if (user) {
+                const userDocRef = doc(db, "users_data", user.uid, "modules", moduleId);
+                await updateDoc(userDocRef, { status });
+                console.log("Document successfully updated");
+            } else {
+                console.error("No user is signed in");
+            }
+        } catch (error) {
+            console.error("Error updating document: ", error);
+        }
+    };
+
+    const handleSubmit = async () => {
         let correctCount = 0;
         let totalCount = 0;
         selectedAnswers.forEach((answer, index) => {
@@ -83,10 +117,13 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
 
         const scorePercentage = Math.round((correctCount / totalCount) * 100);
         setScore(scorePercentage);
-        if (scorePercentage < 80) {
-            setShowQuiz(false); // Hide the quiz questions
+
+        if (scorePercentage >= 80) {
+            setShowQuiz(false)
+            await updateModuleStatus("module2", "completed");
         }
     };
+
 
     return (
         <ScrollView className="flex-1 bg-white  pt-2">
@@ -146,7 +183,9 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
                                             <View
                                                 key={optionIndex}
                                                 className="flex flex-row justify-between items-center my-2">
-                                                <Text className="w-9/12">{option.text}</Text>
+                                                <Text className="w-9/12">
+                                                    {option.text}
+                                                </Text>
                                                 <View className="flex flex-row gap-4">
                                                     <TouchableOpacity
                                                         onPress={() =>
@@ -280,7 +319,10 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
 
             {score !== null && score >= 80 && (
                 <View className="items-center mt-4 border px-5 mx-5 py-5 text-center flex justify-center">
-                    <Text>Congratulations!</Text>
+                    <Text>Congratulations! you scored {score}%</Text>
+                    <Text>You have successfully completed this module</Text>
+                    <Text>You have earned yourself a badge</Text>
+                    <Text>Click the button below to view </Text>
                     <TouchableOpacity
                         onPress={() =>
                             navigation.navigate("BottomTabNavigator", {
@@ -289,7 +331,7 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
                         }
                         className="bg-[#064d7d] mt-4 py-2 px-10 rounded-full">
                         <Text className="text-white font-bold">
-                            Go to Modules
+                            Go to Badges
                         </Text>
                     </TouchableOpacity>
                 </View>

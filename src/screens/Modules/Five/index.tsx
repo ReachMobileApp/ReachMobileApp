@@ -51,7 +51,7 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                     <Module
                         header="MODULE 5"
                         subheader="What is my plan for delivering my healthcare work remotely?"
-                        videoId="yTtDksPcSP0"
+                        videoId="WqXXsQeicHU"
                         duration="1 hr"
                         learningOutcomeHeader="Learning Outcome:"
                         learningOutcome={

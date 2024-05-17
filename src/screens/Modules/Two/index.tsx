@@ -50,7 +50,7 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                     <Module
                         header="MODULE 2"
                         subheader="How does my role change and the care I provide my patients?"
-                        videoId="Ep7X6Qqat2E"
+                        videoId="1FcQ6Vi_QPs"
                         duration="1 hr"
                         learningOutcomeHeader="Learning Outcome:"
                         learningOutcome={
