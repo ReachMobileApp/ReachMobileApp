@@ -11,6 +11,8 @@ import Toast from 'react-native-toast-message'
 const ProfileScreen = ({ navigation }: any) => {
     const [selectedSection, setSelectedSection] = useState("aboutMe");
     const [userDetails, setUserDetails] = useState<any>([]);
+    const [completedModules, setCompletedModules] = useState<any[]>([]);
+
     const [loading, setLoading] = useState(true);
 
     const db = getFirestore();
@@ -22,28 +24,40 @@ const ProfileScreen = ({ navigation }: any) => {
 
     const getCurrentUser = async (): Promise<void> => {
         try {
-            firebaseAuth.onAuthStateChanged((user) => {
-                const q = query(userRef, where('user_id', '==', user?.uid));
+            firebaseAuth.onAuthStateChanged(async (user) => {
                 if (user) {
-                    getDocs(q).then(async (snapshot) => {
-                        let user_data: any = [];
-                        snapshot.docs.map((item) => {
-                            user_data.push({ ...item.data(), id: item.id });
-                            console.log(user_data);
-                            return setUserDetails(user_data);
-                        })
+                    const userQuery = query(userRef, where('user_id', '==', user.uid));
+                    const snapshot = await getDocs(userQuery);
+
+                    const userData: any = [];
+                    snapshot.docs.forEach((item) => {
+                        userData.push({ ...item.data(), id: item.id });
                     });
+                    setUserDetails(userData);
+
+                    const modulesRef = collection(db, 'users_data', user.uid, 'modules');
+                    const modulesSnapshot = await getDocs(modulesRef);
+
+                    const completedModulesData: any = [];
+                    modulesSnapshot.docs.forEach((moduleDoc) => {
+                        const moduleData = moduleDoc.data();
+                        if (moduleData.status === "completed") {
+                            completedModulesData.push(moduleData);
+                        }
+                    });
+                    setCompletedModules(completedModulesData);
                 }
-            })
+            });
         } catch (error: any) {
             Toast.show({
                 type: 'error',
                 text1: 'Error!',
-                text2: error.message
+                text2: error.message,
             });
+        } finally {
+            setLoading(false);
         }
     };
-
 
     useEffect(() => {
         getCurrentUser()
@@ -183,10 +197,18 @@ const ProfileScreen = ({ navigation }: any) => {
                     </View>
                 ) : (
                     <View className="mt-4">
-                        <Card header="MODULE 1" subheader="What digital devices, services and apps can be used for remote consulting?" duration="1 hr" />
-                        <Card header="MODULE 1" subheader="What digital devices, services and apps can be used for remote consulting?" duration="1 hr" />
-                        {/* Render badges section */}
-                        {/* Add your badges UI here */}
+                         {completedModules.length > 0 ? (
+                            completedModules.map((module, index) => (
+                                <Card
+                                    key={index}
+                                    header={`MODULE ${index + 1}`}
+                                    subheader={module.status}
+                                    duration="1 hr"
+                                />
+                            ))
+                        ) : (
+                            <Text className="text-center text-lg">No badges earned yet.</Text>
+                        )}
                     </View>
                 )}
             </View>

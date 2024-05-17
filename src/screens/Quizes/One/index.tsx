@@ -274,7 +274,7 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
                     <Text>You have earned yourself a badge</Text>
                     <Text>Click the button below to view </Text>
                     <TouchableOpacity
-                        onPress={() => navigation.navigate('BottomTabNavigator', { screen: 'Module' })}
+                        onPress={() => navigation.navigate('BottomTabNavigator', { screen: 'Profile' })}
                         className="bg-[#064d7d] mt-4 py-2 px-10 rounded-full">
                         <Text className="text-white font-bold">Go to Badges</Text>
                     </TouchableOpacity>

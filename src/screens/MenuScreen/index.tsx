@@ -93,12 +93,7 @@ useEffect(() => {
           <Image source={ArrowRight} className="ml-auto w-3 h-3" />
         </TouchableOpacity>
 
-        {/* Track Progress */}
-        <TouchableOpacity className="flex-row items-center px-4 py-6 border-b border-gray-300">
-          <Image source={TrackProgress} className="w-3 h-3 mr-4" />
-          <Text>Track Progress</Text>
-          <Image source={ArrowRight} className="ml-auto w-3 h-3" />
-        </TouchableOpacity>
+       
 
         {/* Courses */}
         <TouchableOpacity onPress={()=>navigation.navigate('BottomTabNavigator',{ screen: 'Module' })}className="flex-row items-center px-4 py-6 border-b border-gray-300">
