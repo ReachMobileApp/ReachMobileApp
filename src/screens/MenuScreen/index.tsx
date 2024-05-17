@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
-import Avatar from "@/assets/images/Avatar.png";
+import Avatar from "@/assets/images/image.png";
 import Introduction from "@/assets/images/menuIcons/Introduction.png";
 import Course from "@/assets/images/menuIcons/Course.png";
 import Logout from "@/assets/images/menuIcons/Logout.png";
