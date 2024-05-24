@@ -19,7 +19,7 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
     };
 
     return (
-        <ScrollView className="flex-1 bg-white  pt-2">
+        <View className="flex-1 bg-white  pt-2">
             {/* Header */}
             <View className="bg-[#064d7d]">
                 <View className="flex-row justify-between items-center pt-2 mb-2 px-3">
@@ -45,8 +45,9 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
             </View>
 
             {/* Main content */}
-            <View className="bg-white ">
+            <View className="bg-white flex-1">
                 {showVideo ? (
+                   <ScrollView>
                     <Module
                         header="MODULE 2"
                         subheader="How does my role change and the care I provide my patients?"
@@ -57,8 +58,20 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                             "In this Module, we will discuss how digital communication changes the nature of the health professional and patient roles, and their interactions. Analyse the change in roles for patients and health professionals involved in digital communication. Describe the doctor-patient digital interaction process and its outcomes in various settings."
                         }
                     />
+                     <View className="mb-10 p-2">
+                    <TouchableOpacity onPress={toggleVideoNotes}>
+                        <ModulesButtons
+                            image={showVideo ? Page : Page2}
+                            header={showVideo ? "Read Notes" : "Watch Video"}
+                        />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={()=>navigation.navigate("QuizScreenTwo")}>
+                        <ModulesButtons image={Page2} header="Take Quiz" />
+                    </TouchableOpacity>
+                </View>
+                   </ScrollView>
                 ) : (
-                    <View>
+                    <View className="flex-1">
                         <View className="p-4">
                             <Text className="text-2xl text-[#064d7d] font-bold ">
                                 MODULE 2
@@ -87,7 +100,7 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                                 various settings.
                             </Text>
                         </View>
-                        <View className="m-4 border">
+                        <ScrollView className="m-4 flex-1">
                             <View className="p-2">
                                 <Text className="mb-3 text-[#707070] text-bold text-lg">
                                     Notes:
@@ -322,10 +335,6 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                                     </Text>
                                 </View>
                             </View>
-                        </View>
-                    </View>
-                )}
-                {/* Buttons */}
                 <View className="mb-10 p-2">
                     <TouchableOpacity onPress={toggleVideoNotes}>
                         <ModulesButtons
@@ -337,8 +346,12 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                         <ModulesButtons image={Page2} header="Take Quiz" />
                     </TouchableOpacity>
                 </View>
+                        </ScrollView>
+                    </View>
+                )}
+                {/* Buttons */}
             </View>
-        </ScrollView>
+        </View>
     );
 };
 

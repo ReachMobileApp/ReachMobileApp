@@ -20,7 +20,7 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
     };
 
     return (
-        <ScrollView className="flex-1 bg-white  ">
+        <View className="flex-1 bg-white  ">
             {/* Header */}
             <View className="bg-[#064d7d]">
                 <View className="flex-row justify-between items-center  mb-2 px-3">
@@ -46,8 +46,9 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
             </View>
 
             {/* Main content */}
-            <View className="bg-white ">
+            <View className="bg-white flex-1">
                 {showVideo ? (
+                   <ScrollView>
                     <Module
                         header="MODULE 5"
                         subheader="What is my plan for delivering my healthcare work remotely?"
@@ -58,8 +59,20 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                             "At the end of this module, you should be able to develop a plan for remote consulting with patients where you and the patient/supporter use digital communication."
                         }
                     />
+                       <View className="mb-10 p-2">
+                    <TouchableOpacity onPress={toggleVideoNotes}>
+                        <ModulesButtons
+                            image={showVideo ? Page : Page2}
+                            header={showVideo ? "Read Notes" : "Watch Video"}
+                        />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={()=>navigation.navigate("QuizScreenFive")}>
+                        <ModulesButtons image={Page2} header="Take Quiz" />
+                    </TouchableOpacity>
+                </View>
+                   </ScrollView>
                 ) : (
-                    <View>
+                    <View className="flex-1">
                         <View className="p-4">
                             <Text className="text-2xl text-[#064d7d] font-bold ">
                                 MODULE 5
@@ -81,7 +94,7 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                                 digital communication.
                             </Text>
                         </View>
-                        <View className="m-4 border">
+                        <ScrollView className="m-4 flex-1">
                             <View className="p-2">
                                 <Text className="mb-3 text-[#707070] text-bold text-lg">
                                     Notes:
@@ -624,10 +637,6 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                                     </Hyperlink>
                                 </View>
                             </View>
-                        </View>
-                    </View>
-                )}
-                {/* Buttons */}
                 <View className="mb-10 p-2">
                     <TouchableOpacity onPress={toggleVideoNotes}>
                         <ModulesButtons
@@ -639,8 +648,12 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                         <ModulesButtons image={Page2} header="Take Quiz" />
                     </TouchableOpacity>
                 </View>
+                        </ScrollView>
+                    </View>
+                )}
+                {/* Buttons */}
             </View>
-        </ScrollView>
+        </View>
     );
 };
 

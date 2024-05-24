@@ -1,18 +1,18 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, Image,ActivityIndicator, ScrollView } from "react-native";
+import React, { useState, useCallback } from "react";
+import { View, Text, TouchableOpacity, Image, ActivityIndicator, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Avatar from "@/assets/images/image.png";
+import { useFocusEffect } from '@react-navigation/native';
 
 import Card from "@/src/components/BadgeCard";
 import { firebaseAuth } from "@/firebaseConfig";
-import { getFirestore, query, where, getDocs, collection } from 'firebase/firestore'
-import Toast from 'react-native-toast-message'
+import { getFirestore, query, where, getDocs, collection } from 'firebase/firestore';
+import Toast from 'react-native-toast-message';
 
 const ProfileScreen = ({ navigation }: any) => {
     const [selectedSection, setSelectedSection] = useState("aboutMe");
     const [userDetails, setUserDetails] = useState<any>([]);
     const [completedModules, setCompletedModules] = useState<any[]>([]);
-
     const [loading, setLoading] = useState(true);
 
     const db = getFirestore();
@@ -38,11 +38,23 @@ const ProfileScreen = ({ navigation }: any) => {
                     const modulesRef = collection(db, 'users_data', user.uid, 'modules');
                     const modulesSnapshot = await getDocs(modulesRef);
 
+                    const moduleIdToNumber :{ [key: string]: number } = {
+                        'module1': 1,
+                        'module2': 2,
+                        'module3': 3,
+                        'module4': 4,
+                        'module5': 5,
+                        'module6': 6,
+                        'module7': 7,
+                        // Add more modules as needed
+                    };
+
                     const completedModulesData: any = [];
                     modulesSnapshot.docs.forEach((moduleDoc) => {
                         const moduleData = moduleDoc.data();
-                        if (moduleData.status === "completed") {
-                            completedModulesData.push(moduleData);
+                        const moduleNumber = moduleIdToNumber[moduleDoc.id];
+                        if (moduleData.status === "completed" && moduleNumber) {
+                            completedModulesData.push({ ...moduleData, id: moduleDoc.id, moduleNumber });
                         }
                     });
                     setCompletedModules(completedModulesData);
@@ -59,10 +71,12 @@ const ProfileScreen = ({ navigation }: any) => {
         }
     };
 
-    useEffect(() => {
-        getCurrentUser()
-        setLoading(false)
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            setLoading(true);
+            getCurrentUser();
+        }, [])
+    );
 
     if (loading) {
         return (
@@ -71,11 +85,10 @@ const ProfileScreen = ({ navigation }: any) => {
             </View>
         );
     }
-    
 
     return (
-        <ScrollView>
-            <View className="bg-[#064D7D] h-96">
+        <View className="flex-1">
+            <View className="bg-[#064D7D] h-3/5">
                 {/* Header */}
                 <View className="flex-row justify-between items-center px-4 pt-6">
                     {/* Back button */}
@@ -88,122 +101,113 @@ const ProfileScreen = ({ navigation }: any) => {
 
                 <View className="flex items-center mt-10">
                     {/* Profile image */}
-
-                    <Image source={Avatar} className=" rounded-3xl" />
+                    <Image source={Avatar} className="rounded-3xl" />
 
                     <Text className="text-white my-2 px-4 text-xl text-center font-bold">
                         {userDetails[0]?.username}
                     </Text>
                     <Text className="text-white text-center font-bold text-sm">
-                        {/* Medical Practitioner */}
                         {userDetails[0]?.occupation}
                     </Text>
                     <Text className="text-green-500 text-center font-bold text-sm">
                         Active
                     </Text>
-                    
                 </View>
                 {/* Switch */}
                 <View className="flex-row items-center justify-center mt-2">
-                <View className="flex-row items-center mt-4">
-                    <TouchableOpacity
-                        style={{
-                            backgroundColor:
-                                selectedSection === "aboutMe" ? "#81b0ff" : "#ffffff",
-                            padding: 10,
-                            borderRadius: 20,
-                            marginRight: 5,
-                            flex: 1,
-                            justifyContent: "center",
-                            alignItems: "center",
-                        }}
-                        onPress={() => handleSwitchChange(true)}
-                    >
-                        <Text
+                    <View className="flex-row items-center mt-6">
+                        <TouchableOpacity
                             style={{
-                                color: selectedSection === "aboutMe" ? "#ffffff" : "#3e3e3e",
-                                fontWeight: "bold",
+                                backgroundColor:
+                                    selectedSection === "aboutMe" ? "#81b0ff" : "#ffffff",
+                                padding: 10,
+                                borderRadius: 20,
+                                marginRight: 5,
+                                flex: 1,
+                                justifyContent: "center",
+                                alignItems: "center",
                             }}
+                            onPress={() => handleSwitchChange(true)}
                         >
-                            About Me
-                        </Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        style={{
-                            backgroundColor:
-                                selectedSection === "badges" ? "#81b0ff" : "#ffffff",
-                            padding: 10,
-                            borderRadius: 20,
-                            marginLeft: 5,
-                            flex: 1,
-                            justifyContent: "center",
-                            alignItems: "center",
-                        }}
-                        onPress={() => handleSwitchChange(false)}
-                    >
-                        <Text
+                            <Text
+                                style={{
+                                    color: selectedSection === "aboutMe" ? "#ffffff" : "#3e3e3e",
+                                    fontWeight: "bold",
+                                }}
+                            >
+                                About Me
+                            </Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
                             style={{
-                                color: selectedSection === "badges" ? "#ffffff" : "#3e3e3e",
-                                fontWeight: "bold",
+                                backgroundColor:
+                                    selectedSection === "badges" ? "#81b0ff" : "#ffffff",
+                                padding: 10,
+                                borderRadius: 20,
+                                marginLeft: 5,
+                                flex: 1,
+                                justifyContent: "center",
+                                alignItems: "center",
                             }}
+                            onPress={() => handleSwitchChange(false)}
                         >
-                            Badges
-                        </Text>
-                    </TouchableOpacity>
-                </View>
+                            <Text
+                                style={{
+                                    color: selectedSection === "badges" ? "#ffffff" : "#3e3e3e",
+                                    fontWeight: "bold",
+                                }}
+                            >
+                                Badges
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </View>
-            <View className="mt-4">
+            <ScrollView className="mt-10 flex-1">
                 {/* Conditional rendering based on selected section */}
                 {selectedSection === "aboutMe" ? (
-                    <View className="mt-4  gap-4">
-                        <View className="flex-row  items-center border ">
+                    <View className="mt-4 gap-4">
+                        <View className="flex-row items-center border">
                             <Text className="text-white w-2/5 pl-4 text-lg bg-[#064D7D]">Name:</Text>
                             <Text className="text-[#064D7D] w-3/5 text-lg bg-white text-center">
-                                {/* Idowu Musa Abiodun */}
                                 {userDetails[0]?.full_name}
                             </Text>
                         </View>
-                        <View className="flex-row  items-center border ">
+                        <View className="flex-row items-center border">
                             <Text className="text-white w-2/5 text-lg pl-4 bg-[#064D7D]">Occupation:</Text>
                             <Text className="text-[#064D7D] w-3/5 text-lg bg-white text-center">
-                                {/* Medical Practitioner */}
                                 {userDetails[0]?.occupation}
                             </Text>
                         </View>
-                        
-                        <View className="flex-row  items-center border ">
+                        <View className="flex-row items-center border">
                             <Text className="text-white w-2/5 text-lg pl-4 bg-[#064D7D]">Email:</Text>
                             <Text className="text-[#064D7D] w-3/5 text-lg bg-white text-center">
                                 {userDetails[0]?.email}
                             </Text>
                         </View>
-                        <View className="flex-row  items-center border ">
+                        <View className="flex-row items-center border">
                             <Text className="text-white w-2/5 text-lg pl-4 bg-[#064D7D]">City:</Text>
                             <Text className="text-[#064D7D] w-3/5 text-lg bg-white text-center">
                                 {userDetails[0]?.city}
                             </Text>
                         </View>
-                        <View className="flex-row  items-center border ">
+                        <View className="flex-row items-center border">
                             <Text className="text-white w-2/5 text-lg pl-4 bg-[#064D7D]">Username:</Text>
                             <Text className="text-[#064D7D] w-3/5 text-lg bg-white text-center">
-                                {/* IdowuAbiodun@gmail.com */}
                                 {userDetails[0]?.username}
                             </Text>
                         </View>
-                        
-                        
-                     
                     </View>
                 ) : (
                     <View className="mt-4">
-                         {completedModules.length > 0 ? (
-                            completedModules.map((module, index) => (
+                        {completedModules.length > 0 ? (
+                            completedModules.map((module) => (
                                 <Card
-                                    key={index}
-                                    header={`MODULE ${index + 1}`}
+                                    key={module.id}
+                                    header={`MODULE ${module.moduleNumber}`}
                                     subheader={module.status}
                                     duration="1 hr"
+                                    score={module.score}
                                 />
                             ))
                         ) : (
@@ -211,8 +215,8 @@ const ProfileScreen = ({ navigation }: any) => {
                         )}
                     </View>
                 )}
-            </View>
-        </ScrollView>
+            </ScrollView>
+        </View>
     );
 };
 

@@ -16,9 +16,9 @@ const Card = ({  header, subheader, duration, score }: {
       <View className="flex w-9/12  px-3">
 
       <Text className="text-xl text-black  font-bold ">{header}</Text>
-        <Text className="text-sm text-red-600">{duration}</Text>
-        <Text className="text-sm text-green-600">{score}%</Text>
-      <Text className="text-sm text-green-600 ">{subheader}</Text>
+      <Text className="text-sm text-green-600 "> {subheader}</Text>
+        <Text className="text-sm text-red-600">Grade achieved: {score}%</Text>
+        <Text className="text-sm text-green-600"></Text>
      
       </View>
     </View>

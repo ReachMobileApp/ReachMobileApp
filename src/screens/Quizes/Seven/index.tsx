@@ -9,6 +9,7 @@ import { getAuth } from "firebase/auth";
 type QuizScreenProps = {
     navigation: DrawerNavigationProp<any, any>;
 };
+
 const quizQuestions = [
     {
         header: "Question 1:",
@@ -49,21 +50,21 @@ const correctAnswers = [
             "true",
             "true",
         ],
-    }, 
+    },
 ];
 
 const QuizScreen = ({ navigation }: QuizScreenProps) => {
     const [showQuiz, setShowQuiz] = useState(false);
     const [score, setScore] = useState<number | null>(null);
-
-    const toggleQuiz = () => {
-        setShowQuiz((prev) => !prev);
-    };
     const [selectedAnswers, setSelectedAnswers] = useState(
         quizQuestions.map((question) => ({
             options: question.options.map(() => null), // null initially, can be 'true' or 'false'
         }))
     );
+
+    const toggleQuiz = () => {
+        setShowQuiz((prev) => !prev);
+    };
 
     const handleSelection = (
         questionIndex: number,
@@ -85,15 +86,19 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
         setSelectedAnswers(updatedAnswers as { options: null[] }[]);
     };
 
-    const updateModuleStatus = async (moduleId: string, status: string) => {
+    const updateModuleStatus = async (moduleId: string, status: string, score?: number) => {
         try {
             const db = getFirestore();
             const auth = getAuth();
             const user = auth.currentUser;
-    
+
             if (user) {
                 const userDocRef = doc(db, "users_data", user.uid, "modules", moduleId);
-                await updateDoc(userDocRef, { status });
+                const updateData: any = { status };
+                if (score !== undefined) {
+                    updateData.score = score;
+                }
+                await updateDoc(userDocRef, updateData);
                 console.log("Document successfully updated");
             } else {
                 console.error("No user is signed in");
@@ -122,20 +127,20 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
         setScore(scorePercentage);
 
         if (scorePercentage >= 80) {
-            setShowQuiz(false)
-            await updateModuleStatus("module7", "completed");
+            setShowQuiz(false);
+            await updateModuleStatus("module7", "completed", scorePercentage);
+        } else {
+            setShowQuiz(false);
         }
     };
 
     return (
-        <ScrollView className="flex-1 bg-white  pt-2">
+        <ScrollView className="flex-1 bg-white pt-2">
             {/* Header */}
             <View className="bg-[#064d7d]">
                 <View className="flex-row justify-between items-center pt-2 mb-2 px-3">
                     {/* Menu icon */}
-                    <TouchableOpacity
-                        onPress={() => navigation.goBack()}
-                        className="">
+                    <TouchableOpacity onPress={() => navigation.goBack()} className="">
                         <Ionicons name="arrow-back" size={24} color="white" />
                     </TouchableOpacity>
                     {/* Notification icon */}
@@ -144,21 +149,14 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
                             /* Add navigation logic for notifications */
                         }}
                         className="p-2">
-                        <Ionicons
-                            name="alarm-outline"
-                            size={24}
-                            color="white"
-                        />
+                        <Ionicons name="alarm-outline" size={24} color="white" />
                     </TouchableOpacity>
                 </View>
             </View>
             <View className="p-4">
-                <Text className="text-2xl text-[#064d7d] font-bold ">
-                    MODULE 7
-                </Text>
+                <Text className="text-2xl text-[#064d7d] font-bold ">MODULE 7</Text>
                 <Text className="text-sm mb-1 text-gray-500 ">
-                    What qualities do you have and need to deliver remote
-                    healthcare and support your colleagues/teams?
+                    What qualities do you have and need to deliver remote healthcare and support your colleagues/teams?
                 </Text>
                 <Text className="text-sm text-red-500 mb-3">1 hr</Text>
 
@@ -169,75 +167,51 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
                         {quizQuestions.map((questionObj, index) => (
                             <View key={index} style={{ marginBottom: 20 }}>
                                 <View>
-                                    <Text className="font-bold ">
-                                        {questionObj.header}
-                                    </Text>
+                                    <Text className="font-bold ">{questionObj.header}</Text>
                                 </View>
                                 <View className="border p-3 mt-2 border-[#707070]">
-                                    <Text className="text-sm">
-                                        {questionObj.question}
-                                    </Text>
+                                    <Text className="text-sm">{questionObj.question}</Text>
                                     <View className="flex flex-row justify-end px-3 gap-2">
                                         <Text>True</Text>
                                         <Text>False</Text>
                                     </View>
-                                    {questionObj.options.map(
-                                        (option, optionIndex) => (
-                                            <View
-                                                key={optionIndex}
-                                                className="flex flex-row justify-between items-center my-2">
-                                                <Text className="w-9/12">{option.text}</Text>
-                                                <View className="flex flex-row gap-4">
-                                                    <TouchableOpacity
-                                                        onPress={() =>
-                                                            handleSelection(
-                                                                index,
-                                                                optionIndex,
-                                                                "true"
-                                                            )
-                                                        }
-                                                        style={{
-                                                            width: 20, // Adjusted for visibility
-                                                            height: 20, // Adjusted for visibility
-                                                            borderWidth: 1,
-                                                            borderColor:
-                                                                "black",
-                                                            backgroundColor:
-                                                                selectedAnswers[
-                                                                    index
-                                                                ].options[
-                                                                    optionIndex
-                                                                ] === "true"
-                                                                    ? "#064d7d"
-                                                                    : "transparent",
-                                                        }}></TouchableOpacity>
-                                                    <TouchableOpacity
-                                                        onPress={() =>
-                                                            handleSelection(
-                                                                index,
-                                                                optionIndex,
-                                                                "false"
-                                                            )
-                                                        }
-                                                        style={{
-                                                            width: 20, // Adjusted for visibility
-                                                            height: 20, // Adjusted for visibility
-                                                            borderWidth: 1,
-                                                            borderColor:
-                                                                "black",
-                                                            backgroundColor:
-                                                                selectedAnswers[
-                                                                    index
-                                                                ].options[
-                                                                    optionIndex
-                                                                ] === "false"
-                                                                    ? "#064d7d"
-                                                                    : "transparent",
-                                                        }}></TouchableOpacity>
-                                                </View>
+                                    {questionObj.options.map((option, optionIndex) => (
+                                        <View
+                                            key={optionIndex}
+                                            className="flex flex-row justify-between items-center my-2">
+                                            <Text className="w-9/12">{option.text}</Text>
+                                            <View className="flex flex-row gap-4">
+                                                <TouchableOpacity
+                                                    onPress={() =>
+                                                        handleSelection(index, optionIndex, "true")
+                                                    }
+                                                    style={{
+                                                        width: 20, // Adjusted for visibility
+                                                        height: 20, // Adjusted for visibility
+                                                        borderWidth: 1,
+                                                        borderColor: "black",
+                                                        backgroundColor:
+                                                            selectedAnswers[index].options[optionIndex] === "true"
+                                                                ? "#064d7d"
+                                                                : "transparent",
+                                                    }}></TouchableOpacity>
+                                                <TouchableOpacity
+                                                    onPress={() =>
+                                                        handleSelection(index, optionIndex, "false")
+                                                    }
+                                                    style={{
+                                                        width: 20, // Adjusted for visibility
+                                                        height: 20, // Adjusted for visibility
+                                                        borderWidth: 1,
+                                                        borderColor: "black",
+                                                        backgroundColor:
+                                                            selectedAnswers[index].options[optionIndex] === "false"
+                                                                ? "#064d7d"
+                                                                : "transparent",
+                                                    }}></TouchableOpacity>
                                             </View>
-                                        )
-                                    )}
+                                        </View>
+                                    ))}
                                 </View>
                             </View>
                         ))}
@@ -299,7 +273,6 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
                 <View className="items-center mt-4 border px-5 mx-5 py-5 text-center flex justify-center">
                     <Text className="text-lg">{score}%,</Text>
                     <Text className="text-lg text-center">
-                        {" "}
                         You have to score up to 80% before you can continue
                     </Text>
                     <TouchableOpacity
@@ -318,14 +291,14 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
                 </View>
             )}
 
-{score !== null && score >= 80 && (
+            {score !== null && score >= 80 && (
                 <View className="items-center mt-4 border px-5 mx-5 py-5 text-center flex justify-center">
                     <Text>Congratulations! you scored {score}%</Text>
                     <Text>You have successfully completed this module</Text>
                     <Text>You have earned yourself a badge</Text>
                     <Text>Click the button below to view </Text>
                     <TouchableOpacity
-                        onPress={() => navigation.navigate('BottomTabNavigator', { screen: 'Module' })}
+                        onPress={() => navigation.navigate("BottomTabNavigator", { screen: "Profile" })}
                         className="bg-[#064d7d] mt-4 py-2 px-10 rounded-full">
                         <Text className="text-white font-bold">Go to Badges</Text>
                     </TouchableOpacity>

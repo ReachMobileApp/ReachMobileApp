@@ -19,7 +19,7 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
     };
 
     return (
-        <ScrollView className="flex-1 bg-white  pt-2">
+        <View className="flex-1 bg-white pt-2">
             {/* Header */}
             <View className="bg-[#064d7d]">
                 <View className="flex-row justify-between items-center pt-2 mb-2 px-3">
@@ -45,8 +45,9 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
             </View>
 
             {/* Main content */}
-            <View className="bg-white ">
+            <View className="bg-white flex-1">
                 {showVideo ? (
+                  <ScrollView>
                     <Module
                         header="MODULE 1"
                         subheader="What digital devices, services, and apps can be used for remote consulting?"
@@ -57,8 +58,30 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                             "Analyze different forms of digital communication in common use. Consider how they might be used in health care."
                         }
                     />
+                    <View className="mb-10 p-2">
+                    <TouchableOpacity onPress={toggleVideoNotes}>
+                        <ModulesButtons
+                            image={showVideo ? Page : Page2}
+                            header={
+                                showVideo
+                                    ? "Read Notes"
+                                    : "Watch Video"
+                            }
+                        />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() =>
+                            navigation.navigate("QuizScreenOne")
+                        }>
+                        <ModulesButtons
+                            image={Page2}
+                            header="Take Quiz"
+                        />
+                    </TouchableOpacity>
+                </View>
+                  </ScrollView>
                 ) : (
-                    <View>
+                    <View className="flex-1">
                         <View className="p-4">
                             <Text className="text-2xl text-[#064d7d] font-bold ">
                                 MODULE 1
@@ -71,7 +94,7 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                                 1 hr
                             </Text>
                             <Text className="mb-2 text-[#183745] font-bold text-lg">
-                                Learning Outcome:{" "}
+                                Learning Outcome:
                             </Text>
                             <Text className="mb-2 text-[#183745] text-base">
                                 Analyze different forms of digital communication
@@ -79,7 +102,7 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                                 in health care.
                             </Text>
                         </View>
-                        <View className="m-4 border">
+                        <ScrollView className="m-4  flex-1 ">
                             <View className="p-2">
                                 <Text className="mb-3 text-[#183745] text-bold text-lg">
                                     Notes:
@@ -133,7 +156,6 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                                         - Provider-specific – using a platform
                                         or app that is specific for health.
                                     </Text>
-
                                     <Text className="mb-2 text-[#707070] text-base">
                                         1.1. HARDWARE FOR DIGITAL ACCESS:
                                     </Text>
@@ -200,23 +222,33 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                                     </Text>
                                 </View>
                             </View>
-                        </View>
+                            <View className="mb-10 p-2">
+                                <TouchableOpacity onPress={toggleVideoNotes}>
+                                    <ModulesButtons
+                                        image={showVideo ? Page : Page2}
+                                        header={
+                                            showVideo
+                                                ? "Read Notes"
+                                                : "Watch Video"
+                                        }
+                                    />
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={() =>
+                                        navigation.navigate("QuizScreenOne")
+                                    }>
+                                    <ModulesButtons
+                                        image={Page2}
+                                        header="Take Quiz"
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                        </ScrollView>
                     </View>
                 )}
                 {/* Buttons */}
-                <View className="mb-10 p-2">
-                    <TouchableOpacity onPress={toggleVideoNotes}>
-                        <ModulesButtons
-                            image={showVideo ? Page : Page2}
-                            header={showVideo ? "Read Notes" : "Watch Video"}
-                        />
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={()=>navigation.navigate("QuizScreenOne")}>
-                        <ModulesButtons image={Page2} header="Take Quiz" />
-                    </TouchableOpacity>
-                </View>
             </View>
-        </ScrollView>
+        </View>
     );
 };
 

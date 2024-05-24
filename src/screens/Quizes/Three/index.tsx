@@ -94,7 +94,12 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
         });
         setSelectedAnswers(updatedAnswers as { options: null[] }[]);
     };
-    const updateModuleStatus = async (moduleId: string, status: string) => {
+    
+    const updateModuleStatus = async (
+        moduleId: string,
+        status: string,
+        score?: number
+    ) => {
         try {
             const db = getFirestore();
             const auth = getAuth();
@@ -108,7 +113,11 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
                     "modules",
                     moduleId
                 );
-                await updateDoc(userDocRef, { status });
+                const updateData: any = { status };
+                if (score !== undefined) {
+                    updateData.score = score;
+                }
+                await updateDoc(userDocRef, updateData);
                 console.log("Document successfully updated");
             } else {
                 console.error("No user is signed in");
@@ -138,7 +147,9 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
 
         if (scorePercentage >= 80) {
             setShowQuiz(false);
-            await updateModuleStatus("module3", "completed");
+            await updateModuleStatus("module7", "completed", scorePercentage);
+        } else {
+            setShowQuiz(false);
         }
     };
 
@@ -340,10 +351,10 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
                     <Text>You have successfully completed this module</Text>
                     <Text>You have earned yourself a badge</Text>
                     <Text>Click the button below to view </Text>
-                  <TouchableOpacity
+                    <TouchableOpacity
                         onPress={() =>
                             navigation.navigate("BottomTabNavigator", {
-                                screen: "Module",
+                                screen: "Profile",
                             })
                         }
                         className="bg-[#064d7d] mt-4 py-2 px-10 rounded-full">

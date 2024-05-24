@@ -19,7 +19,7 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
     };
 
     return (
-        <ScrollView className="flex-1 bg-white  pt-2">
+        <View className="flex-1 bg-white  pt-2">
             {/* Header */}
             <View className="bg-[#064d7d]">
                 <View className="flex-row justify-between items-center pt-2 mb-2 px-3">
@@ -45,21 +45,42 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
             </View>
 
             {/* Main content */}
-            <View className="bg-white ">
+            <View className="bg-white flex-1">
                 {showVideo ? (
-                    <Module
-                        header="MODULE 7"
-                        subheader="What qualities do you have and need to deliver remote healthcare and support your colleagues/teams?"
-                        videoId="MhVXBzftSr0"
-                        duration="1 hr"
-                        learningOutcomeHeader="Learning Outcome:"
-                        learningOutcome={
-                            "This is the last module in the series that we have been studying. By now, you should be comfortable enough to conduct remote consulting in health. This last Module is to wrap up what you have learnt so far, and I want to congratulate you for staying through.We will reflect on the leadership qualities required to bring about change."
-                        }
-                    />
+                    <ScrollView>
+                        <Module
+                            header="MODULE 7"
+                            subheader="What qualities do you have and need to deliver remote healthcare and support your colleagues/teams?"
+                            videoId="MhVXBzftSr0"
+                            duration="1 hr"
+                            learningOutcomeHeader="Learning Outcome:"
+                            learningOutcome={
+                                "This is the last module in the series that we have been studying. By now, you should be comfortable enough to conduct remote consulting in health. This last Module is to wrap up what you have learnt so far, and I want to congratulate you for staying through.We will reflect on the leadership qualities required to bring about change."
+                            }
+                        />
+                        <View className="mb-10 p-2">
+                            <TouchableOpacity onPress={toggleVideoNotes}>
+                                <ModulesButtons
+                                    image={showVideo ? Page : Page2}
+                                    header={
+                                        showVideo ? "Read Notes" : "Watch Video"
+                                    }
+                                />
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() =>
+                                    navigation.navigate("QuizScreenSeven")
+                                }>
+                                <ModulesButtons
+                                    image={Page2}
+                                    header="Take Quiz"
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    </ScrollView>
                 ) : (
-                    <View>
-                        <View className="p-4">
+                    <View className="flex-1">
+                   <View className="p-4">
                             <Text className="text-2xl text-[#064d7d] font-bold ">
                                 MODULE 7
                             </Text>
@@ -85,7 +106,7 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                                 bring about change.
                             </Text>
                         </View>
-                        <View className="m-4 border">
+                        <ScrollView className="m-4 flex-1">
                             <View className="p-2">
                                 <Text className="mb-3 text-[#707070] text-bold text-lg">
                                     Notes:
@@ -362,23 +383,33 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                                     </Text>
                                 </View>
                             </View>
-                        </View>
+                            <View className="mb-10 p-2">
+                                <TouchableOpacity onPress={toggleVideoNotes}>
+                                    <ModulesButtons
+                                        image={showVideo ? Page : Page2}
+                                        header={
+                                            showVideo
+                                                ? "Read Notes"
+                                                : "Watch Video"
+                                        }
+                                    />
+                                </TouchableOpacity>
+                                <TouchableOpacity
+                                    onPress={() =>
+                                        navigation.navigate("QuizScreenSeven")
+                                    }>
+                                    <ModulesButtons
+                                        image={Page2}
+                                        header="Take Quiz"
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                        </ScrollView>
                     </View>
                 )}
                 {/* Buttons */}
-                <View className="mb-10 p-2">
-                    <TouchableOpacity onPress={toggleVideoNotes}>
-                        <ModulesButtons
-                            image={showVideo ? Page : Page2}
-                            header={showVideo ? "Read Notes" : "Watch Video"}
-                        />
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={()=>navigation.navigate("QuizScreenSeven")}>
-                        <ModulesButtons image={Page2} header="Take Quiz" />
-                    </TouchableOpacity>
-                </View>
             </View>
-        </ScrollView>
+        </View>
     );
 };
 

@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "reach-training",
-    "slug": "reach-training",
+    "slug": "my-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -31,6 +31,7 @@
       "eas": {
         "projectId": "6f4fa97d-6562-45e4-930c-d7d43d0faacd"
       }
-    }
+    },
+    "owner": "devbigboss"
   }
 }

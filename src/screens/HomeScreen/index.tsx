@@ -274,39 +274,39 @@ const HomeScreen = ({
                         <View className="flex flex-row gap-3 px-2 items-center justify-center pb-4">
                             <View className=" justify-center flex items-center">
                                 <Image source={UI} />
-                                <Text className="text-xs mt-2 text-center">
+                                <Text style={{ fontSize: 8 }} className=" mt-2 text-center">
                                     University of Ibadan
                                 </Text>
                             </View>
                             <View className="w-32 justify-center flex items-center">
                                 <Image source={sfuchas} />
-                                <Text className="text-xs mt-2 text-center">
+                                <Text style={{ fontSize: 8 }} className=" mt-2 text-center">
                                     Saint Frances University College of Health
                                     and Applied Sciences
                                 </Text>
                             </View>
                             <View className=" justify-center flex items-center">
                                 <Image source={UB} />
-                                <Text className="text-xs mt-2 text-center">
+                                <Text style={{ fontSize: 8 }} className=" mt-2 text-center">
                                     University of Birmingham
                                 </Text>
                             </View>
                             <View className=" justify-center flex items-center">
                                 <Image source={Taleguru} />
-                                <Text className="text-xs mt-2">
+                                <Text style={{ fontSize: 8 }} className=" mt-2">
                                     Makerere University
                                 </Text>
                             </View>
                             <View className="w-32 justify-center flex items-center">
                                 <Image source={APHRC} />
-                                <Text className="text-xs mt-2 text-center">
+                                <Text style={{ fontSize: 8 }} className=" mt-2 text-center">
                                     African Population and Health Research
                                     Center
                                 </Text>
                             </View>
                             <View className=" justify-center flex items-center">
                                 <Image source={KC} />
-                                <Text className="text-xs mt-2">
+                                <Text style={{ fontSize: 8 }} className="text-center mt-2">
                                     King's College, London
                                 </Text>
                             </View>

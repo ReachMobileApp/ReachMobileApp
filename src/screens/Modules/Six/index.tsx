@@ -19,7 +19,7 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
     };
 
     return (
-        <ScrollView className="flex-1 bg-white  ">
+        <View className="flex-1 bg-white  ">
             {/* Header */}
             <View className="bg-[#064d7d]">
                 <View className="flex-row justify-between items-center pt-2 mb-2 px-3">
@@ -45,9 +45,10 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
             </View>
 
             {/* Main content */}
-            <View className="bg-white ">
+            <View className="bg-white flex-1">
                 {showVideo ? (
-                    <Module
+                  <ScrollView>
+                      <Module
                         header="MODULE 6"
                         subheader="What behaviors will help or hinder a successful transition to remote consulting?"
                         videoId="jOCKUJsnyJw"
@@ -57,8 +58,20 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                             "In this module, we will analyze: The opportunities and choices available for using remote consulting using the  Capability, Opportunity, and Motivation> Behavior. When you introduce remote consulting in your health-care work and to your team, you will meet resistance to this change. Using this framework will help you understand the resistance and how you can help people change what they do."
                         }
                     />
+                    <View className="mb-10 p-2">
+                    <TouchableOpacity onPress={toggleVideoNotes}>
+                        <ModulesButtons
+                            image={showVideo ? Page : Page2}
+                            header={showVideo ? "Read Notes" : "Watch Video"}
+                        />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={()=>navigation.navigate("QuizScreenSix")}>
+                        <ModulesButtons image={Page2} header="Take Quiz" />
+                    </TouchableOpacity>
+                </View>
+                  </ScrollView>
                 ) : (
-                    <View>
+                    <View className="flex-1">
                         <View className="p-4">
                             <Text className="text-2xl text-[#064d7d] font-bold ">
                                 MODULE 6
@@ -85,7 +98,7 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                                 you can help people change what they do.
                             </Text>
                         </View>
-                        <View className="m-4 border">
+                        <ScrollView className="m-4 bordflex-1er">
                             <View className="p-2">
                                 <Text className="mb-3 text-[#707070] text-bold text-lg">
                                     Notes:
@@ -438,10 +451,6 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                                     </Text>
                                 </View>
                             </View>
-                        </View>
-                    </View>
-                )}
-                {/* Buttons */}
                 <View className="mb-10 p-2">
                     <TouchableOpacity onPress={toggleVideoNotes}>
                         <ModulesButtons
@@ -453,8 +462,12 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                         <ModulesButtons image={Page2} header="Take Quiz" />
                     </TouchableOpacity>
                 </View>
+                        </ScrollView>
+                    </View>
+                )}
+                {/* Buttons */}
             </View>
-        </ScrollView>
+        </View>
     );
 };
 

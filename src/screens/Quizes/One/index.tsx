@@ -100,15 +100,19 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
         setSelectedAnswers(updatedAnswers as { options: null[] }[]);
     };
 
-    const updateModuleStatus = async (moduleId: string, status: string) => {
+    const updateModuleStatus = async (moduleId: string, status: string, score?: number) => {
         try {
             const db = getFirestore();
             const auth = getAuth();
             const user = auth.currentUser;
-    
+
             if (user) {
                 const userDocRef = doc(db, "users_data", user.uid, "modules", moduleId);
-                await updateDoc(userDocRef, { status });
+                const updateData: any = { status };
+                if (score !== undefined) {
+                    updateData.score = score;
+                }
+                await updateDoc(userDocRef, updateData);
                 console.log("Document successfully updated");
             } else {
                 console.error("No user is signed in");
@@ -137,8 +141,10 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
         setScore(scorePercentage);
 
         if (scorePercentage >= 80) {
-            setShowQuiz(false)
-            await updateModuleStatus("module1", "completed");
+            setShowQuiz(false);
+            await updateModuleStatus("module7", "completed", scorePercentage);
+        } else {
+            setShowQuiz(false);
         }
     };
 

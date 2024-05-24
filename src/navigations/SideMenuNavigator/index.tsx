@@ -3,6 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import MenuScreen from "@/src/screens/MenuScreen";
 import SettingsScreen from "@/src/screens/SettingsScreen";
 import ProfileScreen from "@/src/screens/ProfileScreen";
+import BadgesScreen from "@/src/screens/Badges";
 
 const SideMenuNavigator = () => {
     const Stack = createStackNavigator();
@@ -20,6 +21,12 @@ const SideMenuNavigator = () => {
                 component={ProfileScreen}
                 options={{ headerShown: false }}
             />
+            <Stack.Screen
+                name="Badge"
+                component={BadgesScreen}
+                options={{ headerShown: false }}
+            />
+
         </Stack.Navigator>
     );
 };
