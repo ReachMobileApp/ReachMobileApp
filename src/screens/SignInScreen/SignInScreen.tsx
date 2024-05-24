@@ -1,4 +1,4 @@
-import { View, Text, StatusBar,Image,TouchableOpacity, Pressable, ActivityIndicator } from "react-native";
+import { View, Text, StatusBar,Image,TouchableOpacity, Pressable,ScrollView, ActivityIndicator } from "react-native";
 import React, {useState} from "react";
 import {
   HeadingsSemibold24,
@@ -66,8 +66,8 @@ const SignInScreen = ({ navigation }: StackNavigationProps) => {
   }
 
   return (
-    
-      <View className="flex-1 bg-white px-4 pt-2">
+    <>
+      <View className="flex-1 bg-white px-4 pt-6">
         <StatusBar
           backgroundColor={COLORS.white}
           barStyle={"dark-content"}
@@ -79,7 +79,7 @@ const SignInScreen = ({ navigation }: StackNavigationProps) => {
             resizeMode="cover"
             className="mx-16 w-48 h-44"
           />
-          <Text className="font-bold text-2xl text-center">Welcome Back!</Text>
+          <Text className="font-bold text-2xl text-center mt-5">Welcome Back!</Text>
           <View className="mt-5">
             <CustomPaperTextInput label="Email Address" value={email} onChangeText={setEmail}  />
             <CustomPaperTextInput label="Password" value={password} onChangeText={setPassword} />
@@ -87,7 +87,7 @@ const SignInScreen = ({ navigation }: StackNavigationProps) => {
               <Text className="p-0 text-right font-medium text-[16px] leading-[16px] text-[#E13332] flex-shrink">Forgot Password? </Text>
             </Pressable>
           </View>
-          <View className="flex mt-3 justify-center items-center">
+          <View className="flex mt-5 justify-center items-center">
             <View className="flex flex-row ">
               <Image
               source={github}
@@ -104,13 +104,13 @@ const SignInScreen = ({ navigation }: StackNavigationProps) => {
             </View>
           </View>
         </View>
-        <View className="flex justify-center items-center">
-          <TouchableOpacity onPress={SigninUser} className="text-center border-[#064D7D] bg-[#064D7D] rounded-[8px] px-10 mt-10 py-2 border w-32">
+        <View className="flex justify-center items-center mb-10">
+          <TouchableOpacity onPress={SigninUser} className="text-center border-[#064D7D] bg-[#064D7D] rounded-[8px] px-9 mt-10 py-2 border w-32">
             <Text className="text-white font-extrabold text-[16px]">{loading ? <ActivityIndicator /> : 'Login'}</Text>
           </TouchableOpacity>
         </View>
       </View>
-      
+      </>
   );
 };
 
