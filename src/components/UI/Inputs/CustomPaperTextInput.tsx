@@ -43,6 +43,7 @@ const CustomPaperTextInput = ({
     if (label === "Password" || label === "Confirm Password") {
       return (
         <TextInput.Icon
+        size={20}
           icon={showPassword ? "eye-off" : "eye"}
           onPress={() => setShowPassword((show) => !show)}
         />

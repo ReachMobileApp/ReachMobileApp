@@ -105,8 +105,8 @@ const SignInScreen = ({ navigation }: StackNavigationProps) => {
           </View>
         </View>
         <View className="flex justify-center items-center mb-10">
-          <TouchableOpacity onPress={SigninUser} className="text-center border-[#064D7D] bg-[#064D7D] rounded-[8px] px-9 mt-10 py-2 border w-32">
-            <Text className="text-white font-extrabold text-[16px]">{loading ? <ActivityIndicator /> : 'Login'}</Text>
+          <TouchableOpacity onPress={SigninUser} className="flex justify-center items-center border-[#064D7D] bg-[#064D7D] rounded-[8px] mt-10 py-2 border w-[42%]">
+            <Text className="text-white font-extrabold text-xl">{loading ? <ActivityIndicator /> : 'Login'}</Text>
           </TouchableOpacity>
         </View>
       </View>

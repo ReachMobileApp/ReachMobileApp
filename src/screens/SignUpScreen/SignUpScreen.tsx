@@ -117,9 +117,9 @@ const SignUpScreen = ({ navigation }: StackNavigationProps) => {
               className="w-8 h-8" />
             </View>
         </View>
-        <View className="flex justify-center items-center">
-          <TouchableOpacity onPress={SignupUser} className="text-center border-[#064D7D] bg-[#064D7D] rounded-[8px] px-8 my-3 py-2 border w-32">
-            <Text className="text-white font-extrabold text-[16px]">{loading ? <ActivityIndicator /> : 'Register'}</Text>
+        <View className="flex justify-center items-center w-full">
+          <TouchableOpacity onPress={SignupUser} className="flex justify-center items-center border-[#064D7D] bg-[#064D7D] rounded-[8px]  my-5 py-2 border w-[42%]">
+            <Text className="text-white font-extrabold text-xl">{loading ? <ActivityIndicator /> : 'Register'}</Text>
           </TouchableOpacity>
         </View>
     </ScrollView>
