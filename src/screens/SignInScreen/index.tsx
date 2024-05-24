@@ -6,10 +6,10 @@ import { StackNavigationProps } from '@/src/shared'
 
 const Index = ({ navigation }: StackNavigationProps) => {
   return (
-    <View className='relative h-full'>
+    <ScrollView className='relative'>
       <SignInScreen navigation={navigation}  />
       <BaseNavigator isLogin navigation={navigation} className=""/>
-    </View>
+    </ScrollView>
   )
 }
 
