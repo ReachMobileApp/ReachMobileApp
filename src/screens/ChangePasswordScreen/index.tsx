@@ -6,13 +6,13 @@ import github from "@/assets/images/github.png";
 import google from "@/assets/images/google.png";
 const ChangePasswordScreen  = ({ navigation }: StackNavigationProps) => {
   return (
-    <View className="flex-1 bg-[#064D7D]">
+    <View className="flex-1 bg-[#064D7D] w-full h-full">
       <View className="flex-row justify-between items-center px-4 pt-12">
         
         
       </View>
 
-      <View className="bg-white rounded-t-2xl h-full mt-10 px-7">
+      <View className="bg-white rounded-t-2xl h-full w-full mt-10 px-[10%]">
         <Text className='font-medium text-xl mt-5'>Change Your Password</Text>
         <View className='mt-10'>
           <View>
@@ -40,11 +40,11 @@ const ChangePasswordScreen  = ({ navigation }: StackNavigationProps) => {
               className="w-8 h-8" />
             </View>
         </View>
-        <View className="">
-        <TouchableOpacity onPress={()=>navigation.navigate('AuthNavigator',{ screen: 'PasswordChangedScreen' })}  className="bg-[#064D7D] w-72  rounded-[20px]">
-          <Text className="text-white text-center text-[16px] font-bold py-4">Reset Password</Text>
-        </TouchableOpacity>
-      </View>
+        <View className="w-full">
+          <TouchableOpacity onPress={()=>navigation.navigate('AuthNavigator',{ screen: 'PasswordChangedScreen' })}  className="bg-[#064D7D] w-[100%]  rounded-[20px]">
+            <Text className="text-white text-center text-[16px] font-bold py-4">Reset Password</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   )

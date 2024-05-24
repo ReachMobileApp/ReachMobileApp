@@ -23,15 +23,14 @@ const OtpVerificationScreen= ({ navigation }: StackNavigationProps) => {
 <Text className='text-gray3  text-[14px] font-medium'>the button in the Email we sent to: </Text>
 <Text className='text-gray3 text-[14px] font-medium'>aje*********@gmail.com</Text>
         </View>
-        <View className="mt-24">
-        <TouchableOpacity onPress={()=>navigation.navigate('AuthNavigator',{ screen: 'OtpVerificationScreen' })}  className="bg-[#064D7D] w-72  rounded-[20px]">
+        <View className="mt-24 w-full">
+        <TouchableOpacity onPress={()=>navigation.navigate('AuthNavigator',{ screen: 'OtpVerificationScreen' })}  className="bg-[#064D7D] w-[70%] mx-[14%] rounded-[20px]">
           <Text className="text-white text-center text-[16px] font-bold py-4">Open Email App</Text>
         </TouchableOpacity>
       </View>
-      <View className='w-64 mt-3'>
-      <View className='flex flex-row justify-between '>
-        <Text>Resend Link
-00:25</Text>
+      <View className='mt-3'>
+      <View className='flex flex-row justify-between gap-10'>
+        <Text>Resend Link 00:25</Text>
         <Text onPress={()=>navigation.navigate('AuthNavigator',{ screen: 'CodeScreen' })}  className='text-[#064D7D] text-sm font-bold'>Manually Enter OTP</Text>
       </View>
       </View>
