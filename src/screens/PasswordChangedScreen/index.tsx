@@ -16,7 +16,7 @@ const PasswordChangedScreen = ({ navigation }: StackNavigationProps) => {
 <Text className='text-gray3 text-[14px] font-medium'>
 NOTE: We'd make judicious use of your private data</Text>
         </View>
-        <Text onPress={()=>navigation.navigate('BottomTabNavigator',{ screen: 'Home' })} className='mt-16 text-sm font-bold text-[#064D7D] border-b border-[#064D7D]'>Continue to Home</Text>
+        <Text onPress={()=>navigation.navigate('SignInScreen')} className='mt-16 text-sm font-bold text-[#064D7D] border-b border-[#064D7D]'>Continue to Login</Text>
     </View>
   )
 }
