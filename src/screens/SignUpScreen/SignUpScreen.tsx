@@ -1,5 +1,5 @@
-import { View, Text, ScrollView, StatusBar, TouchableOpacity , Image, ActivityIndicator} from "react-native";
-import React, {useState, useEffect} from "react";
+import { View, Text, ScrollView, StatusBar, TouchableOpacity, Image, ActivityIndicator } from "react-native";
+import React, { useState, useEffect } from "react";
 import CustomPaperTextInput from "@/src/components/UI/Inputs/CustomPaperTextInput";
 import CustomDropdown from "@/src/components/UI/Dropdown";
 import { StackNavigationProps } from "@/src/shared";
@@ -30,7 +30,7 @@ const SignUpScreen = ({ navigation }: StackNavigationProps) => {
   //initialise firebase firesore database
   const db = getFirestore();
 
-  const SignupUser = async() => {
+  const SignupUser = async () => {
     if (fullName && email && username && password && city && country && occupation) {
       setLoading(true);
       try {
@@ -84,45 +84,45 @@ const SignUpScreen = ({ navigation }: StackNavigationProps) => {
 
   return (
     <>
-    <ScrollView className="flex-1 bg-white px-4 pt-5">
-      <StatusBar
-        backgroundColor={COLORS.white}
-        barStyle={"dark-content"}
-        animated
-      />
-      <View>
-        
-        <CustomPaperTextInput label="Full Name" value={fullName} onChangeText={setFullName} />
-        <CustomPaperTextInput label="Email Address" value={email} onChangeText={setEmail} />
-        <CustomPaperTextInput label="Username" value={username} onChangeText={setUsername} />
-        <CustomPaperTextInput label="Password" value={password} onChangeText={setPassword} />
-        <CustomPaperTextInput label="City/Town" value={city} onChangeText={setCity} />
-        <CustomDropdown placeholder="Country" value={country} setValue={setCountry}  />
-        <CustomPaperTextInput label="Occupation" value={occupation} onChangeText={setOccupation} />
-       
-      </View>
+      <ScrollView className="flex-1 bg-white px-4 pt-5">
+        <StatusBar
+          backgroundColor={COLORS.white}
+          barStyle={"dark-content"}
+          animated
+        />
+        <View>
+
+          <CustomPaperTextInput label="Full Name" value={fullName} onChangeText={setFullName} />
+          <CustomPaperTextInput label="Email Address" value={email} onChangeText={setEmail} />
+          <CustomPaperTextInput label="Username" value={username} onChangeText={setUsername} />
+          <CustomPaperTextInput label="Password" value={password} onChangeText={setPassword} />
+          <CustomPaperTextInput label="City/Town" value={city} onChangeText={setCity} />
+          <CustomDropdown placeholder="Country" value={country} setValue={setCountry} />
+          <CustomPaperTextInput label="Occupation" value={occupation} onChangeText={setOccupation} />
+
+        </View>
         <View className="flex justify-center items-center">
-            <View className="flex flex-row ">
-              <Image
+          <View className="flex flex-row ">
+            <Image
               source={github}
               resizeMode="cover"
               className="w-8 h-7" />
-              <Image
+            <Image
               source={face}
               resizeMode="cover"
               className="w-8 h-8 mx-5" />
-              <Image
+            <Image
               source={google}
               resizeMode="cover"
               className="w-8 h-8" />
-            </View>
+          </View>
         </View>
-        <View className="flex justify-center items-center w-full">
-          <TouchableOpacity onPress={SignupUser} className="flex justify-center items-center border-[#064D7D] bg-[#064D7D] rounded-[8px]  my-5 py-2 border w-[42%]">
-            <Text className="text-white font-extrabold text-xl">{loading ? <ActivityIndicator /> : 'Register'}</Text>
+        <View className="w-full flex justify-center items-center ">
+          <TouchableOpacity onPress={SignupUser} className={`w-full my-10 h-14 rounded-[8px]  justify-center items-center bg-[#064D7D] text-white`}>
+            <Text className="text-white font-extrabold text-2xl">{loading ? <ActivityIndicator /> : 'Register'}</Text>
           </TouchableOpacity>
         </View>
-    </ScrollView>
+      </ScrollView>
     </>
   );
 };
