@@ -76,7 +76,9 @@ const ModuleScreen = ({
     );
 
     if (!user) {
-        navigation.navigate("LoginScreen");
+        navigation.navigate("AuthNavigator", {
+            screen: "LoginScreen",
+        })
         return null;
     }
 

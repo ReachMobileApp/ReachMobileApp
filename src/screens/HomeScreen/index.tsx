@@ -26,40 +26,36 @@ import KC from "@/assets/images/King's College.png";
 const db = getFirestore();
 const auth = getAuth();
 
-const fetchModuleStatuses = async (userId: string) => {
-    const colRef = collection(db, "users_data", userId, "modules");
-    const q = query(colRef);
-    const querySnapshot = await getDocs(q);
-    const statuses: { [key: string]: string } = {}; // Add index signature to the statuses object
+// const fetchModuleStatuses = async (userId: string) => {
+//     const colRef = collection(db, "users_data", userId, "modules");
+//     const q = query(colRef);
+//     const querySnapshot = await getDocs(q);
+//     const statuses: { [key: string]: string } = {}; // Add index signature to the statuses object
 
-    querySnapshot.forEach((doc) => {
-        statuses[doc.id] = doc.data().status || "not started";
-    });
+//     querySnapshot.forEach((doc) => {
+//         statuses[doc.id] = doc.data().status || "not started";
+//     });
 
-    return statuses;
-};
+//     return statuses;
+// };
 
-const HomeScreen = ({
-    navigation,
-}: {
-    navigation: DrawerNavigationProp<any, any>;
-}) => {
+const HomeScreen = ({navigation,}: {navigation: DrawerNavigationProp<any, any>;}) => {
     // Initialize state to hold the current date and module statuses
     const [currentDate, setCurrentDate] = useState(new Date());
     const [statuses, setStatuses] = useState<{ [key: string]: string }>({});
     const [loading, setLoading] = useState(true);
-    const user = auth.currentUser;
+    //const user = auth.currentUser;
 
-    useEffect(() => {
-        if (user) {
-            const fetchStatuses = async () => {
-                const moduleStatuses = await fetchModuleStatuses(user.uid);
-                setStatuses(moduleStatuses);
-                setLoading(false);
-            };
-            fetchStatuses();
-        }
-    }, [user]);
+    // useEffect(() => {
+    //     if (user) {
+    //         const fetchStatuses = async () => {
+    //             const moduleStatuses = await fetchModuleStatuses(user.uid);
+    //             setStatuses(moduleStatuses);
+    //             setLoading(false);
+    //         };
+    //         fetchStatuses();
+    //     }
+    // }, [user]);
 
     // Effect to update the current date when component mounts and every time the month changes
     useEffect(() => {
@@ -122,18 +118,20 @@ const HomeScreen = ({
         }
     };
 
-    if (!user) {
-        navigation.navigate("LoginScreen");
-        return null;
-    }
+    // if (!user) {
+    //     navigation.navigate("AuthNavigator", {
+    //         screen: "LoginScreen",
+    //     })
+    //     return null;
+    // }
 
-    if (loading) {
-        return (
-            <View className="flex-1 justify-center items-center">
-                <ActivityIndicator size="large" color="#064d7d" />
-            </View>
-        );
-    }
+    // if (loading) {
+    //     return (
+    //         <View className="flex-1 justify-center items-center">
+    //             <ActivityIndicator size="large" color="#064d7d" />
+    //         </View>
+    //     );
+    // }
 
     const handleModulePress = (moduleId: string) => {
         navigation.navigate("ModulesNavigator", {
@@ -182,22 +180,20 @@ const HomeScreen = ({
                     return (
                         <TouchableOpacity
                             key={index}
-                            className={` p-2 ${
-                                isCurrentDate
-                                    ? "bg-[#064D7D] text-white"
-                                    : "bg-transparent"
-                            }`}
+                            className={` p-2 ${isCurrentDate
+                                ? "bg-[#064D7D] text-white"
+                                : "bg-transparent"
+                                }`}
                             style={{ borderRadius: 5, marginRight: 5 }}>
                             <Text
-                                className={`${
-                                    isCurrentDate
-                                        ? "text-white bg-[#b6cbd9] py-5 px-2  rounded-md"
-                                        : "py-5 px-2 text-white"
-                                }`}>
+                                className={`${isCurrentDate
+                                    ? "text-white bg-[#b6cbd9] py-5 px-2  rounded-md"
+                                    : "py-5 px-2 text-white"
+                                    }`}>
                                 {isCurrentDate
                                     ? `${date.toLocaleString("default", {
-                                          month: "short",
-                                      })} ${date.getDate()}`
+                                        month: "short",
+                                    })} ${date.getDate()}`
                                     : date.getDate()}
                             </Text>
                         </TouchableOpacity>
@@ -205,11 +201,11 @@ const HomeScreen = ({
                 })}
             </ScrollView>
             {/* Search Bar */}
-                <View className="px-3 mb-2 mt-4 ">
-                    <Text className="text-lg font-semibold mb-2">
-                        Continue where you stopped
-                    </Text>
-                </View>
+            <View className="px-3 mb-2 mt-4 ">
+                <Text className="text-lg font-semibold mb-2">
+                    Continue where you stopped
+                </Text>
+            </View>
 
             {/* Main content */}
             <View className="bg-gray-200  pt-4">
