@@ -16,6 +16,7 @@ import { signOut, getAuth } from "firebase/auth";
 import { firebaseAuth } from "@/firebaseConfig";
 import { getFirestore, query, where, getDocs, collection } from 'firebase/firestore'
 import Toast from 'react-native-toast-message';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 const MenuScreen = ({ navigation }: any) => {
@@ -23,7 +24,7 @@ const MenuScreen = ({ navigation }: any) => {
   const [userDetails, setUserDetails] = useState<any>([]);
   const db = getFirestore();
   const userRef = collection(db, 'users_data');
-
+  // const [user, setUser] = useState(null);
   const SignOut = async () => {
     try {
       await signOut(auth);
@@ -70,6 +71,7 @@ useEffect(() => {
     getCurrentUser()
 }, []);
 
+
   return (
     <View className="flex-1 bg-[#064D7D]">
       {/* Header */}
@@ -82,7 +84,7 @@ useEffect(() => {
         <Image source={Avatar} className="w-8 h-8 rounded-full" />
       </View>
 
-      <Text className="text-white mt-8 mb-4 px-4 text-xl font-bold">Hello, {userDetails[0]?.username}!</Text>
+      <Text className="text-white mt-8 mb-4 px-4 text-xl font-bold">Hello, </Text>
       
       {/* Menu items */}
       <View className="bg-white rounded-t-2xl h-full mt-10">

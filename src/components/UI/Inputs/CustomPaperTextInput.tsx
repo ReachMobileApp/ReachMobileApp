@@ -53,7 +53,7 @@ const CustomPaperTextInput = ({
     }else if (label === "Full Name") {
       return <TextInput.Icon icon="account" size={20} />;
       }
-      else if (label === "Username") {
+      else if (label === "Name") {
         return <TextInput.Icon icon="camera-account" size={20} />;
         }
         else if (label === "City/Town") {

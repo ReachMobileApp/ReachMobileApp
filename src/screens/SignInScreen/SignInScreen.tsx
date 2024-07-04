@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { View, Text, StatusBar, Image, TouchableOpacity, Pressable, ScrollView, ActivityIndicator } from "react-native";
 import React, { useState } from "react";
 import {
@@ -5,6 +6,7 @@ import {
   InputAssistive,
   TextMedium14,
 } from "@/src/theme/typography";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomPaperTextInput from "@/src/components/UI/Inputs/CustomPaperTextInput";
 import { CustomButton } from "@/src/components/UI/Buttons";
 import { COLORS } from "@/src/theme/colors";
@@ -18,41 +20,53 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import Toast from 'react-native-toast-message'
 import { firebaseAuth } from "@/firebaseConfig";
 
-
 const SignInScreen = ({ navigation }: StackNavigationProps) => {
-
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const auth = firebaseAuth;
-
+  const [user, setUser] = useState({});
   const SigninUser = async () => {
     if (email && password) {
       setLoading(true);
       try {
-        await signInWithEmailAndPassword(auth, email, password).then((cred) => {
-          if (cred.user.emailVerified === false) {
-            setLoading(false);
+        const response = await axios.post('https://reachweb.brief.i.ng/api/v1/login', {
+          email,
+          password
+        });
+        const user = response.data
+        if (response.data.success) {
+          // const user = response.data
+          setLoading(false);
+          console.log(user)
+          Toast.show({
+            type: 'success',
+            text1: 'Success!',
+            text2: 'Login Successful'
+          });
+          setUser(user);
+          AsyncStorage.setItem('userInfo', JSON.stringify(user));
+          navigation.navigate('BottomTabNavigator', { screen: 'Home' });
+        } else {
+          setLoading(false);
+          if (response.data.success === false) {
             Toast.show({
               type: 'error',
               text1: 'Error!',
-              text2: 'Please verify your email address to login'
+              text2: response.data.message
             });
           } else {
-            setLoading(false);
             Toast.show({
-              type: 'success',
-              text1: 'Success!',
-              text2: 'Login Successful'
+              type: 'error',
+              text1: 'Error!',
+              text2: 'Login Failed'
             });
-            navigation.navigate('BottomTabNavigator', { screen: 'Home' });
           }
-        })
+        }
       } catch (error: any) {
         Toast.show({
           type: 'error',
           text1: 'Error!',
-          text2: error.message
+          text2: error.response?.data?.message || error.message
         });
         setLoading(false);
       }
@@ -110,7 +124,6 @@ const SignInScreen = ({ navigation }: StackNavigationProps) => {
             <Text className="text-white font-extrabold text-2xl">{loading ? <ActivityIndicator /> : 'Login'}</Text>
           </TouchableOpacity>
         </View>
-
       </ScrollView>
     </>
   );

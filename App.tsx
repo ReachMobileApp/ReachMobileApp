@@ -9,9 +9,11 @@ import SideMenuNavigator from "./src/navigations/SideMenuNavigator";
 import BottomTabNavigator from "./src/navigations/BottomTabNavigator";
 // import BaseNavigator from "./src/navigations/BaseNavigator";
 import Toast from 'react-native-toast-message'
-
+// import { useSelector } from "react-redux";
+// import { AuthProvider } from "./src/context/AuthContext";
 export default function App() {
   const Stack = createStackNavigator();
+  // const { auth } = useSelector((state: any) => state.isAuth);
   return (
     <PaperProvider>
       <NavigationContainer>
@@ -20,8 +22,10 @@ export default function App() {
           <Stack.Screen name="ModulesNavigator" component={ModulesNavigator} />
           <Stack.Screen name="SideMenuNavigator" component={SideMenuNavigator} />
           <Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} />
-          {/* <Stack.Screen name="BaseNavigator" component={BaseNavigator} /> */}
         </Stack.Navigator>
+        {/* <AuthProvider>
+          {!auth ? <AuthNavigator /> : <BottomTabNavigator />}
+        </AuthProvider> */}
       </NavigationContainer>
       <Toast />
     </PaperProvider>
