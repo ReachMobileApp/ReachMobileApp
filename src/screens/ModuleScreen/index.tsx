@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useCallback } from "react";
 import { useFocusEffect } from '@react-navigation/native';
 
@@ -21,38 +22,32 @@ import {
     where,
     getDocs,
 } from "firebase/firestore";
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { Video, ResizeMode } from 'expo-av';
 // Initialize Firestore
 const db = getFirestore();
 const auth = getAuth();
 
-const updateModuleStatus = async (
-    userId: string,
-    moduleId: string,
-    status: string
-) => {
-    try {
-        const docRef = doc(db, "users_data", userId, "modules", moduleId);
-        await setDoc(docRef, { status }, { merge: true });
-        console.log("Module status updated successfully");
-    } catch (error) {
-        console.error("Error updating module status:");
-    }
+
+interface Module {
+    id: string;
+    name: string;
+    description: string;
+    video: string;
+    content: string;
+    image_url: string;
+    modules: Module[];
+}
+
+interface ApiResponse {
+    data: {
+        data: Module[];
+    };
+}
+const stripHtmlTags = (html: string): string => {
+    return html.replace(/<[^>]*>/g, '');
 };
-
-const fetchModuleStatuses = async (userId: string) => {
-    const colRef = collection(db, "users_data", userId, "modules");
-    const q = query(colRef);
-    const querySnapshot = await getDocs(q);
-    const statuses: { [key: string]: string } = {}; // Add index signature
-
-    querySnapshot.forEach((doc) => {
-        statuses[doc.id] = doc.data().status || "Not Started";
-    });
-
-    return statuses;
-};
-
 const ModuleScreen = ({
     navigation,
 }: {
@@ -61,41 +56,37 @@ const ModuleScreen = ({
     const [statuses, setStatuses] = useState<{ [key: string]: string }>({});
     const [loading, setLoading] = useState(true);
     const user = auth.currentUser;
+    const [modules, setModules] = useState<Module[]>([]);
 
-    useFocusEffect(
-        useCallback(() => {
-            const fetchStatuses = async () => {
-                if (user) {
-                    const moduleStatuses = await fetchModuleStatuses(user.uid);
-                    setStatuses(moduleStatuses);
-                    setLoading(false);
-                }
-            };
-            fetchStatuses();
-        }, [user])
-    );
+    const fetchModules = async () => {
+        try {
+            const userInfo = await AsyncStorage.getItem('userInfo');
+            if (userInfo) {
+                const parsedUserInfo = JSON.parse(userInfo);
+                const token = parsedUserInfo.data.auth_token;
 
-    if (!user) {
-        navigation.navigate("AuthNavigator", {
-            screen: "LoginScreen",
-        })
-        return null;
-    }
+                const response = await axios.get<ApiResponse>(
+                    `https://reachweb.brief.i.ng/api/v1/courses/01j1bdmvf8wk0asczzbgx1c6yy/modules`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
 
-    const handleModulePress = (moduleId: string, screenName: string) => {
-        if (user) {
-            updateModuleStatus(user.uid, moduleId, "In progress");
-            navigation.navigate("ModulesNavigator", { screen: screenName });
+               // console.log(response.data.data.data[0].modules);
+                setModules(response.data.data.data[0].modules);
+            }
+        } catch (error) {
+            console.error('Error fetching courses:', error);
+        } finally {
+            setLoading(false);
         }
     };
 
-    if (loading) {
-        return (
-            <View className="flex-1 justify-center items-center">
-                <ActivityIndicator size="large" color="#064d7d" />
-            </View>
-        );
-    }
+    useEffect(() => {
+        fetchModules();
+    }, []);
 
     return (
         <ScrollView className="flex-1 bg-white pt-2">
@@ -136,84 +127,26 @@ const ModuleScreen = ({
                             duration="30 mins"
                         />
                     </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() =>
-                            handleModulePress("module1", "ModuleOne")
-                        }>
-                        <Card
-                            header="Module 1"
-                            subheader="What digital devices, services, and apps can be used for remote consulting?"
-                            duration="1 hr"
-                            status={statuses["module1"] || "Not Started"}
-                        />
-                    </TouchableOpacity>
+                    {modules.map((module) => (
+                        <View key={module.id} className="mb-4 mt-4 w-full bg-white border-b-2 mx-1 px-1 py-3 flex flex-row ">
+                            <Video
+                                source={{ uri: module.video }}
+                                rate={1.0}
+                                volume={1.0}
+                                isMuted={false}
+                                className="h-20 w-28"
+                                // shouldPlay
+                                useNativeControls
+                                resizeMode={ResizeMode.CONTAIN}
+                            //  style={{ width: Dimensions.get('window').width, height: 200 }}
+                            />
+                            <View className="flex w-8/12  px-3">
+                                <Text className="text-xl text-black  font-bold ">{module.name}</Text>
+                                <Text className="text-sm text-gray-600">{stripHtmlTags(module.content)}</Text>
+                            </View>
+                        </View>
+                    ))}
 
-                    <TouchableOpacity
-                        onPress={() =>
-                            handleModulePress("module2", "ModuleTwo")
-                        }>
-                        <Card
-                            header="Module 2"
-                            subheader="How does my role change and the care I provide my patients?"
-                            duration="9 mins"
-                            status={statuses["module2"] || "Not Started"}
-                        />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() =>
-                            handleModulePress("module3", "ModuleThree")
-                        }>
-                        <Card
-                            header="Module 3"
-                            subheader="Remote Consulting for Healthcare: ReaCH Training CourseBook"
-                            duration="1 hr"
-                            status={statuses["module3"] || "Not Started"}
-                        />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() =>
-                            handleModulePress("module4", "ModuleFour")
-                        }>
-                        <Card
-                            header="Module 4"
-                            subheader="What patient outcomes can I expect beyond avoiding COVID-19 and other similar health challenges?"
-                            duration="1 hr"
-                            status={statuses["module4"] || "Not Started"}
-                        />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() =>
-                            handleModulePress("module5", "ModuleFive")
-                        }>
-                        <Card
-                            header="Module 5"
-                            subheader="What is my plan for delivering my healthcare work remotely?"
-                            duration="1 hr"
-                            status={statuses["module5"] || "Not Started"}
-                        />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() =>
-                            handleModulePress("module6", "ModuleSix")
-                        }>
-                        <Card
-                            header="Module 6"
-                            subheader="What behaviors will help or hinder a successful transition to remote consulting?"
-                            duration="1 hr"
-                            status={statuses["module6"] || "Not Started"}
-                        />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() =>
-                            handleModulePress("module7", "ModuleSeven")
-                        }>
-                        <Card
-                            header="Module 7"
-                            subheader="What qualities do you have and need to deliver remote healthcare and support your colleagues/teams?"
-                            duration="1 hr"
-                            status={statuses["module7"] || "Not Started"}
-                        />
-                    </TouchableOpacity>
                 </View>
             </View>
         </ScrollView>
