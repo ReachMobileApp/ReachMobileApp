@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { useFocusEffect } from '@react-navigation/native';
-
 import {
     View,
     Text,
@@ -10,47 +9,77 @@ import {
 } from "react-native";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Toast from 'react-native-toast-message';
 import Card from "@/src/components/ModuleCard";
-import { getAuth } from "firebase/auth";
-import {
-    getFirestore,
-    doc,
-    setDoc,
-    collection,
-    query,
-    where,
-    getDocs,
-} from "firebase/firestore";
 
-// Initialize Firestore
-const db = getFirestore();
-const auth = getAuth();
-
-const updateModuleStatus = async (
-    userId: string,
-    moduleId: string,
-    status: string
-) => {
+const fetchCourses = async (token) => {
     try {
-        const docRef = doc(db, "users_data", userId, "modules", moduleId);
-        await setDoc(docRef, { status }, { merge: true });
-        console.log("Module status updated successfully");
+        const response = await axios.get('https://reachweb.brief.i.ng/api/v1/courses', {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
+        console.log('Courses:', response.data.data.data.data);
+        AsyncStorage.setItem('courseId', JSON.stringify(response.data.data.data.data));
+        return response.data.data.data.data;
+
     } catch (error) {
-        console.error("Error updating module status:");
+        console.error("Error fetching courses:", error);
+        Toast.show({
+            type: 'error',
+            text1: 'Error!',
+            text2: 'Failed to fetch courses'
+        });
+        return [];
     }
 };
 
-const fetchModuleStatuses = async (userId: string) => {
-    const colRef = collection(db, "users_data", userId, "modules");
-    const q = query(colRef);
-    const querySnapshot = await getDocs(q);
-    const statuses: { [key: string]: string } = {}; // Add index signature
+const fetchCourseById = async (token, courseId) => {
+    try {
+        const response = await axios.get(`https://reachweb.brief.i.ng/api/v1/courses/${courseId}/`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
+        console.log('Course:', response);
+        return response.data.course;
+    } catch (error) {
+        console.error("Error fetching course:", error);
+        Toast.show({
+            type: 'error',
+            text1: 'Error!',
+            text2: 'Failed to fetch course'
+        });
+        return null;
+    }
+};
 
-    querySnapshot.forEach((doc) => {
-        statuses[doc.id] = doc.data().status || "Not Started";
-    });
-
-    return statuses;
+const fetchCourseModules = async (token) => {
+    try {
+        const response = await axios.get(`https://reachweb.brief.i.ng/api/v1/courses/01j1yen0dmjgmc29f6vav8h1bj/modules`, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            }
+        });
+        console.log('Modules:', response.data.modules);
+        return response.data.modules;
+    } catch (error) {
+        console.error("Error fetching course modules:", error);
+        Toast.show({
+            type: 'error',
+            text1: 'Error!',
+            text2: 'Failed to fetch course modules'
+        });
+        return [];
+    }
 };
 
 const ModuleScreen = ({
@@ -58,36 +87,41 @@ const ModuleScreen = ({
 }: {
     navigation: DrawerNavigationProp<any, any>;
 }) => {
-    const [statuses, setStatuses] = useState<{ [key: string]: string }>({});
+    const [modules, setModules] = useState([]);
     const [loading, setLoading] = useState(true);
-    const user = auth.currentUser;
+    const [token, setToken] = useState(null);
+    const [courseId, setCourseId] = useState(null);
 
     useFocusEffect(
         useCallback(() => {
-            const fetchStatuses = async () => {
-                if (user) {
-                    const moduleStatuses = await fetchModuleStatuses(user.uid);
-                    setStatuses(moduleStatuses);
-                    setLoading(false);
+            const fetchData = async () => {
+                const storedToken = await AsyncStorage.getItem('token');
+                if (storedToken) {
+                    setToken(storedToken);
+                    const courses = await fetchCourses(storedToken);
+                    if (courses.length > 0) {
+                        const selectedCourseId = courses[0].id; // Assuming there's only one course
+                        setCourseId(selectedCourseId);
+                        const course = await fetchCourseById(storedToken, selectedCourseId);
+                        if (course) {
+                            const courseModules = await fetchCourseModules(storedToken, selectedCourseId);
+                            setModules(courseModules);
+                        }
+                    } else {
+                        Toast.show({
+                            type: 'info',
+                            text1: 'No Courses',
+                            text2: 'No courses found'
+                        });
+                    }
+                } else {
+                    navigation.navigate("AuthNavigator", { screen: "LoginScreen" });
                 }
+                setLoading(false);
             };
-            fetchStatuses();
-        }, [user])
+            fetchData();
+        }, [navigation])
     );
-
-    if (!user) {
-        navigation.navigate("AuthNavigator", {
-            screen: "LoginScreen",
-        })
-        return null;
-    }
-
-    const handleModulePress = (moduleId: string, screenName: string) => {
-        if (user) {
-            updateModuleStatus(user.uid, moduleId, "In progress");
-            navigation.navigate("ModulesNavigator", { screen: screenName });
-        }
-    };
 
     if (loading) {
         return (
@@ -96,6 +130,13 @@ const ModuleScreen = ({
             </View>
         );
     }
+
+    // const handleModulePress = (moduleId: string, screenName: string) => {
+    //     if (token) {
+    //         updateModuleStatus(token, moduleId, "In progress");
+    //         navigation.navigate("ModulesNavigator", { screen: screenName });
+    //     }
+    // };
 
     return (
         <ScrollView className="flex-1 bg-white pt-2">
@@ -124,96 +165,19 @@ const ModuleScreen = ({
             </View>
             <View className="bg-white">
                 <View className="mt-2">
-                    <TouchableOpacity
-                        onPress={() =>
-                            navigation.navigate("ModulesNavigator", {
-                                screen: "Introduction",
-                            })
-                        }>
-                        <Card
-                            header="Introduction"
-                            subheader="Introduction to Remote Consulting - Full lecture"
-                            duration="30 mins"
-                        />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() =>
-                            handleModulePress("module1", "ModuleOne")
-                        }>
-                        <Card
-                            header="Module 1"
-                            subheader="What digital devices, services, and apps can be used for remote consulting?"
-                            duration="1 hr"
-                            status={statuses["module1"] || "Not Started"}
-                        />
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                        onPress={() =>
-                            handleModulePress("module2", "ModuleTwo")
-                        }>
-                        <Card
-                            header="Module 2"
-                            subheader="How does my role change and the care I provide my patients?"
-                            duration="9 mins"
-                            status={statuses["module2"] || "Not Started"}
-                        />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() =>
-                            handleModulePress("module3", "ModuleThree")
-                        }>
-                        <Card
-                            header="Module 3"
-                            subheader="Remote Consulting for Healthcare: ReaCH Training CourseBook"
-                            duration="1 hr"
-                            status={statuses["module3"] || "Not Started"}
-                        />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() =>
-                            handleModulePress("module4", "ModuleFour")
-                        }>
-                        <Card
-                            header="Module 4"
-                            subheader="What patient outcomes can I expect beyond avoiding COVID-19 and other similar health challenges?"
-                            duration="1 hr"
-                            status={statuses["module4"] || "Not Started"}
-                        />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() =>
-                            handleModulePress("module5", "ModuleFive")
-                        }>
-                        <Card
-                            header="Module 5"
-                            subheader="What is my plan for delivering my healthcare work remotely?"
-                            duration="1 hr"
-                            status={statuses["module5"] || "Not Started"}
-                        />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() =>
-                            handleModulePress("module6", "ModuleSix")
-                        }>
-                        <Card
-                            header="Module 6"
-                            subheader="What behaviors will help or hinder a successful transition to remote consulting?"
-                            duration="1 hr"
-                            status={statuses["module6"] || "Not Started"}
-                        />
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                        onPress={() =>
-                            handleModulePress("module7", "ModuleSeven")
-                        }>
-                        <Card
-                            header="Module 7"
-                            subheader="What qualities do you have and need to deliver remote healthcare and support your colleagues/teams?"
-                            duration="1 hr"
-                            status={statuses["module7"] || "Not Started"}
-                        />
-                    </TouchableOpacity>
+                    {modules.map((module) => (
+                        <TouchableOpacity
+                            key={module.id}
+                            // onPress={() => handleModulePress(module.id, module.screenName)}
+                        >
+                            <Card
+                                header={module.title}
+                                subheader={module.description}
+                                duration={module.duration}
+                                status={module.status || "Not Started"}
+                            />
+                        </TouchableOpacity>
+                    ))}
                 </View>
             </View>
         </ScrollView>
