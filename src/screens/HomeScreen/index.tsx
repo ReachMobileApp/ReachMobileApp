@@ -5,9 +5,11 @@ import {
     TouchableOpacity,
     ScrollView,
     Image,
-    TextInput,
+    TextInput, Button,
     ActivityIndicator,
+    FlatList,
 } from "react-native";
+import { AntDesign } from '@expo/vector-icons';
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
 import Card from "@/src/components/Card";
@@ -21,29 +23,36 @@ import UB from "@/assets/images/Uni Berm.png";
 import Taleguru from "@/assets/images/Taleguru.png";
 import APHRC from "@/assets/images/aphrc.png";
 import KC from "@/assets/images/King's College.png";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 // Initialize Firestore
 const db = getFirestore();
 const auth = getAuth();
 
-// const fetchModuleStatuses = async (userId: string) => {
-//     const colRef = collection(db, "users_data", userId, "modules");
-//     const q = query(colRef);
-//     const querySnapshot = await getDocs(q);
-//     const statuses: { [key: string]: string } = {}; // Add index signature to the statuses object
+interface Course {
+    id: string;
+    name: string;
+    description: string;
+    image_url: string;
+}
 
-//     querySnapshot.forEach((doc) => {
-//         statuses[doc.id] = doc.data().status || "not started";
-//     });
+interface ApiResponse {
 
-//     return statuses;
-// };
+    data: {
+        data: {
+            data: Course[];
+        };
+    };
+}
 
-const HomeScreen = ({navigation,}: {navigation: DrawerNavigationProp<any, any>;}) => {
+
+const HomeScreen = ({ navigation, }: { navigation: DrawerNavigationProp<any, any>; }) => {
     // Initialize state to hold the current date and module statuses
     const [currentDate, setCurrentDate] = useState(new Date());
     const [statuses, setStatuses] = useState<{ [key: string]: string }>({});
     const [loading, setLoading] = useState(true);
+    const [courses, setCourses] = useState<Course[]>([]);
     //const user = auth.currentUser;
 
     // useEffect(() => {
@@ -118,20 +127,7 @@ const HomeScreen = ({navigation,}: {navigation: DrawerNavigationProp<any, any>;}
         }
     };
 
-    // if (!user) {
-    //     navigation.navigate("AuthNavigator", {
-    //         screen: "LoginScreen",
-    //     })
-    //     return null;
-    // }
-
-    // if (loading) {
-    //     return (
-    //         <View className="flex-1 justify-center items-center">
-    //             <ActivityIndicator size="large" color="#064d7d" />
-    //         </View>
-    //     );
-    // }
+ 
 
     const handleModulePress = (moduleId: string) => {
         navigation.navigate("ModulesNavigator", {
@@ -143,6 +139,32 @@ const HomeScreen = ({navigation,}: {navigation: DrawerNavigationProp<any, any>;}
         (moduleId) => statuses[moduleId] === "In progress"
     );
 
+    const fetchCourses = async () => {
+        try {
+            const userInfo = await AsyncStorage.getItem('userInfo');
+            if (userInfo) {
+                const parsedUserInfo = JSON.parse(userInfo);
+                const token = parsedUserInfo.data.auth_token;
+
+                const response = await axios.get<ApiResponse>('https://reachweb.brief.i.ng/api/v1/courses', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
+               // console.log(response.data.data.data.data);
+                setCourses(response.data.data.data.data);
+            }
+        } catch (error) {
+            console.error('Error fetching courses:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchCourses();
+    }, []);
     return (
         <ScrollView className="flex-1 bg-white  ">
             {/* Header */}
@@ -203,7 +225,7 @@ const HomeScreen = ({navigation,}: {navigation: DrawerNavigationProp<any, any>;}
             {/* Search Bar */}
             <View className="px-3 mb-2 mt-4 ">
                 <Text className="text-lg font-semibold mb-2">
-                    Continue where you stopped
+                    Start Courses
                 </Text>
             </View>
 
@@ -214,19 +236,44 @@ const HomeScreen = ({navigation,}: {navigation: DrawerNavigationProp<any, any>;}
                 <ScrollView
                     horizontal
                     showsHorizontalScrollIndicator={false}
-                    className="">
+                    className="p-4 w-80">
                     {/* Cards */}
-
-                    {inProgressModules.map((moduleId) => (
-                        <Card
-                            key={moduleId}
-                            image={Image2} // Replace with appropriate image for each module
-                            header={getModuleTitle(moduleId)}
-                            status={statuses[moduleId]}
-                            duration="1 hr"
-                            onPress={() => handleModulePress(moduleId)}
-
-                        />
+                    {courses.map((course) => (
+                        <View key={course.id}
+                            style={{
+                                marginBottom: 10,
+                                width: 250,
+                                marginHorizontal: 5,
+                                borderRadius: 10,
+                                shadowColor: "#000",
+                                shadowOffset: { width: 0, height: 2 },
+                                shadowOpacity: 0.8,
+                                shadowRadius: 2,
+                                elevation: 1,
+                                backgroundColor: "white",
+                                paddingBottom: 10
+                            }}>
+                            <Image
+                                source={{ uri: course.image_url }}
+                                style={{
+                                    width: "100%",
+                                    height: 100,
+                                    borderTopLeftRadius: 10,
+                                    borderTopRightRadius: 10,
+                                }}
+                            />
+                            <View className="rounded-b-lg bg-white  items-center ">
+                                <Text className="text-xl text-[#064d7d] mb-1">
+                                    {course.name}
+                                </Text>
+                            </View>
+                            <View className="flex justify-center items-center">
+                                <TouchableOpacity className="text-center border-[#064D7D] bg-[#064D7D] rounded-2xl px-10 mt-3 py-2 border w-4/5 flex flex-row gap-x-3">
+                                    <Text className="text-sm text-white pt-1">Go to Modules</Text>
+                                    <AntDesign name="arrowright" size={24} color="white" className="" />
+                                </TouchableOpacity>
+                            </View>
+                        </View>
                     ))}
                 </ScrollView>
             </View>
@@ -245,7 +292,9 @@ const HomeScreen = ({navigation,}: {navigation: DrawerNavigationProp<any, any>;}
                         remote rural village)
                     </Text>
                     <View className="flex justify-center items-center">
-                        <TouchableOpacity className="text-center border-[#064D7D] bg-[#064D7D] rounded-2xl px-10 mt-3 py-2 border w-4/5">
+                        <TouchableOpacity
+                        onPress={()=>navigation.navigate('BottomTabNavigator',{ screen: 'Module' })}
+                         className="text-center border-[#064D7D] bg-[#064D7D] rounded-2xl px-10 mt-3 py-2 border w-4/5">
                             <Text
                                 onPress={() =>
                                     navigation.navigate("ModulesNavigator", {
