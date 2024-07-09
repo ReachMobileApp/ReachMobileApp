@@ -17,7 +17,7 @@ const ResetPasswordScreen = ({ navigation }: StackNavigationProps) => {
       <CustomPaperTextInput label=" " />
       <View className='flex justify-center items-center'>
       <Text className="text-gray3 mt-10 text-[12px]">forgot your Password? Don't worry we got you covered. Follow</Text> 
-      <Text className='text-gray3 text-[12px]'>the steps below to get your account recovered for you:</Text>
+      <Text className='text-gray3 text-[12px]'>the instruction above to get your account recovered for you:</Text>
       <Text className='text-gray3 mt-5 text-[12px]'>Note: It'll only take about 2 minutes</Text>
       </View>
       <View className="mt-24">

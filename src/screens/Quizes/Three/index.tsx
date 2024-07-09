@@ -185,7 +185,6 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
                 <Text className="text-sm mb-1 text-gray-500 ">
                     Remote Consulting for Healthcare: ReaCH Training CourseBook
                 </Text>
-                <Text className="text-sm text-red-500 mb-3">1 hr</Text>
 
                 {/* Render Quiz or Card based on showQuiz state */}
                 {showQuiz ? (

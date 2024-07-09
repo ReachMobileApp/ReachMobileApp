@@ -1,24 +1,14 @@
 import axios from 'axios';
 import { View, Text, StatusBar, Image, TouchableOpacity, Pressable, ScrollView, ActivityIndicator } from "react-native";
 import React, { useState } from "react";
-import {
-  HeadingsSemibold24,
-  InputAssistive,
-  TextMedium14,
-} from "@/src/theme/typography";
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CustomPaperTextInput from "@/src/components/UI/Inputs/CustomPaperTextInput";
-import { CustomButton } from "@/src/components/UI/Buttons";
 import { COLORS } from "@/src/theme/colors";
 import { StackNavigationProps } from "@/src/shared";
-import BaseNavigator from "@/src/navigations/BaseNavigator";
 import Image1 from "@/assets/images/Group 57.png";
-import face from "@/assets/images/face.png";
-import github from "@/assets/images/github.png";
-import google from "@/assets/images/google.png";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+
 import Toast from 'react-native-toast-message'
-import { firebaseAuth } from "@/firebaseConfig";
 
 const SignInScreen = ({ navigation }: StackNavigationProps) => {
   const [email, setEmail] = useState('');
@@ -103,20 +93,7 @@ const SignInScreen = ({ navigation }: StackNavigationProps) => {
             </Pressable>
           </View>
           <View className="flex mt-5 justify-center items-center">
-            <View className="flex flex-row ">
-              <Image
-                source={github}
-                resizeMode="cover"
-                className="w-8 h-7" />
-              <Image
-                source={face}
-                resizeMode="cover"
-                className="w-8 h-8 mx-5" />
-              <Image
-                source={google}
-                resizeMode="cover"
-                className="w-8 h-8" />
-            </View>
+            
           </View>
         </View>
 

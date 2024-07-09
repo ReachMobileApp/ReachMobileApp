@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { useFocusEffect } from '@react-navigation/native';
 import {
     View,
     Text,
@@ -10,14 +9,11 @@ import {
 } from "react-native";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
-import Card from "@/src/components/ModuleCard";
-import { getAuth } from "firebase/auth";
 import Play from "@/assets/images/play.jpg";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { Video, ResizeMode } from 'expo-av';
 // Initialize Firestore
-const auth = getAuth();
 
 interface Module {
     id: string;
@@ -46,7 +42,6 @@ const ModuleScreen = ({
 }) => {
     const [statuses, setStatuses] = useState<{ [key: string]: string }>({});
     const [loading, setLoading] = useState(true);
-    const user = auth.currentUser;
     const [modules, setModules] = useState<Module[]>([]);
     const extractFirstParagraph = (html: string): string => {
         const match = html.match(/<p>(.*?)<\/p>/);
