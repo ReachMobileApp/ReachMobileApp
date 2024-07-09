@@ -197,7 +197,6 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
                     What behaviors will help or hinder a successful transition
                     to remote consulting?
                 </Text>
-                <Text className="text-sm text-red-500 mb-3">1 hr</Text>
 
                 {/* Render Quiz or Card based on showQuiz state */}
                 {showQuiz ? (

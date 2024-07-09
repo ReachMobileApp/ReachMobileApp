@@ -97,7 +97,7 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                             header={module.name}
                             subheader={stripHtmlTags(extractFirstParagraph(module.content))}
                             videoUrl={module.video}  // Pass the correct video URL here
-                            duration="1 hr"
+                            
                             learningOutcomeHeader="Learning Outcome:"
                             learningOutcome={
                                 "Analyze different forms of digital communication in common use. Consider how they might be used in health care."
@@ -122,15 +122,9 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                                 {module.name}
                             </Text>
                             <Text className="text-sm mb-1 text-gray-500 ">
-                                {extractFirstParagraph(module.content)}
+                                {stripHtmlTags(extractFirstParagraph(module.content))}
                             </Text>
-                            <Text className="text-sm text-red-500 mb-3">1 hr</Text>
-                            <Text className="mb-2 text-[#183745] font-bold text-lg">
-                                Learning Outcome:
-                            </Text>
-                            <Text className="mb-2 text-[#183745] text-base">
-                                Analyze different forms of digital communication in common use. Consider how they might be used in health care.
-                            </Text>
+                            
                         </View>
                         <ScrollView className="m-4 flex-1">
                             <View className="p-2">

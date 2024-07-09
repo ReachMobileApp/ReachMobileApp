@@ -158,7 +158,6 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
                 <Text className="text-sm mb-1 text-gray-500 ">
                     What qualities do you have and need to deliver remote healthcare and support your colleagues/teams?
                 </Text>
-                <Text className="text-sm text-red-500 mb-3">1 hr</Text>
 
                 {/* Render Quiz or Card based on showQuiz state */}
                 {showQuiz ? (

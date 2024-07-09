@@ -8,14 +8,12 @@ const Module = ({
     header,
     subheader,
     videoUrl,
-    duration,
     learningOutcome,
     learningOutcomeHeader,
 }: {
     header: string;
     subheader: string;
     videoUrl: string;
-    duration: string;
     learningOutcome: string;
     learningOutcomeHeader?: string;
 }) => {
@@ -31,7 +29,6 @@ const Module = ({
         <View className="p-4">
             <Text className="text-2xl text-[#064d7d] font-bold ">{header}</Text>
             <Text className="text-sm text-gray-500 mb-1 ">{subheader}</Text>
-            <Text className="text-sm text-red-500 mb-2">{duration}</Text>
             <View className="w-full h-52 px-2">
                 <Video
                     ref={(ref) => setVideoRef(ref)}

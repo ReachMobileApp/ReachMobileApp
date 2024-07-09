@@ -16,7 +16,7 @@ const BottomTabNavigator = () => {
 
           if (route.name === "Home") {
             iconName = focused ? "home" : "home-outline";
-          } else if (route.name === "Module") {
+          } else if (route.name === "Modules") {
             iconName = focused ? "book" : "book-outline";
           } else if (route.name === "Profile") {
             iconName = focused ? "person" : "person-outline";
@@ -28,7 +28,7 @@ const BottomTabNavigator = () => {
     // Remove the tabBarOptions property
     >
       <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }}/>
-      <Tab.Screen name="Module" component={ModuleScreen} options={{ headerShown: false }}/>
+      <Tab.Screen name="Modules" component={ModuleScreen} options={{ headerShown: false }}/>
       <Tab.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }}/>
     </Tab.Navigator>
   );

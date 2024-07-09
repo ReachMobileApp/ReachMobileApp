@@ -22,6 +22,10 @@ import sfuchas from "@/assets/images/sfuchas.png";
 import UB from "@/assets/images/Uni Berm.png";
 import Taleguru from "@/assets/images/Taleguru.png";
 import APHRC from "@/assets/images/aphrc.png";
+import UW from "@/assets/images/warwick.png";
+import UKRI from "@/assets/images/UKRI.png";
+import NF from "@/assets/images/NewtonFund.png";
+import GCRF from "@/assets/images/GCRF.png";
 import KC from "@/assets/images/King's College.png";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
@@ -297,12 +301,12 @@ const HomeScreen = ({ navigation, }: { navigation: DrawerNavigationProp<any, any
                          className="text-center border-[#064D7D] bg-[#064D7D] rounded-2xl px-10 mt-3 py-2 border w-4/5">
                             <Text
                                 onPress={() =>
-                                    navigation.navigate("ModulesNavigator", {
-                                        screen: "Introduction",
+                                    navigation.navigate("BottomTabNavigator", {
+                                        screen: "ModuleScreen",
                                     })
                                 }
                                 className="text-white text-center  text-[16px]">
-                                Continue Reading
+                                GET STARTED 
                             </Text>
                         </TouchableOpacity>
                     </View>
@@ -316,44 +320,46 @@ const HomeScreen = ({ navigation, }: { navigation: DrawerNavigationProp<any, any
                     <ScrollView
                         horizontal
                         showsHorizontalScrollIndicator={false}>
-                        <View className="flex flex-row gap-3 px-2 items-center justify-center pb-4">
+                        <View className="flex flex-row gap-5 px-2 items-center justify-center pb-4">
                             <View className=" justify-center flex items-center">
-                                <Image source={UI} />
-                                <Text style={{ fontSize: 8 }} className=" mt-2 text-center">
-                                    University of Ibadan
-                                </Text>
-                            </View>
-                            <View className="w-32 justify-center flex items-center">
-                                <Image source={sfuchas} />
-                                <Text style={{ fontSize: 8 }} className=" mt-2 text-center">
-                                    Saint Frances University College of Health
-                                    and Applied Sciences
-                                </Text>
+                                <Image source={KC} style={{ height: 100, width: 100 }} />
+                              
                             </View>
                             <View className=" justify-center flex items-center">
-                                <Image source={UB} />
-                                <Text style={{ fontSize: 8 }} className=" mt-2 text-center">
-                                    University of Birmingham
-                                </Text>
+                                <Image source={UI} style={{ height: 100, width: 100 }}  />
+                               
                             </View>
                             <View className=" justify-center flex items-center">
-                                <Image source={Taleguru} />
-                                <Text style={{ fontSize: 8 }} className=" mt-2">
-                                    Makerere University
-                                </Text>
-                            </View>
-                            <View className="w-32 justify-center flex items-center">
-                                <Image source={APHRC} />
-                                <Text style={{ fontSize: 8 }} className=" mt-2 text-center">
-                                    African Population and Health Research
-                                    Center
-                                </Text>
+                                <Image source={UW} style={{ height: 100, width: 100 }}  />
+                               
                             </View>
                             <View className=" justify-center flex items-center">
-                                <Image source={KC} />
-                                <Text style={{ fontSize: 8 }} className="text-center mt-2">
-                                    King's College, London
-                                </Text>
+                                <Image source={sfuchas} style={{ height: 100, width: 100 }} />
+                               
+                            </View>
+                            <View className=" justify-center flex items-center">
+                                <Image source={UB} style={{ height: 100, width: 100 }} />
+                               
+                            </View>
+                            <View className=" justify-center flex items-center">
+                                <Image source={Taleguru} style={{ height: 150, width: 100 }} />
+                               
+                            </View>
+                            <View className=" justify-center flex items-center">
+                                <Image source={APHRC} style={{ height: 100, width: 300 }} />
+                               
+                            </View>
+                            <View className=" justify-center flex items-center">
+                                <Image source={UKRI} style={{ height: 100, width: 300 }} />
+                               
+                            </View>
+                            <View className=" justify-center flex items-center">
+                                <Image source={NF} style={{ height: 100, width: 300 }} />
+                               
+                            </View>
+                            <View className=" justify-center flex items-center">
+                                <Image source={GCRF} style={{ height: 100, width: 300 }} />
+                               
                             </View>
                         </View>
                     </ScrollView>

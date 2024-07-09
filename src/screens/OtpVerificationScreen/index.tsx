@@ -1,8 +1,9 @@
 import { StackNavigationProps } from '@/src/shared';
-import React, { useLayoutEffect } from 'react'
-import { View, Text ,TouchableOpacity, Image} from 'react-native'
+import React, { useLayoutEffect } from 'react';
+import { View, Text, TouchableOpacity, Image } from 'react-native';
 import email from "@/assets/images/email.png";
-const OtpVerificationScreen= ({ navigation }: StackNavigationProps) => {
+
+const OtpVerificationScreen = ({ navigation }: StackNavigationProps) => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: () => (
@@ -10,32 +11,38 @@ const OtpVerificationScreen= ({ navigation }: StackNavigationProps) => {
       ),
     });
   }, [navigation]);
+
   return (
-    <View className="flex-1 h-full w-full bg-white flex items-center pt-7">
-       <Image
-          source={email}
-          resizeMode="cover"
-          className="mx-16  w-60 h-52"
-        />
-        <Text className='text-gray3 mt-5 text-[15px] font-bold'>Check your Email</Text>
-        <View className='flex justify-center items-center mt-8'>
-          <Text className='text-gray3 text-[14px] font-medium'>Tap to confirm your Email Address, please tap</Text>
-<Text className='text-gray3  text-[14px] font-medium'>the button in the Email we sent to: </Text>
-<Text className='text-gray3 text-[14px] font-medium'>aje*********@gmail.com</Text>
-        </View>
-        <View className="mt-24 w-full">
-        <TouchableOpacity onPress={()=>navigation.navigate('AuthNavigator',{ screen: 'OtpVerificationScreen' })}  className="bg-[#064D7D] w-[70%] mx-[14%] rounded-[20px]">
-          <Text className="text-white text-center text-[16px] font-bold py-4">Open Email App</Text>
+    <View className="flex-1 h-full w-full bg-white flex items-center pt-7 px-6">
+      <Image
+        source={email}
+        resizeMode="cover"
+        className="w-60 h-52"
+      />
+      <Text className='text-gray-600 mt-5 text-lg font-bold'>Check your Email</Text>
+      <View className='flex justify-center items-center mt-8'>
+        <Text className='text-gray-500 text-center text-base font-medium'>
+          The reset instructions have been sent to the email you provided.
+        </Text>
+        <Text className='text-gray-500 text-center text-base font-medium'>
+          You can proceed to login from there.
+        </Text>
+      </View>
+      <Text className='text-red-600 text-md mt-4 font-medium text-center'>
+        Note: You must have provided a valid email address associated with this account!
+      </Text>
+      <View className="mt-24 w-full items-center">
+        <Text className='text-red-600 text-lg font-medium text-center'>
+          Didn't receive the email?
+        </Text>
+        <TouchableOpacity onPress={() => navigation.navigate('AuthNavigator', { screen: 'ResetPasswordScreen' })} className="mt-3">
+          <Text className="text-gray-600 text-center text-xl font-bold py-2 underline">
+            Resend Email
+          </Text>
         </TouchableOpacity>
       </View>
-      <View className='mt-3'>
-      <View className='flex flex-row justify-between gap-10'>
-        <Text>Resend Link 00:25</Text>
-        <Text onPress={()=>navigation.navigate('AuthNavigator',{ screen: 'CodeScreen' })}  className='text-[#064D7D] text-sm font-bold'>Manually Enter OTP</Text>
-      </View>
-      </View>
     </View>
-  )
+  );
 }
 
-export default OtpVerificationScreen
+export default OtpVerificationScreen;
