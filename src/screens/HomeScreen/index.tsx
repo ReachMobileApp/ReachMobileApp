@@ -268,7 +268,7 @@ const HomeScreen = ({ navigation, }: { navigation: DrawerNavigationProp<any, any
                                 </Text>
                             </View>
                             <View className="flex justify-center items-center">
-                                <TouchableOpacity className="text-center border-[#064D7D] bg-[#064D7D] rounded-2xl px-10 mt-3 py-2 border w-4/5 flex flex-row gap-x-3">
+                                <TouchableOpacity className="text-center border-[#064D7D] bg-[#064D7D] rounded-2xl px-10 mt-3 py-2 border w-4/5 flex flex-row gap-x-3" onPress={() => navigation.navigate('BottomTabNavigator', { screen: 'Module' })}>
                                     <Text className="text-sm text-white pt-1">Go to Modules</Text>
                                     <AntDesign name="arrowright" size={24} color="white" className="" />
                                 </TouchableOpacity>
