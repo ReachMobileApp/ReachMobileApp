@@ -20,11 +20,11 @@ const ModulesNavigator = () => {
   const Stack = createStackNavigator();
   return (
     <Stack.Navigator>
-      <Stack.Screen
+      {/* <Stack.Screen
         name="Introduction"
         component={Introduction}
         options={{ headerShown: false }}
-      />
+      /> */}
       <Stack.Screen
         name="ModuleOne"
         component={ModuleOne}

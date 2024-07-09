@@ -1,42 +1,30 @@
 import React, { useState, useCallback } from "react";
-import {
-    View,
-    Text,
-    TouchableOpacity,
-    Alert,
-    Dimensions,
-    Linking,
-} from "react-native";
-import YoutubePlayer from "react-native-youtube-iframe";
+import { View, Text, Alert, Dimensions } from "react-native";
+import { Video, ResizeMode } from 'expo-av';
 
 const screenWidth = Dimensions.get("window").width;
 
-const ModuleComponent = ({
+const Module = ({
     header,
     subheader,
-    videoId,
+    videoUrl,
     duration,
     learningOutcome,
     learningOutcomeHeader,
 }: {
     header: string;
     subheader: string;
-    videoId: string;
+    videoUrl: string;
     duration: string;
     learningOutcome: string;
     learningOutcomeHeader?: string;
 }) => {
-    const [playing, setPlaying] = useState(false);
+    const [videoRef, setVideoRef] = useState<Video | null>(null);
 
-    const onStateChange = useCallback((state: string) => {
-        if (state === "ended") {
-            setPlaying(false);
+    const onPlaybackStatusUpdate = useCallback((status) => {
+        if (status.didJustFinish) {
             Alert.alert("Video has finished playing!");
         }
-    }, []);
-
-    const togglePlaying = useCallback(() => {
-        setPlaying((prev) => !prev);
     }, []);
 
     return (
@@ -45,11 +33,15 @@ const ModuleComponent = ({
             <Text className="text-sm text-gray-500 mb-1 ">{subheader}</Text>
             <Text className="text-sm text-red-500 mb-2">{duration}</Text>
             <View className="w-full h-52 px-2">
-                <YoutubePlayer
-                    height={250}
-                    play={playing}
-                    videoId={videoId}
-                    onChangeState={onStateChange}
+                <Video
+                    ref={(ref) => setVideoRef(ref)}
+                    source={{ uri: videoUrl }} // Use videoUrl prop here
+                    rate={1.0}
+                    volume={1.0}
+                    isMuted={false}
+                    useNativeControls
+                    resizeMode={ResizeMode.CONTAIN}
+                    onPlaybackStatusUpdate={onPlaybackStatusUpdate}
                 />
             </View>
             <View>
@@ -60,4 +52,4 @@ const ModuleComponent = ({
     );
 };
 
-export default ModuleComponent;
+export default Module;

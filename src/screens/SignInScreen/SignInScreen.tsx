@@ -45,6 +45,7 @@ const SignInScreen = ({ navigation }: StackNavigationProps) => {
           });
           setUser(user);
           AsyncStorage.setItem('userInfo', JSON.stringify(user));
+          
           navigation.navigate('BottomTabNavigator', { screen: 'Home' });
         } else {
           setLoading(false);
