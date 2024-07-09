@@ -131,7 +131,7 @@ const HomeScreen = ({ navigation, }: { navigation: DrawerNavigationProp<any, any
         }
     };
 
- 
+
 
     const handleModulePress = (moduleId: string) => {
         navigation.navigate("ModulesNavigator", {
@@ -156,7 +156,7 @@ const HomeScreen = ({ navigation, }: { navigation: DrawerNavigationProp<any, any
                     },
                 });
 
-               // console.log(response.data.data.data.data);
+                // console.log(response.data.data.data.data);
                 setCourses(response.data.data.data.data);
             }
         } catch (error) {
@@ -272,7 +272,10 @@ const HomeScreen = ({ navigation, }: { navigation: DrawerNavigationProp<any, any
                                 </Text>
                             </View>
                             <View className="flex justify-center items-center">
-                                <TouchableOpacity className="text-center border-[#064D7D] bg-[#064D7D] rounded-2xl px-10 mt-3 py-2 border w-4/5 flex flex-row gap-x-3" onPress={() => navigation.navigate('BottomTabNavigator', { screen: 'Module' })}>
+                                {/* Modules */}
+                                <TouchableOpacity
+                                    onPress={() => navigation.navigate('BottomTabNavigator', { screen: 'Module' })}
+                                    className="text-center border-[#064D7D] bg-[#064D7D] rounded-2xl px-10 mt-3 py-2 border w-4/5 flex flex-row gap-x-3">
                                     <Text className="text-sm text-white pt-1">Go to Modules</Text>
                                     <AntDesign name="arrowright" size={24} color="white" className="" />
                                 </TouchableOpacity>
@@ -297,8 +300,8 @@ const HomeScreen = ({ navigation, }: { navigation: DrawerNavigationProp<any, any
                     </Text>
                     <View className="flex justify-center items-center">
                         <TouchableOpacity
-                        onPress={()=>navigation.navigate('BottomTabNavigator',{ screen: 'Module' })}
-                         className="text-center border-[#064D7D] bg-[#064D7D] rounded-2xl px-10 mt-3 py-2 border w-4/5">
+                            onPress={() => navigation.navigate('BottomTabNavigator', { screen: 'Module' })}
+                            className="text-center border-[#064D7D] bg-[#064D7D] rounded-2xl px-10 mt-3 py-2 border w-4/5">
                             <Text
                                 onPress={() =>
                                     navigation.navigate("BottomTabNavigator", {
@@ -306,7 +309,7 @@ const HomeScreen = ({ navigation, }: { navigation: DrawerNavigationProp<any, any
                                     })
                                 }
                                 className="text-white text-center  text-[16px]">
-                                GET STARTED 
+                                GET STARTED
                             </Text>
                         </TouchableOpacity>
                     </View>
@@ -323,43 +326,43 @@ const HomeScreen = ({ navigation, }: { navigation: DrawerNavigationProp<any, any
                         <View className="flex flex-row gap-5 px-2 items-center justify-center pb-4">
                             <View className=" justify-center flex items-center">
                                 <Image source={KC} style={{ height: 100, width: 100 }} />
-                              
+
                             </View>
                             <View className=" justify-center flex items-center">
-                                <Image source={UI} style={{ height: 100, width: 100 }}  />
-                               
+                                <Image source={UI} style={{ height: 100, width: 100 }} />
+
                             </View>
                             <View className=" justify-center flex items-center">
-                                <Image source={UW} style={{ height: 100, width: 100 }}  />
-                               
+                                <Image source={UW} style={{ height: 100, width: 100 }} />
+
                             </View>
                             <View className=" justify-center flex items-center">
                                 <Image source={sfuchas} style={{ height: 100, width: 100 }} />
-                               
+
                             </View>
                             <View className=" justify-center flex items-center">
                                 <Image source={UB} style={{ height: 100, width: 100 }} />
-                               
+
                             </View>
                             <View className=" justify-center flex items-center">
                                 <Image source={Taleguru} style={{ height: 150, width: 100 }} />
-                               
+
                             </View>
                             <View className=" justify-center flex items-center">
                                 <Image source={APHRC} style={{ height: 100, width: 300 }} />
-                               
+
                             </View>
                             <View className=" justify-center flex items-center">
                                 <Image source={UKRI} style={{ height: 100, width: 300 }} />
-                               
+
                             </View>
                             <View className=" justify-center flex items-center">
                                 <Image source={NF} style={{ height: 100, width: 300 }} />
-                               
+
                             </View>
                             <View className=" justify-center flex items-center">
                                 <Image source={GCRF} style={{ height: 100, width: 300 }} />
-                               
+
                             </View>
                         </View>
                     </ScrollView>
