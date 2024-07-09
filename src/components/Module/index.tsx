@@ -36,6 +36,7 @@ const Module = ({
                     rate={1.0}
                     volume={1.0}
                     isMuted={false}
+                    style={{ width: screenWidth - 32, height: 200 }}
                     useNativeControls
                     resizeMode={ResizeMode.CONTAIN}
                     onPlaybackStatusUpdate={onPlaybackStatusUpdate}

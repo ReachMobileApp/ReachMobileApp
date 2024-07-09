@@ -68,7 +68,6 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
             </View>
         );
     }
-
     return (
         <View className="flex-1 bg-white pt-2">
             {/* Header */}
