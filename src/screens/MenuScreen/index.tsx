@@ -79,16 +79,16 @@ const MenuScreen = ({ navigation }: any) => {
       {/* Menu items */}
       <View className="bg-white rounded-t-2xl h-full mt-10">
         {/* Introduction */}
-        <TouchableOpacity className="flex-row items-center px-4 py-6 border-b border-gray-300" onPress={() => navigation.navigate('ModulesNavigator', { screen: 'Introduction' })}>
+        {/* <TouchableOpacity className="flex-row items-center px-4 py-6 border-b border-gray-300" onPress={() => navigation.navigate('ModulesNavigator', { screen: 'Introduction' })}>
           <Image source={Introduction} className="w-3 h-3 mr-4" />
           <Text>Introduction</Text>
           <Image source={ArrowRight} className="ml-auto w-3 h-3" />
         </TouchableOpacity>
-
+ */}
 
 
         {/* Courses */}
-        <TouchableOpacity onPress={() => navigation.navigate('BottomTabNavigator', { screen: 'Module' })} className="flex-row items-center px-4 py-6 border-b border-gray-300">
+        <TouchableOpacity onPress={() => navigation.navigate('BottomTabNavigator', { screen: 'Modules' })} className="flex-row items-center px-4 py-6 border-b border-gray-300">
           <Image source={Course} className="w-3 h-3 mr-4" />
           <Text>Courses</Text>
           <Image source={ArrowRight} className="ml-auto w-3 h-3" />
@@ -97,16 +97,16 @@ const MenuScreen = ({ navigation }: any) => {
         {/* Grades */}
         <TouchableOpacity onPress={() => navigation.navigate('SideMenuNavigator', { screen: 'Badge' })} className="flex-row items-center px-4 py-6 border-b border-gray-300">
           <Image source={TrackProgress} className="w-3 h-3 mr-4" />
-          <Text>Grades</Text>
+          <Text>Badges</Text>
           <Image source={ArrowRight} className="ml-auto w-3 h-3" />
         </TouchableOpacity>
 
         {/* Settings */}
-        <TouchableOpacity onPress={() => navigation.navigate("Settings")} className="flex-row items-center px-4 py-6 border-b border-gray-300" >
+        {/* <TouchableOpacity onPress={() => navigation.navigate("Settings")} className="flex-row items-center px-4 py-6 border-b border-gray-300" >
           <Image source={Settings} className="w-3 h-3 mr-4" />
           <Text>Settings</Text>
           <Image source={ArrowRight} className="ml-auto w-3 h-3" />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
 
 

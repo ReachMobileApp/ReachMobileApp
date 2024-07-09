@@ -11,33 +11,88 @@ import { firebaseAuth } from "@/firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from 'react-native-toast-message';
 
-interface ApiResponse {
-    data: {
-        data: Module[];
-    };
-}
+// interface ApiResponse {
+//     data: {
+//         data: Module[];
+//     };
+// }
+
+type ApiResponse2 = {
+    success: boolean;
+    status: string;
+    message: string;
+    data: Array<{
+        id: string;
+        name: string;
+        email: string;
+        email_verified_at: string | null;
+        created_at: string;
+        updated_at: string;
+        facility_id: string;
+        profile: {
+            id: number;
+            username: string;
+            occupation: string;
+            city: string;
+            country: string;
+            facility_id: string | null;
+            user_id: string;
+            created_at: string;
+            updated_at: string;
+        };
+    }>;
+};
 
 
 const ProfileScreen = ({ navigation }: any) => {
     const [selectedSection, setSelectedSection] = useState("aboutMe");
     const [userDetails, setUserDetails] = useState<any>([]);
-    const [modules, setModules] = useState<Module[]>([]);
+    const [userDetail, setUserDetail] = useState<any>([]);
+    // const [modules, setModules] = useState<Module[]>([]);
     const [completedModules, setCompletedModules] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const extractFirstParagraph = (html: string): string => {
         const match = html.match(/<p>(.*?)<\/p>/);
         return match ? match[1] : ''; // Return the content of the first <p> tag, or an empty string if not found
     };
+
+    const fetchProfile = async () => {
+        try {
+            const userInfo = await AsyncStorage.getItem('userInfo');
+            if (userInfo) {
+                const parsedUserInfo = JSON.parse(userInfo);
+                const token = parsedUserInfo.data.auth_token;
+                
+
+                const response = await axios.get<ApiResponse2>(
+                    `https://reachweb.brief.i.ng/api/v1/profile`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+
+                console.log(response.data.data[0].profile);
+                setUserDetails(response.data.data[0].profile)
+                
+            }
+        } catch (error) {
+            console.error('Error fetching courses:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const fetchModules = async () => {
         try {
             const userInfo = await AsyncStorage.getItem('userInfo');
             if (userInfo) {
                 const parsedUserInfo = JSON.parse(userInfo);
                 const token = parsedUserInfo.data.auth_token;
-                console.log(parsedUserInfo)
-                setUserDetails(parsedUserInfo.data.user)
+                setUserDetail(parsedUserInfo.data.user)
 
-                const response = await axios.get<ApiResponse>(
+                const response = await axios.get<ApiResponse2>(
                     `https://reachweb.brief.i.ng/api/v1/courses/01j1bdmvf8wk0asczzbgx1c6yy/modules`,
                     {
                         headers: {
@@ -46,9 +101,7 @@ const ProfileScreen = ({ navigation }: any) => {
                     }
                 );
 
-                console.log(response.data.data.data[0].modules);
-                setModules(response.data.data.data[0].modules);
-            console.log(response.data.data.data)
+                // setModules(response.data.data.data[0].modules);
             }
         } catch (error) {
             console.error('Error fetching courses:', error);
@@ -59,6 +112,7 @@ const ProfileScreen = ({ navigation }: any) => {
 
     useEffect(() => {
         fetchModules();
+        fetchProfile();
     }, []);
 
     const handleSwitchChange = (value: boolean) => {
@@ -147,10 +201,10 @@ const ProfileScreen = ({ navigation }: any) => {
                     <Image source={Avatar} className="rounded-3xl" />
 
                     <Text className="text-white my-2 px-4 text-xl text-center font-bold">
-                        {userDetails?.name}
+                        {userDetails?.username}
                     </Text>
                     <Text className="text-white text-center font-bold text-sm">
-                        {userDetails?.email}
+                        {userDetail?.email}
                     </Text>
                     <Text className="text-green-500 text-center font-bold text-sm">
                         Active
@@ -213,7 +267,7 @@ const ProfileScreen = ({ navigation }: any) => {
                         <View className="flex-row items-center border">
                             <Text className="text-white w-2/5 pl-4 text-lg bg-[#064D7D]">Name:</Text>
                             <Text className="text-[#064D7D] w-3/5 text-lg bg-white text-center">
-                                {userDetails?.name}
+                                {userDetail?.name}
                             </Text>
                         </View>
                         <View className="flex-row items-center border">
@@ -225,7 +279,7 @@ const ProfileScreen = ({ navigation }: any) => {
                         <View className="flex-row items-center border">
                             <Text className="text-white w-2/5 text-lg pl-4 bg-[#064D7D]">Email:</Text>
                             <Text className="text-[#064D7D] w-3/5 text-lg bg-white text-center">
-                                {userDetails?.email}
+                                {userDetail?.email}
                             </Text>
                         </View>
                         <View className="flex-row items-center border">

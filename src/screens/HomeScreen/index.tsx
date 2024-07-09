@@ -1,22 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
     View,
     Text,
     TouchableOpacity,
     ScrollView,
     Image,
-    TextInput, Button,
-    ActivityIndicator,
-    FlatList,
+    Dimensions,
 } from "react-native";
-import { AntDesign } from '@expo/vector-icons';
+import { AntDesign } from "@expo/vector-icons";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
-import Card from "@/src/components/Card";
-import { getAuth } from "firebase/auth";
-import { getFirestore, collection, query, getDocs } from "firebase/firestore";
-import Video from "@/assets/images/menuIcons/Video.png";
-import Image2 from "@/assets/images/image2.png";
 import UI from "@/assets/images/UI.png";
 import sfuchas from "@/assets/images/sfuchas.png";
 import UB from "@/assets/images/Uni Berm.png";
@@ -30,10 +23,6 @@ import KC from "@/assets/images/King's College.png";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 
-// Initialize Firestore
-const db = getFirestore();
-const auth = getAuth();
-
 interface Course {
     id: string;
     name: string;
@@ -42,7 +31,6 @@ interface Course {
 }
 
 interface ApiResponse {
-
     data: {
         data: {
             data: Course[];
@@ -50,8 +38,11 @@ interface ApiResponse {
     };
 }
 
-
-const HomeScreen = ({ navigation, }: { navigation: DrawerNavigationProp<any, any>; }) => {
+const HomeScreen = ({
+    navigation,
+}: {
+    navigation: DrawerNavigationProp<any, any>;
+}) => {
     // Initialize state to hold the current date and module statuses
     const [currentDate, setCurrentDate] = useState(new Date());
     const [statuses, setStatuses] = useState<{ [key: string]: string }>({});
@@ -85,82 +76,115 @@ const HomeScreen = ({ navigation, }: { navigation: DrawerNavigationProp<any, any
         return date;
     };
 
+    const scrollViewRef = useRef<ScrollView>(null);
+    const screenWidth = Dimensions.get("window").width;
+    let scrollPosition = 0;
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (scrollViewRef.current) {
+                scrollPosition += screenWidth / 3; // Adjust the scroll step size as needed
+                scrollViewRef.current.scrollTo({
+                    x: scrollPosition,
+                    animated: true,
+                });
+            }
+        }, 3000); // Adjust the interval as needed
+
+        return () => clearInterval(interval);
+    }, [screenWidth]);
+
+    const handleScroll = ({ nativeEvent }: any) => {
+        const maxScroll =
+            nativeEvent.contentSize.width - nativeEvent.layoutMeasurement.width;
+        if (nativeEvent.contentOffset.x >= maxScroll) {
+            scrollPosition = 0; // Reset to the start
+            if (scrollViewRef.current) {
+                scrollViewRef.current.scrollTo({
+                    x: scrollPosition,
+                    animated: false,
+                });
+            }
+        }
+    };
+
     // Function to get the module title
-    const getModuleTitle = (moduleId: any) => {
-        switch (moduleId) {
-            case "introduction":
-                return "Introduction";
-            case "module1":
-                return "Module 1";
-            case "module2":
-                return "Module 2";
-            case "module3":
-                return "Module 3";
-            case "module4":
-                return "Module 4";
-            case "module5":
-                return "Module 5";
-            case "module6":
-                return "Module 6";
-            case "module7":
-                return "Module 7";
-            default:
-                return "";
-        }
-    };
-    const getModuleNavigator = (moduleId: any) => {
-        switch (moduleId) {
-            case "introduction":
-                return "Introduction";
-            case "module1":
-                return "ModuleOne";
-            case "module2":
-                return "ModuleTwo";
-            case "module3":
-                return "ModuleThree";
-            case "module4":
-                return "ModuleFour";
-            case "module5":
-                return "ModuleFive";
-            case "module6":
-                return "ModuleSix";
-            case "module7":
-                return "ModuleSeven";
-            default:
-                return "";
-        }
-    };
+    // const getModuleTitle = (moduleId: any) => {
+    //     switch (moduleId) {
+    //         case "introduction":
+    //             return "Introduction";
+    //         case "module1":
+    //             return "Module 1";
+    //         case "module2":
+    //             return "Module 2";
+    //         case "module3":
+    //             return "Module 3";
+    //         case "module4":
+    //             return "Module 4";
+    //         case "module5":
+    //             return "Module 5";
+    //         case "module6":
+    //             return "Module 6";
+    //         case "module7":
+    //             return "Module 7";
+    //         default:
+    //             return "";
+    //     }
+    // };
+    // const getModuleNavigator = (moduleId: any) => {
+    //     switch (moduleId) {
+    //         case "introduction":
+    //             return "Introduction";
+    //         case "module1":
+    //             return "ModuleOne";
+    //         case "module2":
+    //             return "ModuleTwo";
+    //         case "module3":
+    //             return "ModuleThree";
+    //         case "module4":
+    //             return "ModuleFour";
+    //         case "module5":
+    //             return "ModuleFive";
+    //         case "module6":
+    //             return "ModuleSix";
+    //         case "module7":
+    //             return "ModuleSeven";
+    //         default:
+    //             return "";
+    //     }
+    // };
 
+    // const handleModulePress = (moduleId: string) => {
+    //     navigation.navigate("ModulesNavigator", {
+    //         screen: getModuleNavigator(moduleId),
+    //     });
+    // };
 
-
-    const handleModulePress = (moduleId: string) => {
-        navigation.navigate("ModulesNavigator", {
-            screen: getModuleNavigator(moduleId),
-        });
-    };
-
-    const inProgressModules = Object.keys(statuses).filter(
-        (moduleId) => statuses[moduleId] === "In progress"
-    );
+    // const inProgressModules = Object.keys(statuses).filter(
+    //     (moduleId) => statuses[moduleId] === "In progress"
+    // );
 
     const fetchCourses = async () => {
         try {
-            const userInfo = await AsyncStorage.getItem('userInfo');
+            const userInfo = await AsyncStorage.getItem("userInfo");
             if (userInfo) {
                 const parsedUserInfo = JSON.parse(userInfo);
                 const token = parsedUserInfo.data.auth_token;
 
-                const response = await axios.get<ApiResponse>('https://reachweb.brief.i.ng/api/v1/courses', {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                });
+                const response = await axios.get<ApiResponse>(
+                    "https://reachweb.brief.i.ng/api/v1/courses",
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
 
                 // console.log(response.data.data.data.data);
                 setCourses(response.data.data.data.data);
             }
         } catch (error) {
-            console.error('Error fetching courses:', error);
+            console.error("Error fetching courses:", error);
         } finally {
             setLoading(false);
         }
@@ -206,20 +230,22 @@ const HomeScreen = ({ navigation, }: { navigation: DrawerNavigationProp<any, any
                     return (
                         <TouchableOpacity
                             key={index}
-                            className={` p-2 ${isCurrentDate
-                                ? "bg-[#064D7D] text-white"
-                                : "bg-transparent"
-                                }`}
+                            className={` p-2 ${
+                                isCurrentDate
+                                    ? "bg-[#064D7D] text-white"
+                                    : "bg-transparent"
+                            }`}
                             style={{ borderRadius: 5, marginRight: 5 }}>
                             <Text
-                                className={`${isCurrentDate
-                                    ? "text-white bg-[#b6cbd9] py-5 px-2  rounded-md"
-                                    : "py-5 px-2 text-white"
-                                    }`}>
+                                className={`${
+                                    isCurrentDate
+                                        ? "text-white bg-[#b6cbd9] py-5 px-2  rounded-md"
+                                        : "py-5 px-2 text-white"
+                                }`}>
                                 {isCurrentDate
                                     ? `${date.toLocaleString("default", {
-                                        month: "short",
-                                    })} ${date.getDate()}`
+                                          month: "short",
+                                      })} ${date.getDate()}`
                                     : date.getDate()}
                             </Text>
                         </TouchableOpacity>
@@ -243,7 +269,8 @@ const HomeScreen = ({ navigation, }: { navigation: DrawerNavigationProp<any, any
                     className="p-4 w-80">
                     {/* Cards */}
                     {courses.map((course) => (
-                        <View key={course.id}
+                        <View
+                            key={course.id}
                             style={{
                                 marginBottom: 10,
                                 width: 250,
@@ -255,7 +282,7 @@ const HomeScreen = ({ navigation, }: { navigation: DrawerNavigationProp<any, any
                                 shadowRadius: 2,
                                 elevation: 1,
                                 backgroundColor: "white",
-                                paddingBottom: 10
+                                paddingBottom: 10,
                             }}>
                             <Image
                                 source={{ uri: course.image_url }}
@@ -274,10 +301,22 @@ const HomeScreen = ({ navigation, }: { navigation: DrawerNavigationProp<any, any
                             <View className="flex justify-center items-center">
                                 {/* Modules */}
                                 <TouchableOpacity
-                                    onPress={() => navigation.navigate('BottomTabNavigator', { screen: 'Module' })}
+                                    onPress={() =>
+                                        navigation.navigate(
+                                            "BottomTabNavigator",
+                                            { screen: "Modules" }
+                                        )
+                                    }
                                     className="text-center border-[#064D7D] bg-[#064D7D] rounded-2xl px-10 mt-3 py-2 border w-4/5 flex flex-row gap-x-3">
-                                    <Text className="text-sm text-white pt-1">Go to Modules</Text>
-                                    <AntDesign name="arrowright" size={24} color="white" className="" />
+                                    <Text className="text-sm text-white pt-1">
+                                        Go to Modules
+                                    </Text>
+                                    <AntDesign
+                                        name="arrowright"
+                                        size={24}
+                                        color="white"
+                                        className=""
+                                    />
                                 </TouchableOpacity>
                             </View>
                         </View>
@@ -300,12 +339,16 @@ const HomeScreen = ({ navigation, }: { navigation: DrawerNavigationProp<any, any
                     </Text>
                     <View className="flex justify-center items-center">
                         <TouchableOpacity
-                            onPress={() => navigation.navigate('BottomTabNavigator', { screen: 'Module' })}
+                            onPress={() =>
+                                navigation.navigate("BottomTabNavigator", {
+                                    screen: "Module",
+                                })
+                            }
                             className="text-center border-[#064D7D] bg-[#064D7D] rounded-2xl px-10 mt-3 py-2 border w-4/5">
                             <Text
                                 onPress={() =>
                                     navigation.navigate("BottomTabNavigator", {
-                                        screen: "ModuleScreen",
+                                        screen: "Modules",
                                     })
                                 }
                                 className="text-white text-center  text-[16px]">
@@ -321,48 +364,72 @@ const HomeScreen = ({ navigation, }: { navigation: DrawerNavigationProp<any, any
                         </Text>
                     </View>
                     <ScrollView
+                        ref={scrollViewRef}
                         horizontal
-                        showsHorizontalScrollIndicator={false}>
+                        showsHorizontalScrollIndicator={false}
+                        onScroll={handleScroll}
+                        // scrollEventThrottle={2} // This controls how often the onScroll callback is fired
+                    >
                         <View className="flex flex-row gap-5 px-2 items-center justify-center pb-4">
                             <View className=" justify-center flex items-center">
-                                <Image source={KC} style={{ height: 100, width: 100 }} />
-
+                                <Image
+                                    source={KC}
+                                    style={{ height: 100, width: 100 }}
+                                />
                             </View>
                             <View className=" justify-center flex items-center">
-                                <Image source={UI} style={{ height: 100, width: 100 }} />
-
+                                <Image
+                                    source={UI}
+                                    style={{ height: 100, width: 100 }}
+                                />
                             </View>
                             <View className=" justify-center flex items-center">
-                                <Image source={UW} style={{ height: 100, width: 100 }} />
-
+                                <Image
+                                    source={UW}
+                                    style={{ height: 100, width: 100 }}
+                                />
                             </View>
                             <View className=" justify-center flex items-center">
-                                <Image source={sfuchas} style={{ height: 100, width: 100 }} />
-
+                                <Image
+                                    source={sfuchas}
+                                    style={{ height: 100, width: 100 }}
+                                />
                             </View>
                             <View className=" justify-center flex items-center">
-                                <Image source={UB} style={{ height: 100, width: 100 }} />
-
+                                <Image
+                                    source={UB}
+                                    style={{ height: 100, width: 100 }}
+                                />
                             </View>
                             <View className=" justify-center flex items-center">
-                                <Image source={Taleguru} style={{ height: 150, width: 100 }} />
-
+                                <Image
+                                    source={Taleguru}
+                                    style={{ height: 150, width: 100 }}
+                                />
                             </View>
                             <View className=" justify-center flex items-center">
-                                <Image source={APHRC} style={{ height: 100, width: 300 }} />
-
+                                <Image
+                                    source={APHRC}
+                                    style={{ height: 100, width: 300 }}
+                                />
                             </View>
                             <View className=" justify-center flex items-center">
-                                <Image source={UKRI} style={{ height: 100, width: 300 }} />
-
+                                <Image
+                                    source={UKRI}
+                                    style={{ height: 100, width: 300 }}
+                                />
                             </View>
                             <View className=" justify-center flex items-center">
-                                <Image source={NF} style={{ height: 100, width: 300 }} />
-
+                                <Image
+                                    source={NF}
+                                    style={{ height: 100, width: 300 }}
+                                />
                             </View>
                             <View className=" justify-center flex items-center">
-                                <Image source={GCRF} style={{ height: 100, width: 300 }} />
-
+                                <Image
+                                    source={GCRF}
+                                    style={{ height: 100, width: 300 }}
+                                />
                             </View>
                         </View>
                     </ScrollView>
