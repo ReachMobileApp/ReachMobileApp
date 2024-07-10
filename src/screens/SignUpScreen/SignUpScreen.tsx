@@ -27,7 +27,7 @@ const SignUpScreen = ({ navigation }: StackNavigationProps) => {
   useEffect(() => {
     const fetchFacilities = async () => {
       try {
-        const response = await axios.get('https://reachweb.brief.i.ng/api/v1/facilities');
+        const response = await axios.get('https://uhfiles.ui.edu.ng/api/v1/facilities');
         // console.log(response.data.data[0].name);
         const facilitiesData = response.data.data.map((facility: any) => ({ label: facility.name, value: facility.id }));
         console.log(facilitiesData);
@@ -48,7 +48,7 @@ const SignUpScreen = ({ navigation }: StackNavigationProps) => {
     if (email && name && password && password_confirmation && username && city && country && occupation && selectedFacility) {
       setLoading(true);
       try {
-        const response = await axios.post('https://reachweb.brief.i.ng/api/v1/register', {
+        const response = await axios.post('https://uhfiles.ui.edu.ng/api/v1/register', {
           email,
           name,
           password,

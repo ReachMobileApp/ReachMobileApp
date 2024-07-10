@@ -19,7 +19,7 @@ const SignInScreen = ({ navigation }: StackNavigationProps) => {
     if (email && password) {
       setLoading(true);
       try {
-        const response = await axios.post('https://reachweb.brief.i.ng/api/v1/login', {
+        const response = await axios.post('https://uhfiles.ui.edu.ng/api/v1/login', {
           email,
           password
         });

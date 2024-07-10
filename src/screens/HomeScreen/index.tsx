@@ -172,7 +172,7 @@ const HomeScreen = ({
                 const token = parsedUserInfo.data.auth_token;
 
                 const response = await axios.get<ApiResponse>(
-                    "https://reachweb.brief.i.ng/api/v1/courses",
+                    "https://uhfiles.ui.edu.ng/api/v1/courses",
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,

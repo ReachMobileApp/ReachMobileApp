@@ -63,7 +63,7 @@ const ProfileScreen = ({ navigation }: any) => {
                 
 
                 const response = await axios.get<ApiResponse2>(
-                    `https://reachweb.brief.i.ng/api/v1/profile`,
+                    `https://uhfiles.ui.edu.ng/api/v1/profile`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -91,7 +91,7 @@ const ProfileScreen = ({ navigation }: any) => {
                 setUserDetail(parsedUserInfo.data.user)
 
                 const response = await axios.get<ApiResponse2>(
-                    `https://reachweb.brief.i.ng/api/v1/courses/01j1bdmvf8wk0asczzbgx1c6yy/modules`,
+                    `https://uhfiles.ui.edu.ng/api/v1/courses/01j1bdmvf8wk0asczzbgx1c6yy/modules`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,

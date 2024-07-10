@@ -31,7 +31,7 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                     const parsedUserInfo = JSON.parse(userInfo);
                     const token = parsedUserInfo.data.auth_token;
 
-                    const response = await axios.get("https://reachweb.brief.i.ng/api/v1/courses/01j1bdmvf8wk0asczzbgx1c6yy/modules/01j1bdmvrrsz7pbt3gmdz2fczt", {
+                    const response = await axios.get("https://uhfiles.ui.edu.ng/api/v1rses/01j1bdmvf8wk0asczzbgx1c6yy/modules/01j1bdmvrrsz7pbt3gmdz2fczt", {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
