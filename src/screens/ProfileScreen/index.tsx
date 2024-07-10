@@ -8,12 +8,7 @@ import axios from "axios";
 import Card from "@/src/components/BadgeCard";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from 'react-native-toast-message';
-
-// interface ApiResponse {
-//     data: {
-//         data: Module[];
-//     };
-// }
+import { BASE_URL } from './../../config';
 
 type ApiResponse2 = {
     success: boolean;
@@ -60,10 +55,10 @@ const ProfileScreen = ({ navigation }: any) => {
             if (userInfo) {
                 const parsedUserInfo = JSON.parse(userInfo);
                 const token = parsedUserInfo.data.auth_token;
-                
+
 
                 const response = await axios.get<ApiResponse2>(
-                    `https://uhfiles.ui.edu.ng/api/v1/profile`,
+                    `${BASE_URL}profile`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -73,7 +68,7 @@ const ProfileScreen = ({ navigation }: any) => {
 
                 console.log(response.data.data[0].profile);
                 setUserDetails(response.data.data[0].profile)
-                
+
             }
         } catch (error) {
             console.error('Error fetching courses:', error);
@@ -91,7 +86,7 @@ const ProfileScreen = ({ navigation }: any) => {
                 setUserDetail(parsedUserInfo.data.user)
 
                 const response = await axios.get<ApiResponse2>(
-                    `https://uhfiles.ui.edu.ng/api/v1/courses/01j1bdmvf8wk0asczzbgx1c6yy/modules`,
+                    `${BASE_URL}courses/01j1bdmvf8wk0asczzbgx1c6yy/modules`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -116,62 +111,6 @@ const ProfileScreen = ({ navigation }: any) => {
     const handleSwitchChange = (value: boolean) => {
         setSelectedSection(value ? "aboutMe" : "badges");
     };
-
-    // const getCurrentUser = async (): Promise<void> => {
-    //     try {
-    //         firebaseAuth.onAuthStateChanged(async (user) => {
-    //             if (user) {
-    //                 const userQuery = query(userRef, where('user_id', '==', user.uid));
-    //                 const snapshot = await getDocs(userQuery);
-
-    //                 const userData: any = [];
-    //                 snapshot.docs.forEach((item) => {
-    //                     userData.push({ ...item.data(), id: item.id });
-    //                 });
-    //                 setUserDetails(userData);
-
-    //                 const modulesRef = collection(db, 'users_data', user.uid, 'modules');
-    //                 const modulesSnapshot = await getDocs(modulesRef);
-
-    //                 const moduleIdToNumber :{ [key: string]: number } = {
-    //                     'module1': 1,
-    //                     'module2': 2,
-    //                     'module3': 3,
-    //                     'module4': 4,
-    //                     'module5': 5,
-    //                     'module6': 6,
-    //                     'module7': 7,
-    //                     // Add more modules as needed
-    //                 };
-
-    //                 const completedModulesData: any = [];
-    //                 modulesSnapshot.docs.forEach((moduleDoc) => {
-    //                     const moduleData = moduleDoc.data();
-    //                     const moduleNumber = moduleIdToNumber[moduleDoc.id];
-    //                     if (moduleData.status === "completed" && moduleNumber) {
-    //                         completedModulesData.push({ ...moduleData, id: moduleDoc.id, moduleNumber });
-    //                     }
-    //                 });
-    //                 setCompletedModules(completedModulesData);
-    //             }
-    //         });
-    //     } catch (error: any) {
-    //         Toast.show({
-    //             type: 'error',
-    //             text1: 'Error!',
-    //             text2: error.message,
-    //         });
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
-
-    // useFocusEffect(
-    //     useCallback(() => {
-    //         setLoading(true);
-    //         getCurrentUser();
-    //     }, [])
-    // );
 
     if (loading) {
         return (

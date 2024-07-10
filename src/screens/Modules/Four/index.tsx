@@ -15,6 +15,7 @@ import Page from "@/assets/images/menuIcons/Page-1.png";
 import Page2 from "@/assets/images/menuIcons/Page-2.png";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { WebView } from "react-native-webview";
+import { BASE_URL } from "@/src/config";
 
 type ModuleScreenProps = {
     navigation: DrawerNavigationProp<any, any>;
@@ -29,16 +30,16 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
         // Create a temporary element to decode HTML entities
         const tempElement = document.createElement('div');
         tempElement.innerHTML = html;
-    
+
         // Decode HTML entities
         const decodedString = tempElement.textContent || tempElement.innerText || "";
-    
+
         // Remove HTML tags
         const cleanString = decodedString.replace(/<[^>]*>/g, '');
-    
+
         // Remove &nbsp; specifically
         const resultString = cleanString.replace(/&nbsp;/g, ' ');
-    
+
         return resultString;
     };
 
@@ -51,7 +52,7 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                     const token = parsedUserInfo.data.auth_token;
 
                     const response = await axios.get(
-                        "https://uhfiles.ui.edu.ng/api/v1/courses/01j1bdmvf8wk0asczzbgx1c6yy/modules/01j1bdmvwaj2rs3v97bm7txvfk",
+                        `${BASE_URL}courses/01j1bdmvf8wk0asczzbgx1c6yy/modules/01j1bdmvwaj2rs3v97bm7txvfk`,
                         {
                             headers: {
                                 Authorization: `Bearer ${token}`,
@@ -161,7 +162,7 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                             <Text className="text-sm mb-1 text-gray-500 ">
                                 {stripHtmlTags(extractFirstParagraph(module.content))}
                             </Text>
-                            
+
                         </View>
                         <ScrollView className="m-4 flex-1">
                             <View className="p-2">

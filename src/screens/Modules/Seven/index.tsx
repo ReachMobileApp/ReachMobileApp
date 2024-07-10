@@ -15,6 +15,7 @@ import Page from "@/assets/images/menuIcons/Page-1.png";
 import Page2 from "@/assets/images/menuIcons/Page-2.png";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { WebView } from "react-native-webview";
+import { BASE_URL } from './../../../config';
 
 type ModuleScreenProps = {
     navigation: DrawerNavigationProp<any, any>;
@@ -51,7 +52,7 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                     const token = parsedUserInfo.data.auth_token;
 
                     const response = await axios.get(
-                        "https://uhfiles.ui.edu.ng/api/v1/courses/01j1bdmvf8wk0asczzbgx1c6yy/modules/01j1bdmw52bw0jx6srb8qsm4h8",
+                        `${BASE_URL}courses/01j1bdmvf8wk0asczzbgx1c6yy/modules/01j1bdmw52bw0jx6srb8qsm4h8`,
                         {
                             headers: {
                                 Authorization: `Bearer ${token}`,

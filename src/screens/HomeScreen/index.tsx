@@ -22,6 +22,7 @@ import GCRF from "@/assets/images/GCRF.jpg";
 import KC from "@/assets/images/KingsCollege.jpg";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import { BASE_URL } from "@/src/config";
 
 interface Course {
     id: string;
@@ -48,20 +49,6 @@ const HomeScreen = ({
     const [statuses, setStatuses] = useState<{ [key: string]: string }>({});
     const [loading, setLoading] = useState(true);
     const [courses, setCourses] = useState<Course[]>([]);
-    //const user = auth.currentUser;
-
-    // useEffect(() => {
-    //     if (user) {
-    //         const fetchStatuses = async () => {
-    //             const moduleStatuses = await fetchModuleStatuses(user.uid);
-    //             setStatuses(moduleStatuses);
-    //             setLoading(false);
-    //         };
-    //         fetchStatuses();
-    //     }
-    // }, [user]);
-
-    // Effect to update the current date when component mounts and every time the month changes
     useEffect(() => {
         const intervalId = setInterval(() => {
             setCurrentDate(new Date());
@@ -107,63 +94,6 @@ const HomeScreen = ({
             }
         }
     };
-
-    // Function to get the module title
-    // const getModuleTitle = (moduleId: any) => {
-    //     switch (moduleId) {
-    //         case "introduction":
-    //             return "Introduction";
-    //         case "module1":
-    //             return "Module 1";
-    //         case "module2":
-    //             return "Module 2";
-    //         case "module3":
-    //             return "Module 3";
-    //         case "module4":
-    //             return "Module 4";
-    //         case "module5":
-    //             return "Module 5";
-    //         case "module6":
-    //             return "Module 6";
-    //         case "module7":
-    //             return "Module 7";
-    //         default:
-    //             return "";
-    //     }
-    // };
-    // const getModuleNavigator = (moduleId: any) => {
-    //     switch (moduleId) {
-    //         case "introduction":
-    //             return "Introduction";
-    //         case "module1":
-    //             return "ModuleOne";
-    //         case "module2":
-    //             return "ModuleTwo";
-    //         case "module3":
-    //             return "ModuleThree";
-    //         case "module4":
-    //             return "ModuleFour";
-    //         case "module5":
-    //             return "ModuleFive";
-    //         case "module6":
-    //             return "ModuleSix";
-    //         case "module7":
-    //             return "ModuleSeven";
-    //         default:
-    //             return "";
-    //     }
-    // };
-
-    // const handleModulePress = (moduleId: string) => {
-    //     navigation.navigate("ModulesNavigator", {
-    //         screen: getModuleNavigator(moduleId),
-    //     });
-    // };
-
-    // const inProgressModules = Object.keys(statuses).filter(
-    //     (moduleId) => statuses[moduleId] === "In progress"
-    // );
-
     const fetchCourses = async () => {
         try {
             const userInfo = await AsyncStorage.getItem("userInfo");
@@ -172,7 +102,7 @@ const HomeScreen = ({
                 const token = parsedUserInfo.data.auth_token;
 
                 const response = await axios.get<ApiResponse>(
-                    "https://uhfiles.ui.edu.ng/api/v1/courses",
+                    `${BASE_URL}courses`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
