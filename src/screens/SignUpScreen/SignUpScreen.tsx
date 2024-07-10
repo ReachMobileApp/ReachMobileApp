@@ -5,9 +5,7 @@ import CustomPaperTextInput from "@/src/components/UI/Inputs/CustomPaperTextInpu
 import { Dropdown } from 'react-native-element-dropdown';
 import { StackNavigationProps } from "@/src/shared";
 import { COLORS } from "@/src/theme/colors";
-import face from "@/assets/images/face.png";
-import github from "@/assets/images/github.png";
-import google from "@/assets/images/google.png";
+
 import Toast from 'react-native-toast-message';
 import CustomDropdown from "@/src/components/UI/Dropdown";
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -143,22 +141,7 @@ const SignUpScreen = ({ navigation }: StackNavigationProps) => {
           <CustomDropdown placeholder="Country" value={country} setValue={setCountry} />
           <CustomPaperTextInput label="Occupation" value={occupation} onChangeText={setOccupation} />
         </View>
-        <View className="flex justify-center items-center">
-          <View className="flex flex-row ">
-            <Image
-              source={github}
-              resizeMode="cover"
-              className="w-8 h-7" />
-            <Image
-              source={face}
-              resizeMode="cover"
-              className="w-8 h-8 mx-5" />
-            <Image
-              source={google}
-              resizeMode="cover"
-              className="w-8 h-8" />
-          </View>
-        </View>
+       
         <View className="w-full flex justify-center items-center ">
           <TouchableOpacity onPress={SignupUser} className={`w-full my-10 h-14 rounded-[8px]  justify-center items-center bg-[#064D7D] text-white`}>
             <Text className="text-white font-extrabold text-2xl">{loading ? <ActivityIndicator /> : 'Register'}</Text>
