@@ -10,16 +10,16 @@ import {
 import { AntDesign } from "@expo/vector-icons";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
-import UI from "@/assets/images/UI.png";
-import sfuchas from "@/assets/images/sfuchas.png";
-import UB from "@/assets/images/Uni Berm.png";
-import Taleguru from "@/assets/images/Taleguru.png";
-import APHRC from "@/assets/images/aphrc.png";
-import UW from "@/assets/images/warwick.png";
-import UKRI from "@/assets/images/UKRI.png";
-import NF from "@/assets/images/NewtonFund.png";
-import GCRF from "@/assets/images/GCRF.png";
-import KC from "@/assets/images/King's College.png";
+import UI from "@/assets/images/UI.jpg";
+import sfuchas from "@/assets/images/sfuchas.jpg";
+import UB from "@/assets/images/UniBerm.jpg";
+import Taleguru from "@/assets/images/Taleguru.jpg";
+import APHRC from "@/assets/images/aphrc.jpg";
+import UW from "@/assets/images/warwick.jpg";
+import UKRI from "@/assets/images/UKRI.jpg";
+import NF from "@/assets/images/NewtonFund.jpg";
+import GCRF from "@/assets/images/GCRF.jpg";
+import KC from "@/assets/images/KingsCollege.jpg";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 

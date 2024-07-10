@@ -2,10 +2,9 @@ import React from "react";
 import { View, Text, Image, ProgressBarAndroid, ImageProps } from "react-native";
 import Badge from "@/assets/images/menuIcons/Badge.png";
 
-const Card = ({  header, subheader, duration, score }: { 
+const Card = ({  header, subheader,  score }: { 
     header: string; 
     subheader: string; 
-    duration: string; 
     score?: number;
 }) => {
   

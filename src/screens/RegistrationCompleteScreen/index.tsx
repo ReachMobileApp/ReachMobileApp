@@ -3,8 +3,6 @@ import React from "react";
 import { BackBtn } from "@/src/components/UI/Buttons/BackBtn";
 import { Image } from "react-native";
 import CelebrateImg from "@/assets/images/Component.png";
-import { TextMedium16 } from "@/src/theme/typography";
-import { CustomButton } from "@/src/components/UI/Buttons";
 import { StackNavigationProps } from "@/src/shared";
 
 const RegistrationCompleteScreen = ({ navigation }: StackNavigationProps) => {

@@ -1,6 +1,5 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
-import Introduction from "@/src/screens/Modules/Introduction";
 import ModuleOne from "@/src/screens/Modules/One";
 import ModuleTwo from "@/src/screens/Modules/Two";
 import ModuleThree from "@/src/screens/Modules/Three";

@@ -2,12 +2,10 @@ import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, Image, ActivityIndicator, ScrollView } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Avatar from "@/assets/images/image.png";
-import { useFocusEffect } from '@react-navigation/native';
 import Play from "@/assets/images/play.jpg";
 import axios from "axios";
 
 import Card from "@/src/components/BadgeCard";
-import { firebaseAuth } from "@/firebaseConfig";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from 'react-native-toast-message';
 

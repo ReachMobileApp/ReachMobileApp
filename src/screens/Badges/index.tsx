@@ -111,7 +111,6 @@ const BadgesScreen = ({ navigation }: any) => {
                             key={module.id}
                             header={`MODULE ${module.moduleNumber}`}
                             subheader={module.status}
-                            duration="1 hr"
                             score={module.score}
                         />
                     ))

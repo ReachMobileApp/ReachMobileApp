@@ -1,7 +1,7 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import MenuScreen from "@/src/screens/MenuScreen";
-import SettingsScreen from "@/src/screens/SettingsScreen";
+// import SettingsScreen from "@/src/screens/SettingsScreen";
 import ProfileScreen from "@/src/screens/ProfileScreen";
 import BadgesScreen from "@/src/screens/Badges";
 
@@ -14,8 +14,8 @@ const SideMenuNavigator = () => {
                 component={MenuScreen}
                 options={{ headerShown: false }}
             />
-            <Stack.Screen name="Settings" component={SettingsScreen} options={{ headerShown: false }}
-            />
+            {/* <Stack.Screen name="Settings" component={SettingsScreen} options={{ headerShown: false }} */}
+            
             <Stack.Screen
                 name="Profile"
                 component={ProfileScreen}

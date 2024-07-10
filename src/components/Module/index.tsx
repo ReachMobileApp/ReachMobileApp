@@ -19,6 +19,7 @@ const Module = ({
 }) => {
     const [videoRef, setVideoRef] = useState<Video | null>(null);
 
+    //@ts-ignore
     const onPlaybackStatusUpdate = useCallback((status) => {
         if (status.didJustFinish) {
             Alert.alert("Video has finished playing!");
