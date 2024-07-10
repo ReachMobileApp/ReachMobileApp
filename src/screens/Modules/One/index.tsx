@@ -19,10 +19,23 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
     const [loading, setLoading] = useState(true);
     const [module, setModule] = useState<any>(null);
 
+   
     const stripHtmlTags = (html: string): string => {
-        return html.replace(/<[^>]*>/g, '');
+        // Create a temporary element to decode HTML entities
+        const tempElement = document.createElement('div');
+        tempElement.innerHTML = html;
+    
+        // Decode HTML entities
+        const decodedString = tempElement.textContent || tempElement.innerText || "";
+    
+        // Remove HTML tags
+        const cleanString = decodedString.replace(/<[^>]*>/g, '');
+    
+        // Remove &nbsp; specifically
+        const resultString = cleanString.replace(/&nbsp;/g, ' ');
+    
+        return resultString;
     };
-
     useEffect(() => {
         const fetchModule = async () => {
             try {
