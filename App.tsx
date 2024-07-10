@@ -23,9 +23,6 @@ export default function App() {
           <Stack.Screen name="SideMenuNavigator" component={SideMenuNavigator} />
           <Stack.Screen name="BottomTabNavigator" component={BottomTabNavigator} />
         </Stack.Navigator>
-        {/* <AuthProvider>
-          {!auth ? <AuthNavigator /> : <BottomTabNavigator />}
-        </AuthProvider> */}
       </NavigationContainer>
       <Toast />
     </PaperProvider>

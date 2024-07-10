@@ -9,6 +9,7 @@ import { StackNavigationProps } from "@/src/shared";
 import Image1 from "@/assets/images/Group 57.png";
 
 import Toast from 'react-native-toast-message'
+import { BASE_URL } from './../../config';
 
 const SignInScreen = ({ navigation }: StackNavigationProps) => {
   const [email, setEmail] = useState('');
@@ -19,7 +20,7 @@ const SignInScreen = ({ navigation }: StackNavigationProps) => {
     if (email && password) {
       setLoading(true);
       try {
-        const response = await axios.post('https://uhfiles.ui.edu.ng/api/v1/login', {
+        const response = await axios.post(`${BASE_URL}login`, {
           email,
           password
         });

@@ -13,6 +13,7 @@ import Play from "@/assets/images/play.jpg";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { Video, ResizeMode } from 'expo-av';
+import { BASE_URL } from './../../config';
 // Initialize Firestore
 
 interface Module {
@@ -68,7 +69,7 @@ const ModuleScreen = ({
                 const token = parsedUserInfo.data.auth_token;
 
                 const response = await axios.get<ApiResponse>(
-                    `https://uhfiles.ui.edu.ng/api/v11j1bdmvf8wk0asczzbgx1c6yy/modules`,
+                    `${BASE_URL}1j1bdmvf8wk0asczzbgx1c6yy/modules`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,

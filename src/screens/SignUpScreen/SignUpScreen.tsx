@@ -9,6 +9,7 @@ import { COLORS } from "@/src/theme/colors";
 import Toast from 'react-native-toast-message';
 import CustomDropdown from "@/src/components/UI/Dropdown";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { BASE_URL } from "@/src/config";
 const SignUpScreen = ({ navigation }: StackNavigationProps) => {
   const [fullName, setFullName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -27,7 +28,7 @@ const SignUpScreen = ({ navigation }: StackNavigationProps) => {
   useEffect(() => {
     const fetchFacilities = async () => {
       try {
-        const response = await axios.get('https://uhfiles.ui.edu.ng/api/v1/facilities');
+        const response = await axios.get(`${BASE_URL}facilities`);
         // console.log(response.data.data[0].name);
         const facilitiesData = response.data.data.map((facility: any) => ({ label: facility.name, value: facility.id }));
         console.log(facilitiesData);
@@ -48,7 +49,7 @@ const SignUpScreen = ({ navigation }: StackNavigationProps) => {
     if (email && name && password && password_confirmation && username && city && country && occupation && selectedFacility) {
       setLoading(true);
       try {
-        const response = await axios.post('https://uhfiles.ui.edu.ng/api/v1/register', {
+        const response = await axios.post(`${BASE_URL}register`, {
           email,
           name,
           password,
