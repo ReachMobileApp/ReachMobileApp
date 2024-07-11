@@ -16,6 +16,9 @@ import Page2 from "@/assets/images/menuIcons/Page-2.png";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { WebView } from "react-native-webview";
 import { BASE_URL } from "@/src/config";
+import { decode } from 'html-entities';
+
+
 
 type ModuleScreenProps = {
     navigation: DrawerNavigationProp<any, any>;
@@ -27,22 +30,15 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
     const [module, setModule] = useState<any>(null);
 
     const stripHtmlTags = (html: string): string => {
-        // Create a temporary element to decode HTML entities
-        const tempElement = document.createElement('div');
-        tempElement.innerHTML = html;
-
         // Decode HTML entities
-        const decodedString = tempElement.textContent || tempElement.innerText || "";
-
+        const decodedString = decode(html);
+    
         // Remove HTML tags
         const cleanString = decodedString.replace(/<[^>]*>/g, '');
-
-        // Remove &nbsp; specifically
+    
         const resultString = cleanString.replace(/&nbsp;/g, ' ');
-
         return resultString;
     };
-
     useEffect(() => {
         const fetchModule = async () => {
             try {

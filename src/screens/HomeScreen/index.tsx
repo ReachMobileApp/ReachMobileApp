@@ -110,7 +110,7 @@ const HomeScreen = ({
                     }
                 );
 
-                // console.log(response.data.data.data.data);
+                console.log(response.data.data.data.data);
                 setCourses(response.data.data.data.data);
             }
         } catch (error) {

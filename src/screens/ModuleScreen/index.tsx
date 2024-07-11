@@ -14,6 +14,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { Video, ResizeMode } from 'expo-av';
 import { BASE_URL } from './../../config';
+import { decode } from 'html-entities';
+
 // Initialize Firestore
 
 interface Module {
@@ -32,21 +34,17 @@ interface ApiResponse {
     };
 }
 const stripHtmlTags = (html: string): string => {
-    // Create a temporary element to decode HTML entities
-    const tempElement = document.createElement('div');
-    tempElement.innerHTML = html;
-
     // Decode HTML entities
-    const decodedString = tempElement.textContent || tempElement.innerText || "";
+    const decodedString = decode(html);
 
     // Remove HTML tags
     const cleanString = decodedString.replace(/<[^>]*>/g, '');
 
-    // Remove &nbsp; specifically
     const resultString = cleanString.replace(/&nbsp;/g, ' ');
-
     return resultString;
 };
+
+    
 const ModuleScreen = ({
     navigation,
 }: {
@@ -69,7 +67,7 @@ const ModuleScreen = ({
                 const token = parsedUserInfo.data.auth_token;
 
                 const response = await axios.get<ApiResponse>(
-                    `${BASE_URL}1j1bdmvf8wk0asczzbgx1c6yy/modules`,
+                    `${BASE_URL}courses/01j1bdmvf8wk0asczzbgx1c6yy/modules`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
