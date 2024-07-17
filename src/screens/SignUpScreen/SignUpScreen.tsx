@@ -5,16 +5,16 @@ import CustomPaperTextInput from "@/src/components/UI/Inputs/CustomPaperTextInpu
 import { Dropdown } from 'react-native-element-dropdown';
 import { StackNavigationProps } from "@/src/shared";
 import { COLORS } from "@/src/theme/colors";
-
 import Toast from 'react-native-toast-message';
 import CustomDropdown from "@/src/components/UI/Dropdown";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BASE_URL } from "@/src/config";
+
 const SignUpScreen = ({ navigation }: StackNavigationProps) => {
   const [fullName, setFullName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [name, setName] = useState<string>("");
-  const [username, setUsername] = useState<string>("");
+  const [years_of_work, setYear] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [password_confirmation, setCPassword] = useState<string>("");
   const [city, setCity] = useState<string>("");
@@ -22,16 +22,17 @@ const SignUpScreen = ({ navigation }: StackNavigationProps) => {
   const [occupation, setOccupation] = useState<string>("");
   const [facilities, setFacilities] = useState<{ label: string, value: string }[]>([]);
   const [selectedFacility, setSelectedFacility] = useState<string>("");
+  const [gender, setGender] = useState<string>("");
+  const [age_group, setAge] = useState<string>("");
   const [isFocus, setIsFocus] = useState(false);
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState({});
+
   useEffect(() => {
     const fetchFacilities = async () => {
       try {
         const response = await axios.get(`${BASE_URL}facilities`);
-        // console.log(response.data.data[0].name);
         const facilitiesData = response.data.data.map((facility: any) => ({ label: facility.name, value: facility.id }));
-        console.log(facilitiesData);
         setFacilities(facilitiesData);
       } catch (error) {
         console.error('Error fetching facilities:', error);
@@ -46,7 +47,7 @@ const SignUpScreen = ({ navigation }: StackNavigationProps) => {
   }, []);
 
   const SignupUser = async () => {
-    if (email && name && password && password_confirmation && username && city && country && occupation && selectedFacility) {
+    if (email && name && password && password_confirmation && age_group && years_of_work && occupation && selectedFacility && gender) {
       setLoading(true);
       try {
         const response = await axios.post(`${BASE_URL}register`, {
@@ -54,11 +55,13 @@ const SignUpScreen = ({ navigation }: StackNavigationProps) => {
           name,
           password,
           password_confirmation,
-          city,
-          username,
-          country,
+          // city,
+          age_group,
+          years_of_work,
+          // country,
           occupation,
-          facility_id: selectedFacility
+          facility_id: selectedFacility,
+          gender
         });
         const user = response.data
         if (response.data.success) {
@@ -71,12 +74,14 @@ const SignUpScreen = ({ navigation }: StackNavigationProps) => {
           setEmail('');
           setPassword('');
           setCPassword('');
-          setCity('');
+          // setCity('');
+          setYear('');
+          setAge('');
           setName('');
-          setUsername('');
-          setCountry('');
+          // setCountry('');
           setOccupation('');
           setSelectedFacility('');
+          setGender('');
           setUser(user);
           AsyncStorage.setItem('userInfo', JSON.stringify(user));
           navigation.navigate("SignInScreen");
@@ -86,7 +91,6 @@ const SignUpScreen = ({ navigation }: StackNavigationProps) => {
             type: 'error',
             text1: 'Error!',
             text2: 'Registration Failed'
-            // text2: response.data.message || 'Registration Failed'
           });
         }
       } catch (error: any) {
@@ -110,18 +114,14 @@ const SignUpScreen = ({ navigation }: StackNavigationProps) => {
   return (
     <>
       <ScrollView className="flex-1 bg-white px-4 pt-5">
-        <StatusBar
-          backgroundColor={COLORS.white}
-          barStyle={"dark-content"}
-          animated
-        />
+        <StatusBar backgroundColor={COLORS.white} barStyle={"dark-content"} animated />
         <View>
           <CustomPaperTextInput label="Email Address" value={email} onChangeText={setEmail} />
           <CustomPaperTextInput label="Name" value={name} onChangeText={setName} />
-          <CustomPaperTextInput label="Username" value={username} onChangeText={setUsername} />
+          <CustomPaperTextInput label="Years of experience" value={years_of_work} onChangeText={setYear} />
           <CustomPaperTextInput label="Password" value={password} onChangeText={setPassword} />
           <CustomPaperTextInput label="Confirm Password" value={password_confirmation} onChangeText={setCPassword} />
-          <CustomPaperTextInput label="City/Town" value={city} onChangeText={setCity} />
+          {/* <CustomPaperTextInput label="City/Town" value={city} onChangeText={setCity} /> */}
           <Dropdown
             style={[styles.dropdown, isFocus && { borderColor: COLORS.textColor }]}
             placeholderStyle={[styles.placeholderStyle, { color: COLORS.textColor }]}
@@ -139,10 +139,53 @@ const SignUpScreen = ({ navigation }: StackNavigationProps) => {
               setIsFocus(false)
             }}
           />
-          <CustomDropdown placeholder="Country" value={country} setValue={setCountry} />
+          <Dropdown
+            style={[styles.dropdown, isFocus && { borderColor: COLORS.textColor }]}
+            placeholderStyle={[styles.placeholderStyle, { color: COLORS.textColor }]}
+            selectedTextStyle={styles.placeholderStyle}
+            inputSearchStyle={styles.inputSearchStyle}
+            data={[
+              { label: "Male", value: "male" },
+              { label: "Female", value: "female" }
+            ]}
+            labelField="label"
+            valueField="value"
+            onFocus={() => setIsFocus(true)}
+            onBlur={() => setIsFocus(false)}
+            placeholder="Select Gender"
+            value={gender}
+            onChange={item => {
+              setGender(item.value);
+              setIsFocus(false)
+            }}
+          />
+          <Dropdown
+            style={[styles.dropdown, isFocus && { borderColor: COLORS.textColor }]}
+            placeholderStyle={[styles.placeholderStyle, { color: COLORS.textColor }]}
+            selectedTextStyle={styles.placeholderStyle}
+            inputSearchStyle={styles.inputSearchStyle}
+            data={[
+              { label: "0-18", value: "0-18" },
+              { label: "19-30", value: "19-30" },
+              { label: "31-40", value: "31-40" },
+              { label: "41-50", value: "41-50" },
+              { label: "51-60", value: "51-60" },
+              { label: "61-70", value: "61-70" },
+            ]}
+            labelField="label"
+            valueField="value"
+            onFocus={() => setIsFocus(true)}
+            onBlur={() => setIsFocus(false)}
+            placeholder="Select Age Group"
+            value={age_group}
+            onChange={item => {
+              setAge(item.value);
+              setIsFocus(false)
+            }}
+          />
           <CustomPaperTextInput label="Occupation" value={occupation} onChangeText={setOccupation} />
         </View>
-       
+
         <View className="w-full flex justify-center items-center ">
           <TouchableOpacity onPress={SignupUser} className={`w-full my-10 h-14 rounded-[8px]  justify-center items-center bg-[#064D7D] text-white`}>
             <Text className="text-white font-extrabold text-2xl">{loading ? <ActivityIndicator /> : 'Register'}</Text>
