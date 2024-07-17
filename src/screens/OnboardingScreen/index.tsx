@@ -62,9 +62,7 @@ const OnboardingScreen = ({ navigation }: StackNavigationProps) => {
           <TouchableOpacity onPress={() => navigation.navigate('SignInScreen')} >
             <View className='mt-56 h-11 bg-[#2061C7] w-[70%] mx-14 rounded-[50px] flex items-center justify-center'><Text className='text-center text-base text-white'>Let's Get Started</Text></View>
           </TouchableOpacity>
-          {/* <TouchableOpacity onPress={() => navigation.navigate('SignInScreen')} >
-            <View className='mt-56 h-11 bg-[#2061C7] w-[70%] mx-14 rounded-[50px] flex items-center justify-center'><Text className='text-center text-base text-white'>Let's Get Started</Text></View>
-          </TouchableOpacity> */}
+         
         </View>
         <View className='pt-2 relative h-full w-full'>
 

@@ -144,13 +144,6 @@ const ModuleScreen = ({
                         className="p-2">
                         <Ionicons name="menu" size={24} color="white" />
                     </TouchableOpacity>
-                    <TouchableOpacity className="p-2">
-                        <Ionicons
-                            name="alarm-outline"
-                            size={24}
-                            color="white"
-                        />
-                    </TouchableOpacity>
                 </View>
                 <Text className="text-white mt-8 mb-4 px-4 text-xl font-bold">
                     Welcome to this training course!
