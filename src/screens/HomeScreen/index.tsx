@@ -137,14 +137,7 @@ const HomeScreen = ({
                     className="p-2">
                     <Ionicons name="menu" size={24} color="#064D7D" />
                 </TouchableOpacity>
-                {/* Notification icon */}
-                <TouchableOpacity
-                    onPress={() => {
-                        /* Add navigation logic for notifications */
-                    }}
-                    className="p-2">
-                    <Ionicons name="notifications" size={24} color="#064D7D" />
-                </TouchableOpacity>
+              
             </View>
 
             {/* Date Selector */}
@@ -304,61 +297,61 @@ const HomeScreen = ({
                             <View className=" justify-center flex items-center">
                                 <Image
                                     source={KC}
-                                    style={{ height: 100, width: 100 }}
+                                    style={{ height: 50, width: 50 }}
                                 />
                             </View>
                             <View className=" justify-center flex items-center">
                                 <Image
                                     source={UI}
-                                    style={{ height: 100, width: 100 }}
+                                    style={{ height: 50, width: 50 }}
                                 />
                             </View>
                             <View className=" justify-center flex items-center">
                                 <Image
                                     source={UW}
-                                    style={{ height: 100, width: 100 }}
+                                    style={{ height: 50, width: 50 }}
                                 />
                             </View>
                             <View className=" justify-center flex items-center">
                                 <Image
                                     source={sfuchas}
-                                    style={{ height: 100, width: 100 }}
+                                    style={{ height: 50, width: 50 }}
                                 />
                             </View>
                             <View className=" justify-center flex items-center">
                                 <Image
                                     source={UB}
-                                    style={{ height: 100, width: 100 }}
+                                    style={{ height: 50, width: 50 }}
                                 />
                             </View>
                             <View className=" justify-center flex items-center">
                                 <Image
                                     source={Taleguru}
-                                    style={{ height: 150, width: 100 }}
+                                    style={{ height: 100, width: 50 }}
                                 />
                             </View>
                             <View className=" justify-center flex items-center">
                                 <Image
                                     source={APHRC}
-                                    style={{ height: 100, width: 300 }}
+                                    style={{ height: 50, width: 150 }}
                                 />
                             </View>
                             <View className=" justify-center flex items-center">
                                 <Image
                                     source={UKRI}
-                                    style={{ height: 100, width: 300 }}
+                                    style={{ height: 50, width: 150 }}
                                 />
                             </View>
                             <View className=" justify-center flex items-center">
                                 <Image
                                     source={NF}
-                                    style={{ height: 100, width: 300 }}
+                                    style={{ height: 50, width: 150 }}
                                 />
                             </View>
                             <View className=" justify-center flex items-center">
                                 <Image
                                     source={GCRF}
-                                    style={{ height: 100, width: 300 }}
+                                    style={{ height: 50, width: 150 }}
                                 />
                             </View>
                         </View>

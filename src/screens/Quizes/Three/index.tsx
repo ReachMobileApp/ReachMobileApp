@@ -164,18 +164,7 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
                         className="">
                         <Ionicons name="arrow-back" size={24} color="white" />
                     </TouchableOpacity>
-                    {/* Notification icon */}
-                    <TouchableOpacity
-                        onPress={() => {
-                            /* Add navigation logic for notifications */
-                        }}
-                        className="p-2">
-                        <Ionicons
-                            name="alarm-outline"
-                            size={24}
-                            color="white"
-                        />
-                    </TouchableOpacity>
+                   
                 </View>
             </View>
             <View className="p-4">
