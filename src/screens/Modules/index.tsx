@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-    View,
-    Text,
-    TouchableOpacity,
-    ScrollView,
-    ActivityIndicator,
-} from "react-native";
+import { View, Text, TouchableOpacity, ScrollView, ActivityIndicator } from "react-native";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
 import axios from "axios";
@@ -14,8 +8,7 @@ import ModulesButtons from "@/src/components/ModulesButtons";
 import Page from "@/assets/images/menuIcons/Page-1.png";
 import Page2 from "@/assets/images/menuIcons/Page-2.png";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { WebView } from "react-native-webview";
-import { BASE_URL } from './../../../config';
+import { BASE_URL } from '../../config';
 import { decode } from 'html-entities';
 
 type ModuleScreenProps = {
@@ -27,38 +20,41 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
     const [loading, setLoading] = useState(true);
     const [module, setModule] = useState<any>(null);
 
+   
+    
     const stripHtmlTags = (html: string): string => {
         // Decode HTML entities
         const decodedString = decode(html);
-    
-        // Remove HTML tags
-        const cleanString = decodedString.replace(/<[^>]*>/g, '');
-    
+
+        // Replace <p> tags with new lines
+        const cleanString = decodedString.replace(/<\/p>/g, '\n\n').replace(/<[^>]*>/g, '');
+
+        // Remove extra &nbsp; and convert to spaces
         const resultString = cleanString.replace(/&nbsp;/g, ' ');
+
         return resultString;
     };
-
     useEffect(() => {
         const fetchModule = async () => {
             try {
-                const userInfo = await AsyncStorage.getItem("userInfo");
-                if (userInfo) {
+                const userInfo = await AsyncStorage.getItem('userInfo');
+                const selectedModuleId = await AsyncStorage.getItem('selectedModuleId')
+                if (userInfo && selectedModuleId) {
                     const parsedUserInfo = JSON.parse(userInfo);
                     const token = parsedUserInfo.data.auth_token;
+                    const moduleId = selectedModuleId
 
-                    const response = await axios.get(
-                        `${BASE_URL}modules/01j1bdmw52bw0jx6srb8qsm4h8`,
-                        {
-                            headers: {
-                                Authorization: `Bearer ${token}`,
-                            },
-                        }
-                    );
+                    const response = await axios.get(`${BASE_URL}modules/${moduleId}`, {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    });
+                    console.log(response.data.data)
 
-                    setModule(response.data.data.currentModule);
+                    setModule(response.data.data);
                 }
             } catch (error) {
-                console.error("Error fetching module:", error);
+                console.error('Error fetching module:', error);
             } finally {
                 setLoading(false);
             }
@@ -86,19 +82,16 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
             </View>
         );
     }
-
     return (
         <View className="flex-1 bg-white pt-2">
             {/* Header */}
             <View className="bg-[#064d7d]">
-                <View className="flex-row justify-between items-center pt-2 mb-2 px-3">
+                <View className="flex-row justify-between items-center py-3 mb-2 px-3">
                     {/* Menu icon */}
-                    <TouchableOpacity
-                        onPress={() => navigation.goBack()}
-                        className="">
+                    <TouchableOpacity onPress={() => navigation.goBack()} className="">
                         <Ionicons name="arrow-back" size={24} color="white" />
                     </TouchableOpacity>
-                   
+                  
                 </View>
             </View>
 
@@ -108,32 +101,23 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                     <ScrollView>
                         <Module
                             header={module.name}
-                            subheader={stripHtmlTags(
-                                extractFirstParagraph(module.content)
-                            )}
-                            videoUrl={module.video} // Pass the correct video URL here
-                            learningOutcomeHeader="Learning Outcome:"
-                            learningOutcome={
-                                "This is the last module in the series that we have been studying. By now, you should be comfortable enough to conduct remote consulting in health. This last Module is to wrap up what you have learnt so far, and I want to congratulate you for staying through.We will reflect on the leadership qualities required to bring about change."
-                            }
+                            subheader={stripHtmlTags(extractFirstParagraph(module.content))}
+                            videoUrl={module.video}  // Pass the correct video URL here
+                            
+                            // learningOutcomeHeader="Learning Outcome:"
+                            // learningOutcome={
+                            //     "Analyze different forms of digital communication in common use. Consider how they might be used in health care."
+                            // }
                         />
                         <View className="mb-10 p-2">
                             <TouchableOpacity onPress={toggleVideoNotes}>
                                 <ModulesButtons
                                     image={showVideo ? Page : Page2}
-                                    header={
-                                        showVideo ? "Read Notes" : "Watch Video"
-                                    }
+                                    header={showVideo ? "Read Notes" : "Watch Video"}
                                 />
                             </TouchableOpacity>
-                            <TouchableOpacity
-                                onPress={() =>
-                                    navigation.navigate("QuizScreenSeven")
-                                }>
-                                <ModulesButtons
-                                    image={Page2}
-                                    header="Take Quiz"
-                                />
+                            <TouchableOpacity onPress={() => navigation.navigate("QuizScreen")}>
+                                <ModulesButtons image={Page2} header="Take Quiz" />
                             </TouchableOpacity>
                         </View>
                     </ScrollView>
@@ -154,31 +138,19 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                                     Notes:
                                 </Text>
                                 <View>
-                                    <Text className="text-[#070707] mb-2 text-base">
-                                        {" "}
-                                        {stripHtmlTags(module.content)}
-                                    </Text>
+                                    <Text className="text-[#070707] mb-2 text-base"> {stripHtmlTags(module.content)}</Text>
+                                  
                                 </View>
                             </View>
                             <View className="mb-10 p-2">
                                 <TouchableOpacity onPress={toggleVideoNotes}>
                                     <ModulesButtons
                                         image={showVideo ? Page : Page2}
-                                        header={
-                                            showVideo
-                                                ? "Read Notes"
-                                                : "Watch Video"
-                                        }
+                                        header={showVideo ? "Read Notes" : "Watch Video"}
                                     />
                                 </TouchableOpacity>
-                                <TouchableOpacity
-                                    onPress={() =>
-                                        navigation.navigate("QuizScreenSeven")
-                                    }>
-                                    <ModulesButtons
-                                        image={Page2}
-                                        header="Take Quiz"
-                                    />
+                                <TouchableOpacity onPress={() => navigation.navigate("QuizScreen")}>
+                                    <ModulesButtons image={Page2} header="Take Quiz" />
                                 </TouchableOpacity>
                             </View>
                         </ScrollView>
@@ -191,7 +163,7 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
 
 const extractFirstParagraph = (html: string): string => {
     const match = html.match(/<p>(.*?)<\/p>/);
-    return match ? match[1] : ""; // Return the content of the first <p> tag, or an empty string if not found
+    return match ? match[1] : ''; // Return the content of the first <p> tag, or an empty string if not found
 };
 
 export default ModuleScreen;

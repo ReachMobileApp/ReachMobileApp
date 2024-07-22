@@ -8,14 +8,14 @@ const Module = ({
     header,
     subheader,
     videoUrl,
-    learningOutcome,
-    learningOutcomeHeader,
+    // learningOutcome,
+    // learningOutcomeHeader,
 }: {
     header: string;
     subheader: string;
     videoUrl: string;
-    learningOutcome: string;
-    learningOutcomeHeader?: string;
+    // learningOutcome: string;
+    // learningOutcomeHeader?: string;
 }) => {
     const [videoRef, setVideoRef] = useState<Video | null>(null);
 
@@ -43,10 +43,10 @@ const Module = ({
                     onPlaybackStatusUpdate={onPlaybackStatusUpdate}
                 />
             </View>
-            <View>
+            {/* <View>
                 <Text className="mb-3 text-[#183745] font-bold text-lg">{learningOutcomeHeader}</Text>
                 <Text className="mb-2 text-[#183745] text-base">{learningOutcome}</Text>
-            </View>
+            </View> */}
         </View>
     );
 };
