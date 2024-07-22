@@ -66,8 +66,8 @@ const ProfileScreen = ({ navigation }: any) => {
                     }
                 );
 
-                console.log(response.data.data[0].profile);
-                setUserDetails(response.data.data[0].profile)
+                console.log(response.data.data[0]);
+                setUserDetails(response.data.data[0])
 
             }
         } catch (error) {

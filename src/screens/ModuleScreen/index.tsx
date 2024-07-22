@@ -74,9 +74,8 @@ const ModuleScreen = ({
                         },
                     }
                 );
-
-                console.log(response.data.data.data[0].modules);
-                setModules(response.data.data.data[0].modules);
+                console.log(response.data.data)
+                setModules(response.data.data);
             }
         } catch (error) {
             console.error('Error fetching courses:', error);

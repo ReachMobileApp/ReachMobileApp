@@ -186,10 +186,11 @@ const SignUpScreen = ({ navigation }: StackNavigationProps) => {
           <CustomPaperTextInput label="Occupation" value={occupation} onChangeText={setOccupation} />
         </View>
 
-        <View className="w-full flex justify-center items-center ">
-          <TouchableOpacity onPress={SignupUser} className={`w-full my-10 h-14 rounded-[8px]  justify-center items-center bg-[#064D7D] text-white`}>
+        <View className="w-full flex justify-center items-center my-10">
+          <TouchableOpacity onPress={SignupUser} className={`w-full  h-14 rounded-[8px]  justify-center items-center bg-[#064D7D] text-white`}>
             <Text className="text-white font-extrabold text-2xl">{loading ? <ActivityIndicator /> : 'Register'}</Text>
           </TouchableOpacity>
+          <Text className="text-left mt-2 text-base">Already have an account? <Text className='underline' onPress={() => navigation.navigate('SignUpScreen')}>Sign in</Text></Text>
         </View>
       </ScrollView>
     </>

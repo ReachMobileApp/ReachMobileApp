@@ -40,13 +40,14 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                     const parsedUserInfo = JSON.parse(userInfo);
                     const token = parsedUserInfo.data.auth_token;
 
-                    const response = await axios.get(`${BASE_URL}courses/01j1bdmvf8wk0asczzbgx1c6yy/modules/01j1bdmvfg351qkw1fm6cgeq22`, {
+                    const response = await axios.get(`${BASE_URL}modules/01j1bdmvfg351qkw1fm6cgeq22`, {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
                     });
+                    console.log(response.data.data)
 
-                    setModule(response.data.data.currentModule);
+                    setModule(response.data.data);
                 }
             } catch (error) {
                 console.error('Error fetching module:', error);

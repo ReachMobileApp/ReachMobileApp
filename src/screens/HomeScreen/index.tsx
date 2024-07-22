@@ -44,11 +44,11 @@ const HomeScreen = ({
 }: {
     navigation: DrawerNavigationProp<any, any>;
 }) => {
-    // Initialize state to hold the current date and module statuses
     const [currentDate, setCurrentDate] = useState(new Date());
     const [statuses, setStatuses] = useState<{ [key: string]: string }>({});
     const [loading, setLoading] = useState(true);
     const [courses, setCourses] = useState<Course[]>([]);
+
     useEffect(() => {
         const intervalId = setInterval(() => {
             setCurrentDate(new Date());
@@ -56,7 +56,6 @@ const HomeScreen = ({
         return () => clearInterval(intervalId); // Cleanup interval on component unmount
     }, []);
 
-    // Function to get the date for a specific day
     const getDateForDay = (offset: number) => {
         const date = new Date();
         date.setDate(currentDate.getDate() + offset);
@@ -94,6 +93,7 @@ const HomeScreen = ({
             }
         }
     };
+
     const fetchCourses = async () => {
         try {
             const userInfo = await AsyncStorage.getItem("userInfo");
@@ -120,14 +120,41 @@ const HomeScreen = ({
         }
     };
 
+    const handleGoToModules = async (courseId: string) => {
+        try {
+            const userInfo = await AsyncStorage.getItem("userInfo");
+            if (userInfo) {
+                const parsedUserInfo = JSON.parse(userInfo);
+                const token = parsedUserInfo.data.auth_token;
+
+                await axios.patch(
+                    `${BASE_URL}courses/01j1bdmvf8wk0asczzbgx1c6yy`,
+                    { /* your patch data */ },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+
+                navigation.navigate(
+                    "BottomTabNavigator",
+                    { screen: "Modules" }
+                );
+            }
+        } catch (error) {
+            console.error("Error sending patch request:", error);
+        }
+    };
+
     useEffect(() => {
         fetchCourses();
     }, []);
+
     return (
         <ScrollView className="flex-1 bg-white  ">
             {/* Header */}
             <View className="flex-row justify-between items-center mb-2 px-3">
-                {/* Menu icon */}
                 <TouchableOpacity
                     onPress={() =>
                         navigation.navigate("SideMenuNavigator", {
@@ -137,7 +164,6 @@ const HomeScreen = ({
                     className="p-2">
                     <Ionicons name="menu" size={24} color="#064D7D" />
                 </TouchableOpacity>
-              
             </View>
 
             {/* Date Selector */}
@@ -146,7 +172,6 @@ const HomeScreen = ({
                 showsHorizontalScrollIndicator={false}
                 className="mb-2 mx-1 bg-[#064D7D] mt-4 ">
                 {[...Array(9)].map((_, index) => {
-                    // Get the date for the current day
                     const date = getDateForDay(index);
                     const isCurrentDate =
                         date.toDateString() === currentDate.toDateString();
@@ -175,6 +200,7 @@ const HomeScreen = ({
                     );
                 })}
             </ScrollView>
+
             {/* Search Bar */}
             <View className="px-3 mb-2 mt-4 ">
                 <Text className="text-lg font-semibold mb-2">
@@ -190,7 +216,6 @@ const HomeScreen = ({
                     horizontal
                     showsHorizontalScrollIndicator={false}
                     className="p-4 w-80">
-                    {/* Cards */}
                     {courses.map((course) => (
                         <View
                             key={course.id}
@@ -224,12 +249,7 @@ const HomeScreen = ({
                             <View className="flex justify-center items-center">
                                 {/* Modules */}
                                 <TouchableOpacity
-                                    onPress={() =>
-                                        navigation.navigate(
-                                            "BottomTabNavigator",
-                                            { screen: "Modules" }
-                                        )
-                                    }
+                                    onPress={() => handleGoToModules(course.id)}
                                     className="text-center border-[#064D7D] bg-[#064D7D] rounded-2xl px-10 mt-3 py-2 border w-4/5 flex flex-row gap-x-3">
                                     <Text className="text-sm text-white pt-1">
                                         Go to Modules
@@ -246,6 +266,7 @@ const HomeScreen = ({
                     ))}
                 </ScrollView>
             </View>
+
             <View className="bg-gray-200">
                 <View className="px-3 py-1 bg-white shadow-lg">
                     <Text className="text-sm text-gray-500">
@@ -280,6 +301,7 @@ const HomeScreen = ({
                         </TouchableOpacity>
                     </View>
                 </View>
+
                 <View className="mt-2 mb-3 bg-white">
                     <View className="px-3 mb-4 mt-4 ">
                         <Text className="text-lg font-semibold mb-2">

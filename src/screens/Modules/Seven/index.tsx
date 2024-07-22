@@ -47,7 +47,7 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                     const token = parsedUserInfo.data.auth_token;
 
                     const response = await axios.get(
-                        `${BASE_URL}courses/01j1bdmvf8wk0asczzbgx1c6yy/modules/01j1bdmw52bw0jx6srb8qsm4h8`,
+                        `${BASE_URL}modules/01j1bdmw52bw0jx6srb8qsm4h8`,
                         {
                             headers: {
                                 Authorization: `Bearer ${token}`,

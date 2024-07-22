@@ -69,7 +69,7 @@ const SignInScreen = ({ navigation }: StackNavigationProps) => {
 
   return (
     <>
-      <ScrollView className="flex-1 bg-white px-4 pt-6">
+      <ScrollView className="flex-1 bg-white px-4 pt-6 h-full">
         <StatusBar backgroundColor={COLORS.white} barStyle={"dark-content"} animated />
         <View className="">
           <Image source={Image1} resizeMode="cover" className="mx-16 w-48 h-44" />
@@ -77,19 +77,19 @@ const SignInScreen = ({ navigation }: StackNavigationProps) => {
           <View className="mt-5">
             <CustomPaperTextInput label="Email Address" value={email} onChangeText={setEmail} />
             <CustomPaperTextInput label="Password" value={password} onChangeText={setPassword} />
-            <Pressable onPress={() => navigation.navigate('AuthNavigator', { screen: 'ResetPasswordScreen' })}>
-              <Text className="p-0 text-right font-medium text-[16px] leading-[16px] text-[#E13332] flex-shrink">Forgot Password? </Text>
-            </Pressable>
+           
           </View>
-          <View className="flex mt-5 justify-center items-center">
+          <View className="flex  justify-center items-center">
           </View>
         </View>
 
         <View className="w-full flex justify-center items-center ">
-          <TouchableOpacity onPress={SigninUser} className={`w-full my-10 h-14 rounded-[8px] justify-center items-center bg-[#064D7D]`}>
+          <TouchableOpacity onPress={SigninUser} className={`w-full mt-10 h-14 rounded-[8px] justify-center items-center bg-[#064D7D]`}>
             <Text className="text-white font-extrabold text-2xl">{loading ? <ActivityIndicator /> : 'Login'}</Text>
           </TouchableOpacity>
+          <Text className="text-left mt-2 text-base">Don't have an account? <Text className='underline' onPress={() => navigation.navigate('SignUpScreen')}>Sign up</Text></Text>
         </View>
+       
       </ScrollView>
     </>
   );
