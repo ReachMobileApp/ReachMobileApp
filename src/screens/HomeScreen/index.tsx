@@ -110,7 +110,6 @@ const HomeScreen = ({
                     }
                 );
 
-                console.log(response.data.data.data.data);
                 setCourses(response.data.data.data.data);
             }
         } catch (error) {
@@ -129,7 +128,9 @@ const HomeScreen = ({
 
                 await axios.patch(
                     `${BASE_URL}courses/01j1bdmvf8wk0asczzbgx1c6yy`,
-                    { /* your patch data */ },
+                    {
+                        /* your patch data */
+                    },
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -137,10 +138,9 @@ const HomeScreen = ({
                     }
                 );
 
-                navigation.navigate(
-                    "BottomTabNavigator",
-                    { screen: "Modules" }
-                );
+                navigation.navigate("BottomTabNavigator", {
+                    screen: "Modules",
+                });
             }
         } catch (error) {
             console.error("Error sending patch request:", error);
@@ -204,7 +204,7 @@ const HomeScreen = ({
             {/* Search Bar */}
             <View className="px-3 mb-2 mt-4 ">
                 <Text className="text-lg font-semibold mb-2">
-                    Start Courses
+                    Start Course(s)
                 </Text>
             </View>
 

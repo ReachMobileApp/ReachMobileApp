@@ -1,22 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
     View,
     Text,
     TouchableOpacity,
     ScrollView,
     ActivityIndicator,
-    Image,
 } from "react-native";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
-import Play from "@/assets/images/play.jpg";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import { Video, ResizeMode } from "expo-av";
 import { BASE_URL } from "./../../config";
 import { decode } from "html-entities";
-
-// Initialize Firestore
+import { useFocusEffect } from "@react-navigation/native";
 
 interface Module {
     id: string;
@@ -26,20 +22,18 @@ interface Module {
     content: string;
     image_url: string;
     modules: Module[];
+    has_completed_quiz: boolean;
+    has_user: boolean;
 }
 
 interface ApiResponse {
     data: Module[];
 }
+
 const stripHtmlTags = (html: string): string => {
-    // Decode HTML entities
     const decodedString = decode(html);
-
-    // Remove HTML tags
     const cleanString = decodedString.replace(/<[^>]*>/g, "");
-
-    const resultString = cleanString.replace(/&nbsp;/g, " ");
-    return resultString;
+    return cleanString.replace(/&nbsp;/g, " ");
 };
 
 const ModuleScreen = ({
@@ -47,13 +41,8 @@ const ModuleScreen = ({
 }: {
     navigation: DrawerNavigationProp<any, any>;
 }) => {
-    const [statuses, setStatuses] = useState<{ [key: string]: string }>({});
     const [loading, setLoading] = useState(true);
     const [modules, setModules] = useState<Module[]>([]);
-    // const extractFirstParagraph = (html: string): string => {
-    //     const match = html.match(/<p>(.*?)<\/p>/);
-    //     return match ? match[1] : ''; // Return the content of the first <p> tag, or an empty string if not found
-    // };
 
     const fetchModules = async () => {
         try {
@@ -70,7 +59,6 @@ const ModuleScreen = ({
                         },
                     }
                 );
-                console.log(response.data.data);
                 setModules(response.data.data);
             }
         } catch (error) {
@@ -80,9 +68,12 @@ const ModuleScreen = ({
         }
     };
 
-    useEffect(() => {
-        fetchModules();
-    }, []);
+
+      useFocusEffect(
+        useCallback(() => {
+            fetchModules();
+        }, [])
+    );
 
     const handleModulePress = async (moduleId: string) => {
         try {
@@ -104,6 +95,8 @@ const ModuleScreen = ({
             </View>
         );
     }
+
+
 
     return (
         <View className="flex-1 bg-white pt-2">
@@ -129,17 +122,31 @@ const ModuleScreen = ({
                         <TouchableOpacity
                             key={module.id}
                             onPress={() => handleModulePress(module.id)}
-                            className="mb-2  w-full bg-white mx-1 px-1 py-3 flex flex-row">
-                            <Image
-                                source={Play}
-                                style={{ height: 80, width: 80 }}
-                            />
-                            <View className="flex w-8/12 px-3 text-center justify-center">
+                            className={`mb-2 w-full bg-white mx-1 px-1 py-3 flex flex-row ${!module.has_user && 'opacity-50'}`}
+                            disabled={!module.has_user} // Disable if user does not have access
+                        >
+                            <View style={{ height: 80, width: 80, justifyContent: 'center', alignItems: 'center' }}>
+                                <Ionicons
+                                    name={module.has_user ? "play-circle" : "lock-closed"}
+                                    size={40}
+                                    color={module.has_user ? "#064d7d" : "gray"}
+                                />
+                            </View>
+                          <View className = "w-full justify-center">
+                          <View className="flex w-8/12 px-3 text-center justify-between flex-row">
                                 <Text className="text-xl text-black font-bold">
                                     {module.name}
                                 </Text>
-                                {/* <Text className="text-sm text-gray-600">{stripHtmlTags(module.content)}</Text> */}
+                                {module.has_completed_quiz && (
+                                    <Ionicons
+                                        name="checkmark-circle"
+                                        size={20}
+                                        color="green"
+                                        style={{ marginLeft: 5 }}
+                                    />
+                                )}
                             </View>
+                          </View>
                         </TouchableOpacity>
                     ))}
                 </View>

@@ -8,23 +8,21 @@ const Module = ({
     header,
     subheader,
     videoUrl,
-    // learningOutcome,
-    // learningOutcomeHeader,
+    onVideoFinish,
 }: {
     header: string;
     subheader: string;
     videoUrl: string;
-    // learningOutcome: string;
-    // learningOutcomeHeader?: string;
+    onVideoFinish: () => void;
 }) => {
     const [videoRef, setVideoRef] = useState<Video | null>(null);
-
     //@ts-ignore
     const onPlaybackStatusUpdate = useCallback((status) => {
         if (status.didJustFinish) {
             Alert.alert("Video has finished playing!");
+            onVideoFinish();
         }
-    }, []);
+    }, [onVideoFinish]);
 
     return (
         <View className="p-4">
@@ -43,10 +41,6 @@ const Module = ({
                     onPlaybackStatusUpdate={onPlaybackStatusUpdate}
                 />
             </View>
-            {/* <View>
-                <Text className="mb-3 text-[#183745] font-bold text-lg">{learningOutcomeHeader}</Text>
-                <Text className="mb-2 text-[#183745] text-base">{learningOutcome}</Text>
-            </View> */}
         </View>
     );
 };

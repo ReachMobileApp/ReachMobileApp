@@ -7,11 +7,8 @@ import ConfirmEmailScreen from "@/src/screens/ConfirmEmailScreen";
 import RegistrationCompleteScreen from "@/src/screens/RegistrationCompleteScreen";
 import SignInScreen from "@/src/screens/SignInScreen/index";
 import Header from "@/src/components/UI/Header/Header";
-import ChangePasswordScreen from "@/src/screens/ChangePasswordScreen";
-import OtpVerificationScreen from "@/src/screens/OtpVerificationScreen";
-import PasswordChangedScreen from "@/src/screens/PasswordChangedScreen";
-import ResetPasswordScreen from "@/src/screens/ResetPasswordScreen";
-import CodeScreen from "@/src/screens/OtpVerificationScreen/CodeScreen";
+
+
 
 
 const AuthNavigator = () => {
@@ -30,11 +27,7 @@ const AuthNavigator = () => {
           }} />
       <Stack.Screen name="ConfirmEmailScreen" component={ConfirmEmailScreen}  options={{title:''}}/>
 
-      <Stack.Screen name="ChangePasswordScreen" component={ChangePasswordScreen}  options={{headerShown: false}}/>
-      <Stack.Screen name="OtpVerificationScreen" component={OtpVerificationScreen}  options={{title:''}}/>
-      <Stack.Screen name="PasswordChangedScreen" component={PasswordChangedScreen}  options={{headerShown: false}}/>
-      <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen}  options={{title:''}}/>
-      <Stack.Screen name="CodeScreen" component={CodeScreen}  options={{title:''}}/>
+   
 
       <Stack.Screen
         name="RegistrationCompleteScreen"

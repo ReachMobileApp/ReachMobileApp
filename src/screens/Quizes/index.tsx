@@ -12,6 +12,8 @@ import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { BASE_URL } from "@/src/config";
+import Toast from 'react-native-toast-message'
+
 
 interface Answer {
   id: string;
@@ -46,6 +48,7 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
   const [quizId, setQuizId] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [errorDetails, setErrorDetails] = useState<{ [key: string]: string[] } | null>(null);
+  const [submitLoading, setSubmitLoading] = useState(false);
 
   const handleSelection = (questionId: string, answerId: string) => {
     setSelectedAnswers((prev) => ({
@@ -89,7 +92,7 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
       if (userInfo) {
         const parsedUserInfo = JSON.parse(userInfo);
         const token = parsedUserInfo.data.auth_token;
-
+        setSubmitLoading(true)
         const payload = {
           quiz_id: quizId,
           results: quizQuestions.map((question) => ({
@@ -97,27 +100,32 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
             selected_answer_id: selectedAnswers[question.id] || null,
           })),
         };
-        console.log(payload);
 
         const response = await axios.post(`${BASE_URL}mark-quiz`, payload, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-
-        console.log(response);
-        setScore(response.data.score);
-        setErrorMessage(null); // Clear any previous error messages
-        setErrorDetails(null); // Clear any previous error details
+        if (response.data.success)
+        {
+         setSubmitLoading(false) ;
+         Toast.show({
+          type: 'success',
+          text1: 'Success!',
+          text2: response.data.message
+         })
+        }
+        navigation.navigate(
+          "BottomTabNavigator",
+          { screen: "Modules" }
+      ); 
       }
-    } catch (error) {
-      console.error('Error submitting quiz:', error);
-      if (error.response && error.response.data) {
-        setErrorMessage(error.response.data.message);
-        setErrorDetails(error.response.data.errors);
-      } else {
-        setErrorMessage('An error occurred while submitting the quiz.');
-      }
+    } catch (error: any) {
+     Toast.show({
+      type: 'error',
+      text1: 'Error!',
+      text2: error.response?.data?.message || error.message
+     })
     }
   };
 
@@ -133,7 +141,7 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
     <ScrollView className="flex-1 bg-white pt-2">
       {/* Header */}
       <View className="bg-[#064d7d]">
-        <View className="flex-row justify-between items-center pt-2 mb-2 px-3">
+        <View className="flex-row justify-between items-center py-2 mb-2 px-3">
           {/* Menu icon */}
           <TouchableOpacity onPress={() => navigation.goBack()} className="">
             <Ionicons name="arrow-back" size={24} color="white" />
@@ -178,7 +186,7 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
             }}
           >
             <Text style={{ color: "white", textAlign: "center", fontSize: 16 }}>
-              Submit
+            {submitLoading ? <ActivityIndicator /> : 'Submit'}
             </Text>
           </TouchableOpacity>
           {errorMessage && (
