@@ -190,7 +190,7 @@ const SignUpScreen = ({ navigation }: StackNavigationProps) => {
           <TouchableOpacity onPress={SignupUser} className={`w-full  h-14 rounded-[8px]  justify-center items-center bg-[#064D7D] text-white`}>
             <Text className="text-white font-extrabold text-2xl">{loading ? <ActivityIndicator /> : 'Register'}</Text>
           </TouchableOpacity>
-          <Text className="text-left mt-2 text-base">Already have an account? <Text className='underline' onPress={() => navigation.navigate('SignUpScreen')}>Sign in</Text></Text>
+          <Text className="text-left mt-2 text-base">Already have an account? <Text className='underline' onPress={() => navigation.navigate('SignInScreen')}>Sign in</Text></Text>
         </View>
       </ScrollView>
     </>
