@@ -222,6 +222,9 @@ const styles = StyleSheet.create({
   },
   selectedOption: {
     borderColor: '#064d7d',
+    backgroundColor: '#064d7d',
+    color: 'white',
+    
   },
 });
 

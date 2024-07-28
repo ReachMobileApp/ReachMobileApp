@@ -252,7 +252,7 @@ const HomeScreen = ({
                                     onPress={() => handleGoToModules(course.id)}
                                     className="text-center border-[#064D7D] bg-[#064D7D] rounded-2xl px-10 mt-3 py-2 border w-4/5 flex flex-row gap-x-3">
                                     <Text className="text-sm text-white pt-1">
-                                        Go to Modules
+                                        Get Started
                                     </Text>
                                     <AntDesign
                                         name="arrowright"
@@ -281,25 +281,7 @@ const HomeScreen = ({
                         in a community center or a shared fixed telephone in a
                         remote rural village)
                     </Text>
-                    <View className="flex justify-center items-center">
-                        <TouchableOpacity
-                            onPress={() =>
-                                navigation.navigate("BottomTabNavigator", {
-                                    screen: "Module",
-                                })
-                            }
-                            className="text-center border-[#064D7D] bg-[#064D7D] rounded-2xl px-10 mt-3 py-2 border w-4/5">
-                            <Text
-                                onPress={() =>
-                                    navigation.navigate("BottomTabNavigator", {
-                                        screen: "Modules",
-                                    })
-                                }
-                                className="text-white text-center  text-[16px]">
-                                GET STARTED
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
+                   
                 </View>
 
                 <View className="mt-2 mb-3 bg-white">
