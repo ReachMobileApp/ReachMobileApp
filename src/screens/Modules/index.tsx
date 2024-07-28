@@ -53,6 +53,7 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                         `${BASE_URL}modules/${moduleId}`,
                         { headers: { Authorization: `Bearer ${token}` } }
                     );
+                    console.log(response.data.data)
                     setModule(response.data.data);
                 }
             } catch (error) {
@@ -81,13 +82,13 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
         return { access: true, directoryUri: permissions.directoryUri };
     };
 
-    const downloadFile = async (url: string) => {
+    const downloadFile = async (url: string, noteIndex: number) => {
         try {
             const response = await axios.get(url, { responseType: 'arraybuffer' });
             const base64Data = Buffer.from(response.data).toString('base64');
             const hasPermissions = await requestFileWritePermission();
             if (hasPermissions.access) {
-                await saveReportFile(base64Data, hasPermissions.directoryUri || "");
+                await saveReportFile(base64Data, hasPermissions.directoryUri || "", noteIndex);
             }
         } catch (error) {
             console.error("Error downloading file:", error);
@@ -95,15 +96,15 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
         }
     };
 
-    const saveReportFile = async (base64Data: string, directoryUri: string) => {
+    const saveReportFile = async (base64Data: string, directoryUri: string, noteIndex: number) => {
         try {
             const moduleName = module?.name.replace(/[^a-zA-Z0-9]/g, '_') || 'download';
-            const fileName = `${moduleName}.pdf`;
+            const fileName = `${moduleName}_note${noteIndex + 1}.pdf`;
             const fileUri = await StorageAccessFramework.createFileAsync(directoryUri, fileName, 'application/pdf');
-    
+
             await FileSystem.writeAsStringAsync(fileUri, base64Data, { encoding: FileSystem.EncodingType.Base64 });
-    
-            Alert.alert("Success", `File saved to: ${fileUri}`);
+
+            Alert.alert("Success", `File downloaded as ${fileName}`);
         } catch (error: any) {
             console.error("Error saving file:", error);
             Alert.alert("Error", `Could not save file: ${error.message}`);
@@ -180,14 +181,15 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                                         {stripHtmlTags(module.content)}
                                     </Text>
                                 </View>
-                                {module.note && (
+                                {module.notes && module.notes.map((note: any, index: number) => (
                                     <TouchableOpacity
-                                        onPress={() => downloadFile(module.note)}
-                                        style={{ backgroundColor: '#064d7d', padding: 10, borderRadius: 5 }}
+                                        key={note.id}
+                                        onPress={() => downloadFile(note.note, index)}
+                                        style={{ backgroundColor: '#064d7d', padding: 10, borderRadius: 5, marginTop: 10 }}
                                     >
-                                        <Text style={{ color: 'white', textAlign: 'center' }}>Download Note</Text>
+                                        <Text style={{ color: 'white', textAlign: 'center' }}>Download Note {index + 1}</Text>
                                     </TouchableOpacity>
-                                )}
+                                ))}
                             </View>
                             <View className="mb-10 p-2">
                                 <TouchableOpacity onPress={toggleVideoNotes}>

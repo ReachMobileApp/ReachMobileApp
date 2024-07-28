@@ -5,6 +5,7 @@ import Avatar from "@/assets/images/image.png";
 import Course from "@/assets/images/menuIcons/Course.png";
 import Logout from "@/assets/images/menuIcons/Logout.png";
 import TrackProgress from "@/assets/images/menuIcons/TrackProgress.png";
+import Certificate from "@/assets/images/menuIcons/support_agent.png";
 import ArrowRight from "@/assets/images/menuIcons/arrowRight.png";
 import Toast from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -104,6 +105,13 @@ const MenuScreen = ({ navigation }: any) => {
                     className="flex-row items-center px-4 py-6 border-b border-gray-300">
                     <Image source={TrackProgress} className="w-3 h-3 mr-4" />
                     <Text>Badges</Text>
+                    <Image source={ArrowRight} className="ml-auto w-3 h-3" />
+                </TouchableOpacity>
+                <TouchableOpacity
+                    onPress={() => navigation.navigate("SideMenuNavigator", { screen: "Certificate" })}
+                    className="flex-row items-center px-4 py-6 border-b border-gray-300">
+                    <Image source={Certificate} className="w-3 h-3 mr-4" />
+                    <Text>Certificate</Text>
                     <Image source={ArrowRight} className="ml-auto w-3 h-3" />
                 </TouchableOpacity>
 
