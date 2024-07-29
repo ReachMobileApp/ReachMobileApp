@@ -77,6 +77,9 @@ const SignInScreen = ({ navigation }: StackNavigationProps) => {
           <View className="mt-5">
             <CustomPaperTextInput label="Email Address" value={email} onChangeText={setEmail} />
             <CustomPaperTextInput label="Password" value={password} onChangeText={setPassword} />
+            <Pressable onPress={() => navigation.navigate('RegistrationCompleteScreen')}>
+              <Text className="p-0 text-right text-sm leading-[16px] text-[#0F172B] flex-shrink pt-5">Forgot Password? </Text>
+            </Pressable>
           </View>
         </View>
         <View className="w-full flex justify-center items-center ">

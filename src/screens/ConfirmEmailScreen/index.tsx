@@ -13,13 +13,15 @@ const ConfirmEmailScreen = ({ navigation }: StackNavigationProps) => {
   }, [navigation]);
 
   return (
-    <View className="flex h-full items-center bg-white px-4 pt-7">
-      <Text className="text-sm text-black font-semibold mt-5">Please verify your email by using the link sent to your email address</Text>
-      <View className="mt-40">
+    <View className="flex h-full items-center bg-white px-10 pt-7">
+      <Text className="text-sm text-black font-semibold mt-5 text-center">Please verify your email by using the link sent to your email address</Text>
+     
+      <View className="mt-20">
+        
         <TouchableOpacity onPress={() => navigation.navigate('SignInScreen')} className="bg-[#064D7D] w-72  rounded-[20px]">
           <Text className="text-white text-center text-[16px] font-bold py-4">Next</Text>
         </TouchableOpacity>
-        <Text onPress={() => navigation.goBack()} className="text-center text-sm mt-9">Go Back</Text>
+        
       </View>
     </View>
   );

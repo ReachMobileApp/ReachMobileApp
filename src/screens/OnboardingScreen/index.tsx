@@ -54,7 +54,7 @@ const OnboardingScreen = ({ navigation }: StackNavigationProps) => {
           <Image
             source={Image1}
             resizeMode="cover"
-            className="mx-[15%] absolute z-10 w-[63%] h-[30%]"
+            className="mx-[12%] absolute z-10 w-[63%] h-[30%]"
           />
           <View className='mx-[5%] mt-[45%] bg-[#2061C7]  flex justify-center border border-red-800 h-[18%]  rounded-full items-center'>
             <Text className='text-[13px] text-center pt-1 text-white px-2'>Determining trustworthiness and safety of remote {'\n'} consulting in primary healthcare for chronic disease {'\n'} populations in Africa</Text>
