@@ -4,16 +4,17 @@ import { createStackNavigator } from "@react-navigation/stack";
 import OnboardingScreen from "@/src/screens/OnboardingScreen";
 import SignUpScreen from "@/src/screens/SignUpScreen/Index";
 import ConfirmEmailScreen from "@/src/screens/ConfirmEmailScreen";
-import RegistrationCompleteScreen from "@/src/screens/RegistrationCompleteScreen";
 import SignInScreen from "@/src/screens/SignInScreen/index";
 import Header from "@/src/components/UI/Header/Header";
+import OtpScreen from "@/src/screens/OtpScreen";
+import ResetPasswordScreen from "@/src/screens/ResetPasswordScreen";
 
 
 
 
 const AuthNavigator = () => {
   const Stack = createStackNavigator();
-  // screenOptions={{ headerShown: false }}  headerBackVisible: false
+ 
   return (
     <Stack.Navigator >
       <Stack.Screen name="OnboardingScreen" component={OnboardingScreen} options={{title:''}} />
@@ -26,12 +27,10 @@ const AuthNavigator = () => {
             headerLeft: () => null, 
           }} />
       <Stack.Screen name="ConfirmEmailScreen" component={ConfirmEmailScreen}  options={{title:''}}/>
-
-   
-
+      <Stack.Screen name="OtpScreen" component={OtpScreen} options={{title: ''}}/>
       <Stack.Screen
-        name="RegistrationCompleteScreen"
-        component={RegistrationCompleteScreen}
+        name="ResetPasswordScreen"
+        component={ResetPasswordScreen}
         options={{title:''}}
       />
       <Stack.Screen name="SignInScreen" component={SignInScreen} options={{

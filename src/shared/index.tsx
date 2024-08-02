@@ -8,12 +8,12 @@ export type RouterProp = RouteProp<any, any>;
 
 export interface DrawerNavigationProps {
   navigation: DrawerNavigatorProp;
-  route?: RouterProp;
+  route: RouterProp;
 }
 
 export interface StackNavigationProps {
   navigation: StackNavigatorProp;
-  route?: RouterProp;
+  route: RouterProp;
 }
 export interface DropdownData {
   name: string;

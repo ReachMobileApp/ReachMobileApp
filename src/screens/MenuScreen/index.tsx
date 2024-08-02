@@ -98,8 +98,6 @@ const MenuScreen = ({ navigation }: any) => {
                     <Text>Courses</Text>
                     <Image source={ArrowRight} className="ml-auto w-3 h-3" />
                 </TouchableOpacity>
-
-                {/* Grades */}
                 <TouchableOpacity
                     onPress={() => navigation.navigate("SideMenuNavigator", { screen: "Badge" })}
                     className="flex-row items-center px-4 py-6 border-b border-gray-300">

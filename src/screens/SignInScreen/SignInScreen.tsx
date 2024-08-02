@@ -6,7 +6,7 @@ import CustomPaperTextInput from "@/src/components/UI/Inputs/CustomPaperTextInpu
 import { COLORS } from "@/src/theme/colors";
 import { StackNavigationProps } from "@/src/shared";
 import Image1 from "@/assets/images/Group 57.png";
-import Toast from 'react-native-toast-message'
+import Toast from 'react-native-toast-message';
 import { BASE_URL } from './../../config';
 import { useFocusEffect } from '@react-navigation/native';
 
@@ -25,7 +25,7 @@ const SignInScreen = ({ navigation }: StackNavigationProps) => {
           password
         });
         const user = response.data;
-        if (response.data.success) {
+        if (response.status === 200) {
           setLoading(false);
           Toast.show({
             type: 'success',
@@ -35,23 +35,29 @@ const SignInScreen = ({ navigation }: StackNavigationProps) => {
           setUser(user);
           await AsyncStorage.setItem('userInfo', JSON.stringify(user));
           navigation.navigate('BottomTabNavigator', { screen: 'Home' });
-        } else {
-          setLoading(false);
-          Toast.show({
-            type: 'error',
-            text1: 'Error!',
-            text2: response.data.message || 'Login Failed'
-          });
+          console.log('success');
+         
         }
       } catch (error: any) {
-        Toast.show({
-          type: 'error',
-          text1: 'Error!',
-          text2: error.response?.data?.message || error.message
-        });
+        if (error.response) {
+          if (error.response.status === 401) {
+            console.log('not verified');
+            setUser(user);
+            await AsyncStorage.setItem('email', email); // Save email separately
+            navigation.navigate("OtpScreen");
+          } else if (error.response.status === 400) {
+            console.log('wrong details');
+          } else {
+            console.log('An unexpected error occurred:', error.message);
+          }
+        } else {
+          console.log('An unexpected error occurred:', error.message);
+        }
+      } finally {
         setLoading(false);
       }
-    } else {
+    }
+    else {
       Toast.show({
         type: 'error',
         text1: 'Error!',
@@ -77,6 +83,9 @@ const SignInScreen = ({ navigation }: StackNavigationProps) => {
           <View className="mt-5">
             <CustomPaperTextInput label="Email Address" value={email} onChangeText={setEmail} />
             <CustomPaperTextInput label="Password" value={password} onChangeText={setPassword} />
+            <Pressable onPress={() => navigation.navigate('RegistrationCompleteScreen')}>
+              <Text className="p-0 text-right text-sm leading-[16px] text-[#0F172B] flex-shrink pt-5">Forgot Password? </Text>
+            </Pressable>
           </View>
         </View>
         <View className="w-full flex justify-center items-center ">
@@ -85,10 +94,53 @@ const SignInScreen = ({ navigation }: StackNavigationProps) => {
           </TouchableOpacity>
           <Text className="text-left mt-2 text-base">Don't have an account? <Text className='underline' onPress={() => navigation.navigate('SignUpScreen')}>Sign up</Text></Text>
         </View>
-
       </ScrollView>
     </>
   );
 };
 
 export default SignInScreen;
+
+
+
+  // if (email && password) {
+    //   setLoading(true);
+    //   try {
+    // const response = await axios.post(`${BASE_URL}login`, {
+    //   email,
+    //   password
+    // });
+    //     const user = response.data;
+    //     if (response.data.success) {
+    //       setLoading(false);
+          // Toast.show({
+          //   type: 'success',
+          //   text1: 'Success!',
+          //   text2: 'Login Successful'
+          // });
+          // setUser(user);
+          // await AsyncStorage.setItem('userInfo', JSON.stringify(user));
+          // navigation.navigate('BottomTabNavigator', { screen: 'Home' });
+    //     } else if(response.data.) {
+    //       setLoading(false);
+    //       Toast.show({
+    //         type: 'error',
+    //         text1: 'Error!',
+    //         text2: response.data.message || 'Login Failed'
+    //       });
+    //     }
+    //   } catch (error: any) {
+    //     Toast.show({
+    //       type: 'error',
+    //       text1: 'Error!',
+    //       text2: error.response?.data?.message || error.message
+    //     });
+    //     setLoading(false);
+    //   }
+    // } else {
+    //   Toast.show({
+    //     type: 'error',
+    //     text1: 'Error!',
+    //     text2: 'Please fill all fields'
+    //   });
+    // }
