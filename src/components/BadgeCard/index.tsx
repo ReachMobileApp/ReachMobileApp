@@ -1,11 +1,11 @@
 import React from "react";
 import { View, Text, Image, ProgressBarAndroid, ImageProps } from "react-native";
 import Badge from "@/assets/images/menuIcons/Badge.png";
+import { Icon } from "next/dist/lib/metadata/types/metadata-types";
 
-const Card = ({  header, subheader, score }: { 
+const Card = ({  header, subheader }: { 
     header: string; 
     subheader: string; 
-    score?: number;
 }) => {
   
   return (
@@ -15,7 +15,6 @@ const Card = ({  header, subheader, score }: {
       <View className="flex w-9/12  px-3">
 
       <Text className="text-xl text-black  font-bold ">{header}</Text>
-        <Text className="text-sm text-green-600">{score}%</Text>
       <Text className="text-sm text-green-600 ">{subheader}</Text>
      
       </View>

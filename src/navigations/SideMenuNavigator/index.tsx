@@ -4,6 +4,7 @@ import MenuScreen from "@/src/screens/MenuScreen";
 // import SettingsScreen from "@/src/screens/SettingsScreen";
 import ProfileScreen from "@/src/screens/ProfileScreen";
 import BadgesScreen from "@/src/screens/Badges";
+import CertificateScreen from "@/src/screens/Certificate";
 
 const SideMenuNavigator = () => {
     const Stack = createStackNavigator();
@@ -14,7 +15,6 @@ const SideMenuNavigator = () => {
                 component={MenuScreen}
                 options={{ headerShown: false }}
             />
-            {/* <Stack.Screen name="Settings" component={SettingsScreen} options={{ headerShown: false }} */}
             
             <Stack.Screen
                 name="Profile"
@@ -24,6 +24,11 @@ const SideMenuNavigator = () => {
             <Stack.Screen
                 name="Badge"
                 component={BadgesScreen}
+                options={{ headerShown: false }}
+            />
+            <Stack.Screen
+                name="Certificate"
+                component={CertificateScreen}
                 options={{ headerShown: false }}
             />
 
