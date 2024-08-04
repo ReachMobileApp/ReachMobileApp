@@ -31,8 +31,8 @@ const ResetPasswordScreen = ({ navigation }: StackNavigationProps) => {
             text1: 'Success!',
             text2: 'success,We have emailed your password reset link.'
           });
-          Alert.alert('Success', 'We have emailed your password reset link.')
-          navigation.navigate('SignInScreen')
+          AsyncStorage.setItem('email', email);
+          navigation.navigate('ConfirmPasswordReset');
         } else {
           setLoading(false);
           Toast.show({
@@ -71,7 +71,7 @@ const ResetPasswordScreen = ({ navigation }: StackNavigationProps) => {
         <StatusBar backgroundColor={COLORS.white} barStyle={"dark-content"} animated />
         <View className="">
           <Image source={Image1} resizeMode="cover" className="mx-16 w-48 h-44" />
-          <Text className="font-bold text-2xl text-center mt-5">Reset your Password Here</Text>
+          <Text className="font-bold text-2xl text-center mt-5">Enter your email</Text>
           <View className="mt-5">
             <CustomPaperTextInput label="Email Address" value={email} onChangeText={setEmail} />
 
@@ -79,7 +79,7 @@ const ResetPasswordScreen = ({ navigation }: StackNavigationProps) => {
         </View>
         <View className="w-full flex justify-center items-center ">
           <TouchableOpacity onPress={resetPassword} className={`w-full mt-10 h-14 rounded-[8px] justify-center items-center bg-[#064D7D]`}>
-            <Text className="text-white font-extrabold text-2xl">{loading ? <ActivityIndicator /> : 'Reset Password'}</Text>
+            <Text className="text-white font-extrabold text-2xl">{loading ? <ActivityIndicator /> : 'Get OTP'}</Text>
           </TouchableOpacity>
 
         </View>

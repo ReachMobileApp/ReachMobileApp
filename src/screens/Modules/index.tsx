@@ -53,7 +53,6 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                         `${BASE_URL}modules/${moduleId}`,
                         { headers: { Authorization: `Bearer ${token}` } }
                     );
-                    console.log(response.data.data)
                     setModule(response.data.data);
                 }
             } catch (error) {

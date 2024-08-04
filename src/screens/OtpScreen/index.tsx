@@ -32,7 +32,6 @@ const OtpScreen = ({ navigation, route }: StackNavigationProps) => {
   const getData = async () => {
     try {
       const value = await AsyncStorage.getItem("email");
-      console.log(value);
       setEmail(value);
     } catch (e) {
       console.error("Failed to fetch data from AsyncStorage", e);
@@ -42,7 +41,6 @@ const OtpScreen = ({ navigation, route }: StackNavigationProps) => {
   useEffect(() => {
     getData();
   }, []);
-  console.log(email);
   const resendCode = async () => {
     if (!email) return;
 

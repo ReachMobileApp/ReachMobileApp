@@ -8,6 +8,7 @@ import SignInScreen from "@/src/screens/SignInScreen/index";
 import Header from "@/src/components/UI/Header/Header";
 import OtpScreen from "@/src/screens/OtpScreen";
 import ResetPasswordScreen from "@/src/screens/ResetPasswordScreen";
+import ConfirmPasswordReset from "@/src/screens/ConfirmResetPasswordScreen";
 
 
 
@@ -40,7 +41,8 @@ const AuthNavigator = () => {
               height: 100
             },
             headerLeft: () => null, 
-          }}  />        
+          }}  />     
+          <Stack.Screen name="ConfirmPasswordReset" component={ConfirmPasswordReset} options={{title:''}}/>   
     </Stack.Navigator>
   );
 };

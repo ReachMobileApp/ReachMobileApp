@@ -35,7 +35,6 @@ const SignInScreen = ({ navigation }: StackNavigationProps) => {
           setUser(user);
           await AsyncStorage.setItem('userInfo', JSON.stringify(user));
           navigation.navigate('BottomTabNavigator', { screen: 'Home' });
-          console.log('success');
          
         }
       } catch (error: any) {
@@ -60,7 +59,7 @@ const SignInScreen = ({ navigation }: StackNavigationProps) => {
             console.log('An unexpected error occurred:', error.message);
           }
         } else {
-          console.log('An unexpected error occurred:', error.message);
+          console.log('An unexpected error occurred: ', error.message);
         }
       } finally {
         setLoading(false);
