@@ -34,6 +34,7 @@ const MenuScreen = ({ navigation }: any) => {
                 );
                 if (response.status === 200) {
                     await AsyncStorage.removeItem("userInfo");
+                    await AsyncStorage.removeItem("email");
                     Toast.show({
                         type: "success",
                         text1: "Success!",

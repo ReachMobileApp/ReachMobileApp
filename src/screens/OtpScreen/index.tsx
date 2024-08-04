@@ -15,6 +15,7 @@ const CELL_COUNT = 6;
 const OtpScreen = ({ navigation, route }: StackNavigationProps) => {
   const [loading, setLoading] = useState(false);
   const [code, setCode] = useState('');
+  const [user, setUser] = useState({});
   const [email, setEmail] = useState<string | null>(null);
   const ref = useBlurOnFulfill({ value: code, cellCount: CELL_COUNT });
   const [props, getCellOnLayoutHandler] = useClearByFocusCell({
@@ -24,18 +25,15 @@ const OtpScreen = ({ navigation, route }: StackNavigationProps) => {
 
   useEffect(() => {
     if (code.length === 6) {
-      console.log('verify', code);
+      console.log('verify', code.toString());
     }
   }, [code]);
 
   const getData = async () => {
     try {
       const value = await AsyncStorage.getItem("email");
-      if (value !== null) {
-        const parsedData = JSON.parse(value);
-        setEmail(parsedData);
-        // console.log(parsedData.data.user.email);
-      }
+      console.log(value);
+      setEmail(value);
     } catch (e) {
       console.error("Failed to fetch data from AsyncStorage", e);
     }
@@ -62,29 +60,18 @@ const OtpScreen = ({ navigation, route }: StackNavigationProps) => {
 
     setLoading(true);
     try {
-      const response = await fetch('https://uhfiles.ui.edu.ng/api/v1/email/verify-otp', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, otp: code }),
-      });
-      const datas = await response.json();
-
-      if (response.status === 200) {
-        console.log(response.status);
+      const verify = await axios.post('https://uhfiles.ui.edu.ng/api/v1/email/verify-otp', { email, otp: code.toString() });
+      const user = verify.data;
+      if (verify.status === 200) {
+        console.log(verify.status);
         Alert.alert('Success', 'OTP Verified successfully');
-        await AsyncStorage.setItem('userInfo', JSON.stringify(datas));
-        navigation.navigate('BottomTabNavigator', { screen: 'Home' });
-      } else {
-        console.log(response.status);
-        Alert.alert('Error', datas.message || 'OTP Verification failed');
-        await AsyncStorage.setItem('userInfo', JSON.stringify(datas));
+        setUser(user);
+        await AsyncStorage.setItem('userInfo', JSON.stringify(user));
         navigation.navigate('BottomTabNavigator', { screen: 'Home' });
       }
-    } catch (err) {
-      console.log(err);
-      Alert.alert('Error', 'An error occurred while verifying OTP');
+    } catch (error: any) {
+      console.log(error.message);
+      Alert.alert("OTP is invalid")
     } finally {
       setLoading(false);
     }

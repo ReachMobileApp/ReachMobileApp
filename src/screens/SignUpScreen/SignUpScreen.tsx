@@ -91,7 +91,6 @@ const SignUpScreen = ({ navigation }: StackNavigationProps) => {
           setSelectedSite('');
           setSelectedGender('');
           setUser(user);
-          await AsyncStorage.setItem('userInfo', JSON.stringify(user));
           await AsyncStorage.setItem('email', email); // Save email separately
           navigation.navigate("OtpScreen");
           await delay(2000); // delay for 2 seconds
