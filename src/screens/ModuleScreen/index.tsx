@@ -1,19 +1,18 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
     View,
     Text,
     TouchableOpacity,
     ScrollView,
     ActivityIndicator,
-    Image
 } from "react-native";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
-import Play from "@/assets/images/play.jpg";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import { Video, ResizeMode } from 'expo-av';
-// Initialize Firestore
+import { BASE_URL } from "./../../config";
+import { decode } from "html-entities";
+import { useFocusEffect } from "@react-navigation/native";
 
 interface Module {
     id: string;
@@ -23,104 +22,69 @@ interface Module {
     content: string;
     image_url: string;
     modules: Module[];
+    has_completed_quiz: boolean;
+    has_user: boolean;
 }
 
 interface ApiResponse {
-    data: {
-        data: Module[];
-    };
+    data: Module[];
 }
+
 const stripHtmlTags = (html: string): string => {
-    // Create a temporary element to decode HTML entities
-    const tempElement = document.createElement('div');
-    tempElement.innerHTML = html;
-
-    // Decode HTML entities
-    const decodedString = tempElement.textContent || tempElement.innerText || "";
-
-    // Remove HTML tags
-    const cleanString = decodedString.replace(/<[^>]*>/g, '');
-
-    // Remove &nbsp; specifically
-    const resultString = cleanString.replace(/&nbsp;/g, ' ');
-
-    return resultString;
+    const decodedString = decode(html);
+    const cleanString = decodedString.replace(/<[^>]*>/g, "");
+    return cleanString.replace(/&nbsp;/g, " ");
 };
+
 const ModuleScreen = ({
     navigation,
 }: {
     navigation: DrawerNavigationProp<any, any>;
 }) => {
-    const [statuses, setStatuses] = useState<{ [key: string]: string }>({});
     const [loading, setLoading] = useState(true);
     const [modules, setModules] = useState<Module[]>([]);
-    const extractFirstParagraph = (html: string): string => {
-        const match = html.match(/<p>(.*?)<\/p>/);
-        return match ? match[1] : ''; // Return the content of the first <p> tag, or an empty string if not found
-    };
-    
 
     const fetchModules = async () => {
         try {
-            const userInfo = await AsyncStorage.getItem('userInfo');
+            const userInfo = await AsyncStorage.getItem("userInfo");
             if (userInfo) {
                 const parsedUserInfo = JSON.parse(userInfo);
                 const token = parsedUserInfo.data.auth_token;
 
                 const response = await axios.get<ApiResponse>(
-                    `https://uhfiles.ui.edu.ng/api/v11j1bdmvf8wk0asczzbgx1c6yy/modules`,
+                    `${BASE_URL}courses/01j1bdmvf8wk0asczzbgx1c6yy/modules`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
                         },
                     }
                 );
-
-                console.log(response.data.data.data[0].modules);
-                setModules(response.data.data.data[0].modules);
+                setModules(response.data.data);
             }
         } catch (error) {
-            console.error('Error fetching courses:', error);
+            console.error("Error fetching courses:", error);
         } finally {
             setLoading(false);
         }
     };
 
-    useEffect(() => {
-        fetchModules();
-    }, []);
 
-    const handleModulePress = (moduleId: string) => {
-        let screenName = '';
-        console.log(moduleId)
-        switch (moduleId) {
-            case "01j1bdmvfg351qkw1fm6cgeq22":
-                screenName = "ModuleOne";
-                break;
-            case "01j1bdmvrrsz7pbt3gmdz2fczt":
-                screenName = "ModuleTwo";
-                break;
-            case "01j1bdmvvnrv7wv8v2b6q21kk8":
-                screenName = "ModuleThree";
-                break;
-            case "01j1bdmvwaj2rs3v97bm7txvfk":
-                screenName = "ModuleFour";
-                break;
-            case "01j1bdmvz1zatrjvb1wwvp8htt":
-                screenName = "ModuleFive";
-                break;
-            case "01j1bdmw1vwh2k2stesa8p68jn":
-                screenName = "ModuleSix";
-                break;
-            case "01j1bdmw52bw0jx6srb8qsm4h8":
-                screenName = "ModuleSeven";
-                break;
-            default:
-                screenName = "UnknownModule";
-                break;
+      useFocusEffect(
+        useCallback(() => {
+            fetchModules();
+        }, [])
+    );
+
+    const handleModulePress = async (moduleId: string) => {
+        try {
+            await AsyncStorage.setItem("selectedModuleId", moduleId);
+        } catch (error) {
+            console.error("Error storing module ID:", error);
         }
+        let screenName = "ModuleScreen";
+
         navigation.navigate("ModulesNavigator", {
-            screen: screenName
+            screen: screenName,
         });
     };
 
@@ -132,8 +96,10 @@ const ModuleScreen = ({
         );
     }
 
+
+
     return (
-        <ScrollView className="flex-1 bg-white pt-2">
+        <View className="flex-1 bg-white pt-2">
             <View className="bg-[#064d7d]">
                 <View className="flex-row justify-between items-center pt-2 mb-2 px-3">
                     <TouchableOpacity
@@ -145,36 +111,47 @@ const ModuleScreen = ({
                         className="p-2">
                         <Ionicons name="menu" size={24} color="white" />
                     </TouchableOpacity>
-                    <TouchableOpacity className="p-2">
-                        <Ionicons
-                            name="alarm-outline"
-                            size={24}
-                            color="white"
-                        />
-                    </TouchableOpacity>
                 </View>
                 <Text className="text-white mt-8 mb-4 px-4 text-xl font-bold">
                     Welcome to this training course!
                 </Text>
             </View>
-            <View className="bg-white">
+            <ScrollView className="bg-gray-200">
                 <View className="mt-2">
                     {modules.map((module) => (
                         <TouchableOpacity
                             key={module.id}
                             onPress={() => handleModulePress(module.id)}
-                            className="mb-4 mt-4 w-full bg-white border-b-2 mx-1 px-1 py-3 flex flex-row"
+                            className={`mb-2 w-full bg-white mx-1 px-1 py-3 flex flex-row ${!module.has_user && 'opacity-50'}`}
+                            disabled={!module.has_user} // Disable if user does not have access
                         >
-                           <Image source={Play} style={{ height: 100, width: 100 }} />
-                            <View className="flex w-8/12 px-3">
-                                <Text className="text-xl text-black font-bold">{module.name}</Text>
-                                <Text className="text-sm text-gray-600">{stripHtmlTags(extractFirstParagraph(module.content))}</Text>
+                            <View style={{ height: 80, width: 80, justifyContent: 'center', alignItems: 'center' }}>
+                                <Ionicons
+                                    name={module.has_user ? "play-circle" : "lock-closed"}
+                                    size={40}
+                                    color={module.has_user ? "#064d7d" : "gray"}
+                                />
                             </View>
+                          <View className = "w-full justify-center">
+                          <View className="flex w-8/12 px-3 text-center justify-between flex-row">
+                                <Text className="text-xl text-black font-bold">
+                                    {module.name}
+                                </Text>
+                                {module.has_completed_quiz && (
+                                    <Ionicons
+                                        name="checkmark-circle"
+                                        size={20}
+                                        color="green"
+                                        style={{ marginLeft: 5 }}
+                                    />
+                                )}
+                            </View>
+                          </View>
                         </TouchableOpacity>
                     ))}
                 </View>
-            </View>
-        </ScrollView>
+            </ScrollView>
+        </View>
     );
 };
 

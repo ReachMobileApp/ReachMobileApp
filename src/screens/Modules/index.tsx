@@ -5,6 +5,7 @@ import {
     TouchableOpacity,
     ScrollView,
     ActivityIndicator,
+    Alert,
 } from "react-native";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
@@ -14,7 +15,11 @@ import ModulesButtons from "@/src/components/ModulesButtons";
 import Page from "@/assets/images/menuIcons/Page-1.png";
 import Page2 from "@/assets/images/menuIcons/Page-2.png";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { WebView } from "react-native-webview";
+import { BASE_URL } from "../../config";
+import { decode } from "html-entities";
+import * as FileSystem from 'expo-file-system';
+import { StorageAccessFramework } from 'expo-file-system';
+import { Buffer } from 'buffer';
 
 type ModuleScreenProps = {
     navigation: DrawerNavigationProp<any, any>;
@@ -24,21 +29,14 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
     const [showVideo, setShowVideo] = useState(true);
     const [loading, setLoading] = useState(true);
     const [module, setModule] = useState<any>(null);
+    const [videoFinished, setVideoFinished] = useState(false);
 
     const stripHtmlTags = (html: string): string => {
-        // Create a temporary element to decode HTML entities
-        const tempElement = document.createElement('div');
-        tempElement.innerHTML = html;
-    
-        // Decode HTML entities
-        const decodedString = tempElement.textContent || tempElement.innerText || "";
-    
-        // Remove HTML tags
-        const cleanString = decodedString.replace(/<[^>]*>/g, '');
-    
-        // Remove &nbsp; specifically
-        const resultString = cleanString.replace(/&nbsp;/g, ' ');
-    
+        const decodedString = decode(html);
+        const cleanString = decodedString
+            .replace(/<\/p>/g, "\n\n")
+            .replace(/<[^>]*>/g, "");
+        const resultString = cleanString.replace(/&nbsp;/g, " ");
         return resultString;
     };
 
@@ -46,20 +44,17 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
         const fetchModule = async () => {
             try {
                 const userInfo = await AsyncStorage.getItem("userInfo");
-                if (userInfo) {
+                const selectedModuleId = await AsyncStorage.getItem("selectedModuleId");
+                if (userInfo && selectedModuleId) {
                     const parsedUserInfo = JSON.parse(userInfo);
                     const token = parsedUserInfo.data.auth_token;
-
+                    const moduleId = selectedModuleId;
                     const response = await axios.get(
-                        "https://uhfiles.ui.edu.ng/api/v1/courses/01j1bdmvf8wk0asczzbgx1c6yy/modules/01j1bdmw52bw0jx6srb8qsm4h8",
-                        {
-                            headers: {
-                                Authorization: `Bearer ${token}`,
-                            },
-                        }
+                        `${BASE_URL}modules/${moduleId}`,
+                        { headers: { Authorization: `Bearer ${token}` } }
                     );
-
-                    setModule(response.data.data.currentModule);
+                    console.log(response.data.data)
+                    setModule(response.data.data);
                 }
             } catch (error) {
                 console.error("Error fetching module:", error);
@@ -67,12 +62,53 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                 setLoading(false);
             }
         };
-
         fetchModule();
     }, []);
 
     const toggleVideoNotes = () => {
         setShowVideo((prev) => !prev);
+    };
+
+    const handleVideoFinish = () => {
+        setVideoFinished(true);
+    };
+
+    const requestFileWritePermission = async () => {
+        const permissions = await StorageAccessFramework.requestDirectoryPermissionsAsync();
+        if (!permissions.granted) {
+            Alert.alert("Permission Denied", "File write permission is required to download files.");
+            return { access: false, directoryUri: null };
+        }
+        return { access: true, directoryUri: permissions.directoryUri };
+    };
+
+    const downloadFile = async (url: string, noteIndex: number) => {
+        try {
+            const response = await axios.get(url, { responseType: 'arraybuffer' });
+            const base64Data = Buffer.from(response.data).toString('base64');
+            const hasPermissions = await requestFileWritePermission();
+            if (hasPermissions.access) {
+                await saveReportFile(base64Data, hasPermissions.directoryUri || "", noteIndex);
+            }
+        } catch (error) {
+            console.error("Error downloading file:", error);
+            Alert.alert("Download error", "There was an error downloading the file.");
+        }
+    };
+
+    const saveReportFile = async (base64Data: string, directoryUri: string, noteIndex: number) => {
+        try {
+            const moduleName = module?.name.replace(/[^a-zA-Z0-9]/g, '_') || 'download';
+            const fileName = `${moduleName}_note${noteIndex + 1}.pdf`;
+            const fileUri = await StorageAccessFramework.createFileAsync(directoryUri, fileName, 'application/pdf');
+
+            await FileSystem.writeAsStringAsync(fileUri, base64Data, { encoding: FileSystem.EncodingType.Base64 });
+
+            Alert.alert("Success", `File downloaded as ${fileName}`);
+        } catch (error: any) {
+            console.error("Error saving file:", error);
+            Alert.alert("Error", `Could not save file: ${error.message}`);
+        }
     };
 
     if (loading) {
@@ -93,62 +129,35 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
 
     return (
         <View className="flex-1 bg-white pt-2">
-            {/* Header */}
             <View className="bg-[#064d7d]">
-                <View className="flex-row justify-between items-center pt-2 mb-2 px-3">
-                    {/* Menu icon */}
-                    <TouchableOpacity
-                        onPress={() => navigation.goBack()}
-                        className="">
+                <View className="flex-row justify-between items-center py-3 mb-2 px-3">
+                    <TouchableOpacity onPress={() => navigation.goBack()}>
                         <Ionicons name="arrow-back" size={24} color="white" />
-                    </TouchableOpacity>
-                    {/* Notification icon */}
-                    <TouchableOpacity
-                        onPress={() => {
-                            /* Add navigation logic for notifications */
-                        }}
-                        className="p-2">
-                        <Ionicons
-                            name="alarm-outline"
-                            size={24}
-                            color="white"
-                        />
                     </TouchableOpacity>
                 </View>
             </View>
 
-            {/* Main content */}
             <View className="bg-white flex-1">
                 {showVideo ? (
                     <ScrollView>
                         <Module
                             header={module.name}
-                            subheader={stripHtmlTags(
-                                extractFirstParagraph(module.content)
-                            )}
-                            videoUrl={module.video} // Pass the correct video URL here
-                            learningOutcomeHeader="Learning Outcome:"
-                            learningOutcome={
-                                "This is the last module in the series that we have been studying. By now, you should be comfortable enough to conduct remote consulting in health. This last Module is to wrap up what you have learnt so far, and I want to congratulate you for staying through.We will reflect on the leadership qualities required to bring about change."
-                            }
+                            subheader={stripHtmlTags(extractFirstParagraph(module.content))}
+                            videoUrl={module.video}
+                            onVideoFinish={handleVideoFinish}
                         />
                         <View className="mb-10 p-2">
                             <TouchableOpacity onPress={toggleVideoNotes}>
                                 <ModulesButtons
                                     image={showVideo ? Page : Page2}
-                                    header={
-                                        showVideo ? "Read Notes" : "Watch Video"
-                                    }
+                                    header={showVideo ? "Read Notes" : "Watch Video"}
                                 />
                             </TouchableOpacity>
                             <TouchableOpacity
-                                onPress={() =>
-                                    navigation.navigate("QuizScreenSeven")
-                                }>
-                                <ModulesButtons
-                                    image={Page2}
-                                    header="Take Quiz"
-                                />
+                                onPress={() => navigation.navigate("QuizScreen")}
+                                disabled={!videoFinished}
+                            >
+                                <ModulesButtons image={Page2} header="Take Quiz" />
                             </TouchableOpacity>
                         </View>
                     </ScrollView>
@@ -161,7 +170,6 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                             <Text className="text-sm mb-1 text-gray-500 ">
                                 {stripHtmlTags(extractFirstParagraph(module.content))}
                             </Text>
-                            
                         </View>
                         <ScrollView className="m-4 flex-1">
                             <View className="p-2">
@@ -170,30 +178,31 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                                 </Text>
                                 <View>
                                     <Text className="text-[#070707] mb-2 text-base">
-                                        {" "}
                                         {stripHtmlTags(module.content)}
                                     </Text>
                                 </View>
+                                {module.notes && module.notes.map((note: any, index: number) => (
+                                    <TouchableOpacity
+                                        key={note.id}
+                                        onPress={() => downloadFile(note.note, index)}
+                                        style={{ backgroundColor: '#064d7d', padding: 10, borderRadius: 5, marginTop: 10 }}
+                                    >
+                                        <Text style={{ color: 'white', textAlign: 'center' }}>Download Note {index + 1}</Text>
+                                    </TouchableOpacity>
+                                ))}
                             </View>
                             <View className="mb-10 p-2">
                                 <TouchableOpacity onPress={toggleVideoNotes}>
                                     <ModulesButtons
                                         image={showVideo ? Page : Page2}
-                                        header={
-                                            showVideo
-                                                ? "Read Notes"
-                                                : "Watch Video"
-                                        }
+                                        header={showVideo ? "Read Notes" : "Watch Video"}
                                     />
                                 </TouchableOpacity>
                                 <TouchableOpacity
-                                    onPress={() =>
-                                        navigation.navigate("QuizScreenSeven")
-                                    }>
-                                    <ModulesButtons
-                                        image={Page2}
-                                        header="Take Quiz"
-                                    />
+                                    onPress={() => navigation.navigate("QuizScreen")}
+                                    disabled={!videoFinished}
+                                >
+                                    <ModulesButtons image={Page2} header="Take Quiz" />
                                 </TouchableOpacity>
                             </View>
                         </ScrollView>

@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, Image, ActivityIndicator, ScrollView } from "react-native";
+import React, { useState, useEffect, useCallback } from "react";
+import {
+    View,
+    Text,
+    TouchableOpacity,
+    Image,
+    ActivityIndicator,
+    ScrollView,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Avatar from "@/assets/images/image.png";
-import Play from "@/assets/images/play.jpg";
 import axios from "axios";
-
-import Card from "@/src/components/BadgeCard";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Toast from 'react-native-toast-message';
-
-// interface ApiResponse {
-//     data: {
-//         data: Module[];
-//     };
-// }
+import { BASE_URL } from "./../../config";
+import Card from "@/src/components/BadgeCard";
+import { useFocusEffect } from "@react-navigation/native";
 
 type ApiResponse2 = {
     success: boolean;
@@ -41,29 +41,28 @@ type ApiResponse2 = {
     }>;
 };
 
+type Module = {
+    id: string;
+    name: string;
+    has_completed_quiz: boolean;
+};
 
 const ProfileScreen = ({ navigation }: any) => {
     const [selectedSection, setSelectedSection] = useState("aboutMe");
     const [userDetails, setUserDetails] = useState<any>([]);
     const [userDetail, setUserDetail] = useState<any>([]);
-    // const [modules, setModules] = useState<Module[]>([]);
-    const [completedModules, setCompletedModules] = useState<any[]>([]);
+    const [modules, setModules] = useState<Module[]>([]);
     const [loading, setLoading] = useState(true);
-    const extractFirstParagraph = (html: string): string => {
-        const match = html.match(/<p>(.*?)<\/p>/);
-        return match ? match[1] : ''; // Return the content of the first <p> tag, or an empty string if not found
-    };
 
     const fetchProfile = async () => {
         try {
-            const userInfo = await AsyncStorage.getItem('userInfo');
+            const userInfo = await AsyncStorage.getItem("userInfo");
             if (userInfo) {
                 const parsedUserInfo = JSON.parse(userInfo);
                 const token = parsedUserInfo.data.auth_token;
-                
 
                 const response = await axios.get<ApiResponse2>(
-                    `https://uhfiles.ui.edu.ng/api/v1/profile`,
+                    `${BASE_URL}user/profile`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -71,12 +70,10 @@ const ProfileScreen = ({ navigation }: any) => {
                     }
                 );
 
-                console.log(response.data.data[0].profile);
-                setUserDetails(response.data.data[0].profile)
-                
+                setUserDetails(response.data.data[0]);
             }
         } catch (error) {
-            console.error('Error fetching courses:', error);
+            console.error("Error fetching profile:", error);
         } finally {
             setLoading(false);
         }
@@ -84,14 +81,14 @@ const ProfileScreen = ({ navigation }: any) => {
 
     const fetchModules = async () => {
         try {
-            const userInfo = await AsyncStorage.getItem('userInfo');
+            const userInfo = await AsyncStorage.getItem("userInfo");
             if (userInfo) {
                 const parsedUserInfo = JSON.parse(userInfo);
                 const token = parsedUserInfo.data.auth_token;
-                setUserDetail(parsedUserInfo.data.user)
+                setUserDetail(parsedUserInfo.data.user);
 
-                const response = await axios.get<ApiResponse2>(
-                    `https://uhfiles.ui.edu.ng/api/v1/courses/01j1bdmvf8wk0asczzbgx1c6yy/modules`,
+                const response = await axios.get<{ data: Module[] }>(
+                    `${BASE_URL}courses/01j1bdmvf8wk0asczzbgx1c6yy/modules`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
@@ -99,79 +96,25 @@ const ProfileScreen = ({ navigation }: any) => {
                     }
                 );
 
-                // setModules(response.data.data.data[0].modules);
+                setModules(response.data.data);
             }
         } catch (error) {
-            console.error('Error fetching courses:', error);
+            console.error("Error fetching modules:", error);
         } finally {
             setLoading(false);
         }
     };
 
-    useEffect(() => {
-        fetchModules();
-        fetchProfile();
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            fetchModules();
+            fetchProfile();
+        }, [])
+    );
 
     const handleSwitchChange = (value: boolean) => {
         setSelectedSection(value ? "aboutMe" : "badges");
     };
-
-    // const getCurrentUser = async (): Promise<void> => {
-    //     try {
-    //         firebaseAuth.onAuthStateChanged(async (user) => {
-    //             if (user) {
-    //                 const userQuery = query(userRef, where('user_id', '==', user.uid));
-    //                 const snapshot = await getDocs(userQuery);
-
-    //                 const userData: any = [];
-    //                 snapshot.docs.forEach((item) => {
-    //                     userData.push({ ...item.data(), id: item.id });
-    //                 });
-    //                 setUserDetails(userData);
-
-    //                 const modulesRef = collection(db, 'users_data', user.uid, 'modules');
-    //                 const modulesSnapshot = await getDocs(modulesRef);
-
-    //                 const moduleIdToNumber :{ [key: string]: number } = {
-    //                     'module1': 1,
-    //                     'module2': 2,
-    //                     'module3': 3,
-    //                     'module4': 4,
-    //                     'module5': 5,
-    //                     'module6': 6,
-    //                     'module7': 7,
-    //                     // Add more modules as needed
-    //                 };
-
-    //                 const completedModulesData: any = [];
-    //                 modulesSnapshot.docs.forEach((moduleDoc) => {
-    //                     const moduleData = moduleDoc.data();
-    //                     const moduleNumber = moduleIdToNumber[moduleDoc.id];
-    //                     if (moduleData.status === "completed" && moduleNumber) {
-    //                         completedModulesData.push({ ...moduleData, id: moduleDoc.id, moduleNumber });
-    //                     }
-    //                 });
-    //                 setCompletedModules(completedModulesData);
-    //             }
-    //         });
-    //     } catch (error: any) {
-    //         Toast.show({
-    //             type: 'error',
-    //             text1: 'Error!',
-    //             text2: error.message,
-    //         });
-    //     } finally {
-    //         setLoading(false);
-    //     }
-    // };
-
-    // useFocusEffect(
-    //     useCallback(() => {
-    //         setLoading(true);
-    //         getCurrentUser();
-    //     }, [])
-    // );
 
     if (loading) {
         return (
@@ -199,10 +142,10 @@ const ProfileScreen = ({ navigation }: any) => {
                     <Image source={Avatar} className="rounded-3xl" />
 
                     <Text className="text-white my-2 px-4 text-xl text-center font-bold">
-                        {userDetails?.username}
+                        {userDetails?.name}
                     </Text>
                     <Text className="text-white text-center font-bold text-sm">
-                        {userDetail?.email}
+                        {userDetails?.email}
                     </Text>
                     <Text className="text-green-500 text-center font-bold text-sm">
                         Active
@@ -214,7 +157,9 @@ const ProfileScreen = ({ navigation }: any) => {
                         <TouchableOpacity
                             style={{
                                 backgroundColor:
-                                    selectedSection === "aboutMe" ? "#81b0ff" : "#ffffff",
+                                    selectedSection === "aboutMe"
+                                        ? "#81b0ff"
+                                        : "#ffffff",
                                 padding: 10,
                                 borderRadius: 20,
                                 marginRight: 5,
@@ -222,21 +167,24 @@ const ProfileScreen = ({ navigation }: any) => {
                                 justifyContent: "center",
                                 alignItems: "center",
                             }}
-                            onPress={() => handleSwitchChange(true)}
-                        >
+                            onPress={() => handleSwitchChange(true)}>
                             <Text
                                 style={{
-                                    color: selectedSection === "aboutMe" ? "#ffffff" : "#3e3e3e",
+                                    color:
+                                        selectedSection === "aboutMe"
+                                            ? "#ffffff"
+                                            : "#3e3e3e",
                                     fontWeight: "bold",
-                                }}
-                            >
+                                }}>
                                 About Me
                             </Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={{
                                 backgroundColor:
-                                    selectedSection === "badges" ? "#81b0ff" : "#ffffff",
+                                    selectedSection === "badges"
+                                        ? "#81b0ff"
+                                        : "#ffffff",
                                 padding: 10,
                                 borderRadius: 20,
                                 marginLeft: 5,
@@ -244,14 +192,15 @@ const ProfileScreen = ({ navigation }: any) => {
                                 justifyContent: "center",
                                 alignItems: "center",
                             }}
-                            onPress={() => handleSwitchChange(false)}
-                        >
+                            onPress={() => handleSwitchChange(false)}>
                             <Text
                                 style={{
-                                    color: selectedSection === "badges" ? "#ffffff" : "#3e3e3e",
+                                    color:
+                                        selectedSection === "badges"
+                                            ? "#ffffff"
+                                            : "#3e3e3e",
                                     fontWeight: "bold",
-                                }}
-                            >
+                                }}>
                                 Badges
                             </Text>
                         </TouchableOpacity>
@@ -263,49 +212,62 @@ const ProfileScreen = ({ navigation }: any) => {
                 {selectedSection === "aboutMe" ? (
                     <View className="mt-4 gap-4">
                         <View className="flex-row items-center border">
-                            <Text className="text-white w-2/5 pl-4 text-lg bg-[#064D7D]">Name:</Text>
+                            <Text className="text-white w-2/5 pl-4 text-lg bg-[#064D7D]">
+                                Name:
+                            </Text>
                             <Text className="text-[#064D7D] w-3/5 text-lg bg-white text-center">
-                                {userDetail?.name}
+                                {userDetails?.name}
                             </Text>
                         </View>
                         <View className="flex-row items-center border">
-                            <Text className="text-white w-2/5 text-lg pl-4 bg-[#064D7D]">Occupation:</Text>
+                            <Text className="text-white w-2/5 text-lg pl-4 bg-[#064D7D]">
+                                Occupation:
+                            </Text>
                             <Text className="text-[#064D7D] w-3/5 text-lg bg-white text-center">
                                 {userDetails?.occupation}
                             </Text>
                         </View>
                         <View className="flex-row items-center border">
-                            <Text className="text-white w-2/5 text-lg pl-4 bg-[#064D7D]">Email:</Text>
+                            <Text className="text-white w-2/5 text-lg pl-4 bg-[#064D7D]">
+                                Email:
+                            </Text>
                             <Text className="text-[#064D7D] w-3/5 text-lg bg-white text-center">
-                                {userDetail?.email}
+                                {userDetails?.email}
                             </Text>
                         </View>
                         <View className="flex-row items-center border">
-                            <Text className="text-white w-2/5 text-lg pl-4 bg-[#064D7D]">City:</Text>
+                            <Text className="text-white w-2/5 text-lg pl-4 bg-[#064D7D]">
+                                Gender:
+                            </Text>
                             <Text className="text-[#064D7D] w-3/5 text-lg bg-white text-center">
-                                {userDetails?.city}
+                                {userDetails?.gender}
                             </Text>
                         </View>
                         <View className="flex-row items-center border">
-                            <Text className="text-white w-2/5 text-lg pl-4 bg-[#064D7D]">Username:</Text>
+                            <Text className="text-white w-2/5 text-lg pl-4 bg-[#064D7D]">
+                                Years of Work:
+                            </Text>
                             <Text className="text-[#064D7D] w-3/5 text-lg bg-white text-center">
-                                {userDetails?.username}
+                                {userDetails?.years_of_work}
                             </Text>
                         </View>
                     </View>
                 ) : (
                     <View className="mt-4">
-                        {completedModules.length > 0 ? (
-                            completedModules.map((module) => (
-                                <Card
-                                    key={module.id}
-                                    header={`MODULE ${module.moduleNumber}`}
-                                    subheader={module.status}
-                                    score={module.score}
-                                />
-                            ))
+                        {modules.length > 0 ? (
+                            modules
+                                .filter((module) => module.has_completed_quiz)
+                                .map((module) => (
+                                    <Card
+                                        key={module.id}
+                                        header={module.name}
+                                        subheader="Completed"
+                                    />
+                                ))
                         ) : (
-                            <Text className="text-center text-lg">No badges earned yet.</Text>
+                            <Text className="text-center text-lg">
+                                No badges earned yet.
+                            </Text>
                         )}
                     </View>
                 )}

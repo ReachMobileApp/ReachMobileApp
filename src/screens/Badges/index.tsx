@@ -8,70 +8,72 @@ import {
     TouchableOpacity,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
-import {
-    getFirestore,
-    query,
-    where,
-    getDocs,
-    collection,
-} from "firebase/firestore";
-import { firebaseAuth } from "@/firebaseConfig";
+import axios from "axios";
+
 import Toast from "react-native-toast-message";
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { BASE_URL } from "./../../config";
 
 import Card from "@/src/components/BadgeCard";
 import Avatar from "@/assets/images/image.png";
 
+type ApiResponse2 = {
+    success: boolean;
+    status: string;
+    message: string;
+    data: Array<{
+        id: string;
+        name: string;
+        email: string;
+        email_verified_at: string | null;
+        created_at: string;
+        updated_at: string;
+        facility_id: string;
+        profile: {
+            id: number;
+            username: string;
+            occupation: string;
+            city: string;
+            country: string;
+            facility_id: string | null;
+            user_id: string;
+            created_at: string;
+            updated_at: string;
+        };
+    }>;
+};
+
+type Module = {
+    id: string;
+    name: string;
+    has_completed_quiz: boolean;
+};
+
 const BadgesScreen = ({ navigation }: any) => {
-    const [completedModules, setCompletedModules] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [modules, setModules] = useState<Module[]>([]);
 
-    const db = getFirestore();
-
-    const getCurrentUserModules = async (): Promise<void> => {
+    const fetchModules = async () => {
         try {
-            firebaseAuth.onAuthStateChanged(async (user) => {
-                if (user) {
-                    const modulesRef = collection(
-                        db,
-                        "users_data",
-                        user.uid,
-                        "modules"
-                    );
-                    const modulesSnapshot = await getDocs(modulesRef);
+            const userInfo = await AsyncStorage.getItem("userInfo");
+            if (userInfo) {
+                const parsedUserInfo = JSON.parse(userInfo);
+                const token = parsedUserInfo.data.auth_token;
 
-                    const moduleIdToNumber: { [key: string]: number } = {
-                        module1: 1,
-                        module2: 2,
-                        module3: 3,
-                        module4: 4,
-                        module5: 5,
-                        module6: 6,
-                        module7: 7,
-                        // Add more modules as needed
-                    };
+                const response = await axios.get<{ data: Module[] }>(
+                    `${BASE_URL}courses/01j1bdmvf8wk0asczzbgx1c6yy/modules`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
 
-                    const completedModulesData: any = [];
-                    modulesSnapshot.docs.forEach((moduleDoc) => {
-                        const moduleData = moduleDoc.data();
-                        const moduleNumber = moduleIdToNumber[moduleDoc.id];
-                        if (moduleData.status === "completed" && moduleNumber) {
-                            completedModulesData.push({
-                                ...moduleData,
-                                id: moduleDoc.id,
-                                moduleNumber,
-                            });
-                        }
-                    });
-                    setCompletedModules(completedModulesData);
-                }
-            });
-        } catch (error: any) {
-            Toast.show({
-                type: "error",
-                text1: "Error!",
-                text2: error.message,
-            });
+                setModules(response.data.data);
+            }
+        } catch (error) {
+            console.error("Error fetching modules:", error);
         } finally {
             setLoading(false);
         }
@@ -80,7 +82,7 @@ const BadgesScreen = ({ navigation }: any) => {
     useFocusEffect(
         useCallback(() => {
             setLoading(true);
-            getCurrentUserModules();
+            fetchModules();
         }, [])
     );
 
@@ -105,21 +107,20 @@ const BadgesScreen = ({ navigation }: any) => {
                 <Image source={Avatar} className="w-8 h-8 rounded-full" />
             </View>
             <ScrollView className="mt-10 flex-1">
-                {completedModules.length > 0 ? (
-                    completedModules.map((module) => (
-                        <Card
-                            key={module.id}
-                            header={`MODULE ${module.moduleNumber}`}
-                            subheader={module.status}
-                            score={module.score}
-                        />
-                    ))
+                {modules.length > 0 ? (
+                    modules
+                        .filter((module) => module.has_completed_quiz)
+                        .map((module) => (
+                            <Card
+                                key={module.id}
+                                header={module.name}
+                                subheader="Completed"
+                            />
+                        ))
                 ) : (
-                    <View className=" flex justify-center items-center flex-1">
-                        <Text className="text-center text-lg">
-                            No badges earned yet.
-                        </Text>
-                    </View>
+                    <Text className="text-center text-lg">
+                        No badges earned yet.
+                    </Text>
                 )}
             </ScrollView>
         </View>
