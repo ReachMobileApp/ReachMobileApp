@@ -42,11 +42,20 @@ const SignInScreen = ({ navigation }: StackNavigationProps) => {
         if (error.response) {
           if (error.response.status === 401) {
             console.log('not verified');
+            Toast.show({
+              type: 'error',
+              text1: 'Error!',
+              text2: error.response.data.message
+            });
             setUser(user);
             await AsyncStorage.setItem('email', email); // Save email separately
             navigation.navigate("OtpScreen");
           } else if (error.response.status === 400) {
-            console.log('wrong details');
+            Toast.show({
+              type: 'error',
+              text1: 'Error!',
+              text2: error.response.data.message
+            });
           } else {
             console.log('An unexpected error occurred:', error.message);
           }

@@ -1,18 +1,31 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import { View, Text, TouchableOpacity, Alert, ScrollView } from "react-native";
 import { Video, ResizeMode } from 'expo-av';
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import * as FileSystem from 'expo-file-system';
 import { StorageAccessFramework } from 'expo-file-system';
 import { Ionicons } from "@expo/vector-icons";
+import { useFocusEffect } from '@react-navigation/native';
 
 const HomeScreen = ({
     navigation,
 }: {
     navigation: DrawerNavigationProp<any, any>;
 }) => {
+    const videoRef = useRef<Video>(null);
+
     const videoUrl = "https://uhfiles.ui.edu.ng/build/assets/introductoryvideo-D_vKyPY2.mp4";
     const pdfUrl = "https://uhfiles.ui.edu.ng/build/assets/Introductory%20module-HEzWMrdI.pdf";
+
+    useFocusEffect(
+        React.useCallback(() => {
+            return () => {
+                if (videoRef.current) {
+                    videoRef.current.pauseAsync();
+                }
+            };
+        }, [])
+    );
 
     const requestFileWritePermission = async () => {
         const permissions = await StorageAccessFramework.requestDirectoryPermissionsAsync();
@@ -80,6 +93,7 @@ const HomeScreen = ({
             {/* Video Player */}
             <View className="flex-1 justify-center items-center mt-6">
                 <Video
+                    ref={videoRef}
                     source={{ uri: videoUrl }}
                     rate={1.0}
                     volume={1.0}
