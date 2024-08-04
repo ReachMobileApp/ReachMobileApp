@@ -16,7 +16,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BASE_URL } from "./../../config";
 
 import Card from "@/src/components/BadgeCard";
-import Avatar from "@/assets/images/image.png";
 
 type ApiResponse2 = {
     success: boolean;
@@ -104,7 +103,6 @@ const BadgesScreen = ({ navigation }: any) => {
                     <Ionicons name="arrow-back" size={24} color="white" />
                 </TouchableOpacity>
                 {/* Profile image */}
-                <Image source={Avatar} className="w-8 h-8 rounded-full" />
             </View>
             <ScrollView className="mt-10 flex-1">
                 {modules.length > 0 ? (

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, TouchableOpacity, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import Avatar from "@/assets/images/image.png";
 import Course from "@/assets/images/menuIcons/Course.png";
 import Logout from "@/assets/images/menuIcons/Logout.png";
 import TrackProgress from "@/assets/images/menuIcons/TrackProgress.png";
@@ -82,7 +81,6 @@ const MenuScreen = ({ navigation }: any) => {
                     <Ionicons name="arrow-back" size={24} color="white" />
                 </TouchableOpacity>
                 {/* Profile image */}
-                <Image source={Avatar} className="w-8 h-8 rounded-full" />
             </View>
 
             <Text className="text-white mt-8 mb-4 px-4 text-xl font-bold">
