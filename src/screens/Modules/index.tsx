@@ -54,6 +54,7 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                         { headers: { Authorization: `Bearer ${token}` } }
                     );
                     setModule(response.data.data);
+                    setVideoFinished(response.data.data.has_completed_quiz);
                 }
             } catch (error) {
                 console.error("Error fetching module:", error);
@@ -68,8 +69,23 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
         setShowVideo((prev) => !prev);
     };
 
+
     const handleVideoFinish = () => {
         setVideoFinished(true);
+    };
+
+    const isQuizButtonEnabled = videoFinished || (module && module.has_completed_quiz);
+
+    const handleQuizPress = () => {
+        if (!isQuizButtonEnabled) {
+            Alert.alert(
+                "Quiz Locked",
+                "Please complete the video before taking the quiz.",
+                [{ text: "OK" }]
+            );
+            return;
+        }
+        navigation.navigate("QuizScreen");
     };
 
     const requestFileWritePermission = async () => {
@@ -153,8 +169,7 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                                 />
                             </TouchableOpacity>
                             <TouchableOpacity
-                                onPress={() => navigation.navigate("QuizScreen")}
-                                disabled={!videoFinished}
+                                 onPress={handleQuizPress}
                             >
                                 <ModulesButtons image={Page2} header="Take Quiz" />
                             </TouchableOpacity>
@@ -198,8 +213,7 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                                     />
                                 </TouchableOpacity>
                                 <TouchableOpacity
-                                    onPress={() => navigation.navigate("QuizScreen")}
-                                    disabled={!videoFinished}
+                                     onPress={handleQuizPress}
                                 >
                                     <ModulesButtons image={Page2} header="Take Quiz" />
                                 </TouchableOpacity>

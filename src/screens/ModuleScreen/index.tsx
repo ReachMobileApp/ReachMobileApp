@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import {
     View,
     Text,
     TouchableOpacity,
     ScrollView,
+    Alert,
     ActivityIndicator,
 } from "react-native";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
@@ -75,14 +76,23 @@ const ModuleScreen = ({
         }, [])
     );
 
-    const handleModulePress = async (moduleId: string) => {
+    const handleModulePress = async (module: Module) => {
+        if (!module.has_user) {
+            Alert.alert(
+                "Module Locked",
+                "Please complete the previous modules to unlock this one.",
+                [{ text: "OK" }]
+            );
+            return;
+        }
+    
         try {
-            await AsyncStorage.setItem("selectedModuleId", moduleId);
+            await AsyncStorage.setItem("selectedModuleId", module.id);
         } catch (error) {
             console.error("Error storing module ID:", error);
         }
         let screenName = "ModuleScreen";
-
+    
         navigation.navigate("ModulesNavigator", {
             screen: screenName,
         });
@@ -121,9 +131,8 @@ const ModuleScreen = ({
                     {modules.map((module) => (
                         <TouchableOpacity
                             key={module.id}
-                            onPress={() => handleModulePress(module.id)}
+                            onPress={() => handleModulePress(module)}
                             className={`mb-2 w-full bg-white mx-1 px-1 py-3 flex flex-row ${!module.has_user && 'opacity-50'}`}
-                            disabled={!module.has_user} // Disable if user does not have access
                         >
                             <View style={{ height: 80, width: 80, justifyContent: 'center', alignItems: 'center' }}>
                                 <Ionicons
