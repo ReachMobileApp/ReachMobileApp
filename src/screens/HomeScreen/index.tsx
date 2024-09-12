@@ -1,11 +1,12 @@
-import React, { useRef, useEffect } from "react";
-import { View, Text, TouchableOpacity, Alert, ScrollView } from "react-native";
+import React, { useRef } from "react";
+import { View, Text, TouchableOpacity, Alert, ScrollView, Platform, StyleSheet } from "react-native";
 import { Video, ResizeMode } from 'expo-av';
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import * as FileSystem from 'expo-file-system';
-import { StorageAccessFramework } from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
 import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from '@react-navigation/native';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const HomeScreen = ({
     navigation,
@@ -27,25 +28,22 @@ const HomeScreen = ({
         }, [])
     );
 
-    const requestFileWritePermission = async () => {
-        const permissions = await StorageAccessFramework.requestDirectoryPermissionsAsync();
-        if (!permissions.granted) {
-            Alert.alert("Permission Denied", "File write permission is required to download files.");
-            return { access: false, directoryUri: null };
-        }
-        return { access: true, directoryUri: permissions.directoryUri };
-    };
-
     const downloadFile = async (url: string) => {
         try {
-            const response = await FileSystem.downloadAsync(url, FileSystem.documentDirectory + 'temp.pdf');
-            if (response.status !== 200) {
+            const filename = 'Introductory_note.pdf';
+            const result = await FileSystem.downloadAsync(
+                url,
+                FileSystem.documentDirectory + filename
+            );
+
+            if (result.status !== 200) {
                 throw new Error('Failed to download file');
             }
-            const base64Data = await FileSystem.readAsStringAsync(response.uri, { encoding: FileSystem.EncodingType.Base64 });
-            const hasPermissions = await requestFileWritePermission();
-            if (hasPermissions.access) {
-                await saveReportFile(base64Data, hasPermissions.directoryUri || "");
+
+            if (Platform.OS === 'android') {
+                await saveAndroidFile(result.uri, filename);
+            } else {
+                await shareIOSFile(result.uri, filename);
             }
         } catch (error) {
             console.error("Error downloading file:", error);
@@ -53,45 +51,68 @@ const HomeScreen = ({
         }
     };
 
-    const saveReportFile = async (base64Data: string, directoryUri: string) => {
+    const saveAndroidFile = async (fileUri: string, filename: string) => {
         try {
-            const fileName = `Introductory_note.pdf`;
-            const fileUri = await StorageAccessFramework.createFileAsync(directoryUri, fileName, 'application/pdf');
-
-            await FileSystem.writeAsStringAsync(fileUri, base64Data, { encoding: FileSystem.EncodingType.Base64 });
-
-            Alert.alert("Success", `File downloaded as ${fileName}`);
+            const permissions = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
+            if (permissions.granted) {
+                const destinationUri = await FileSystem.StorageAccessFramework.createFileAsync(
+                    permissions.directoryUri,
+                    filename,
+                    'application/pdf'
+                );
+                await FileSystem.copyAsync({
+                    from: fileUri,
+                    to: destinationUri,
+                });
+                Alert.alert("Success", `File downloaded as ${filename}`);
+            } else {
+                throw new Error('Storage permission not granted');
+            }
         } catch (error: any) {
-            console.error("Error saving file:", error);
+            console.error("Error saving file on Android:", error);
             Alert.alert("Error", `Could not save file: ${error.message}`);
         }
     };
 
+    const shareIOSFile = async (fileUri: string, filename: string) => {
+        try {
+            await Sharing.shareAsync(fileUri, { UTI: '.pdf', mimeType: 'application/pdf' });
+        } catch (error: any) {
+            console.error("Error sharing file on iOS:", error);
+            Alert.alert("Error", `Could not share file: ${error.message}`);
+        }
+    };
+
     return (
-        <ScrollView className="flex-1 bg-white">
+        <ScrollView style={styles.container}>
             {/* Header */}
-            <View className="flex-row justify-between items-center p-4 bg-[#064D7D]">
+            <LinearGradient
+                colors={['#064D7D', '#1E88E5']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.header}
+            >
                 <TouchableOpacity
                     onPress={() =>
                         navigation.navigate("SideMenuNavigator", {
                             screen: "MenuScreen",
                         })
                     }
-                    className="p-2"
+                    style={styles.menuButton}
                 >
-                    <Ionicons name="menu" size={24} color="#FFFFFF" />
+                    <Ionicons name="menu" size={28} color="#FFFFFF" />
                 </TouchableOpacity>
-            </View>
-
+                <Text style={styles.headerTitle}>Welcome</Text>
+            </LinearGradient>
             {/* Introductory Message */}
-            <View className="px-4 mt-6">
-                <Text className="text-lg text-gray-700">
+            <View style={styles.messageContainer}>
+                <Text style={styles.messageText}>
                     We are excited to have you on board! Below is an introductory video and some notes to get you started.
                 </Text>
             </View>
 
             {/* Video Player */}
-            <View className="flex-1 justify-center items-center mt-6">
+            <View style={styles.videoContainer}>
                 <Video
                     ref={videoRef}
                     source={{ uri: videoUrl }}
@@ -101,21 +122,96 @@ const HomeScreen = ({
                     resizeMode={ResizeMode.CONTAIN}
                     shouldPlay
                     useNativeControls
-                    className="w-full h-64"
+                    style={styles.video}
                 />
             </View>
-
             {/* Download Button */}
-            <View className="px-4 mt-6">
+            <View style={styles.buttonContainer}>
                 <TouchableOpacity
                     onPress={() => downloadFile(pdfUrl)}
-                    className="bg-[#064D7D] py-2 px-4 rounded-lg items-center"
+                    style={styles.button}
                 >
-                    <Text className="text-white text-lg">Download Introductory Note</Text>
+                    <Text style={styles.buttonText}>
+                        {Platform.OS === 'ios' ? 'Save Introductory Note' : 'Download Introductory Note'}
+                    </Text>
+                    <Ionicons name="download-outline" size={24} color="#FFFFFF" style={styles.buttonIcon} />
                 </TouchableOpacity>
             </View>
         </ScrollView>
     );
 };
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#F5F5F5',
+    },
+    header: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingTop: 40,
+        paddingBottom: 10,
+        paddingHorizontal: 20,
+    },
+    menuButton: {
+        padding: 8,
+    },
+    headerTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: '#FFFFFF',
+        marginLeft: 16,
+    },
+    messageContainer: {
+        backgroundColor: '#FFFFFF',
+        borderRadius: 8,
+        marginHorizontal: 20,
+        marginTop: 20,
+        padding: 16,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
+    },
+    messageText: {
+        fontSize: 16,
+        color: '#333333',
+        lineHeight: 24,
+    },
+    videoContainer: {
+        marginTop: 20,
+        backgroundColor: '#000000',
+        borderRadius: 8,
+        overflow: 'hidden',
+        marginHorizontal: 20,
+    },
+    video: {
+        width: '100%',
+        aspectRatio: 16 / 9,
+    },
+    buttonContainer: {
+        marginTop: 24,
+        marginBottom: 32,
+        paddingHorizontal: 20,
+    },
+    button: {
+        backgroundColor: '#064D7D',
+        borderRadius: 8,
+        paddingVertical: 14,
+        paddingHorizontal: 20,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    buttonText: {
+        color: '#FFFFFF',
+        fontSize: 18,
+        fontWeight: '600',
+    },
+    buttonIcon: {
+        marginLeft: 8,
+    },
+});
 
 export default HomeScreen;

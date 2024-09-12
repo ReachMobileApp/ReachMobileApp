@@ -1,21 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import { View, Text, TouchableOpacity, Image, SafeAreaView, Platform, StatusBar, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import Toast from "react-native-toast-message";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { BASE_URL } from "@/src/config";
+
+// Import images
 import Course from "@/assets/images/menuIcons/Course.png";
 import Logout from "@/assets/images/menuIcons/Logout.png";
 import TrackProgress from "@/assets/images/menuIcons/TrackProgress.png";
 import Certificate from "@/assets/images/menuIcons/support_agent.png";
 import ArrowRight from "@/assets/images/menuIcons/arrowRight.png";
-import Toast from "react-native-toast-message";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { BASE_URL } from "@/src/config";
-import axios from "axios";
 
 const MenuScreen = ({ navigation }: any) => {
-    const [user, setUser] = useState<string | null>(null);
+    const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
+
     const SignOut = async () => {
-        setLoading(true)
+        setLoading(true);
         try {
             const userInfo = await AsyncStorage.getItem('userInfo');
             if (userInfo) {
@@ -32,8 +35,7 @@ const MenuScreen = ({ navigation }: any) => {
                     }
                 );
                 if (response.status === 200) {
-                    await AsyncStorage.removeItem("userInfo");
-                    await AsyncStorage.removeItem("email");
+                    await AsyncStorage.multiRemove(["userInfo", "email"]);
                     Toast.show({
                         type: "success",
                         text1: "Success!",
@@ -65,6 +67,8 @@ const MenuScreen = ({ navigation }: any) => {
             }
         } catch (e) {
             console.error("Failed to fetch data from AsyncStorage", e);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -72,55 +76,114 @@ const MenuScreen = ({ navigation }: any) => {
         getData();
     }, []);
 
+    interface MenuItemProps {
+        icon: any;
+        title: string;
+        onPress: () => void;
+    }
+
+    const MenuItem: React.FC<MenuItemProps> = ({ icon, title, onPress }) => (
+        <TouchableOpacity
+            onPress={onPress}
+            style={styles.menuItem}
+        >
+            <Image source={icon} className="mr-4" />
+            <Text style={styles.menuText}>{title}</Text>
+            <Image source={ArrowRight} style={styles.arrowIcon} />
+        </TouchableOpacity>
+    );
+
     return (
-        <View className="flex-1 bg-[#064D7D]">
-            {/* Header */}
-            <View className="flex-row justify-between items-center px-4 pt-6">
-                {/* Back button */}
-                <TouchableOpacity onPress={() => navigation.goBack()} className="">
+        <SafeAreaView style={styles.container}>
+            <StatusBar barStyle="light-content" backgroundColor="#064D7D" />
+            <View style={styles.header}>
+                <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
                     <Ionicons name="arrow-back" size={24} color="white" />
                 </TouchableOpacity>
-                {/* Profile image */}
             </View>
 
-            <Text className="text-white mt-8 mb-4 px-4 text-xl font-bold">
-                Hello, {user}{" "}
+            <Text style={styles.greeting}>
+                Hello, {user || 'User'}
             </Text>
 
-            {/* Menu items */}
-            <View className="bg-white rounded-t-2xl h-full mt-10">
-                {/* Courses */}
-                <TouchableOpacity
+            <View style={styles.menuContainer}>
+                <MenuItem
+                    icon={Course}
+                    title="Courses"
                     onPress={() => navigation.navigate("BottomTabNavigator", { screen: "Modules" })}
-                    className="flex-row items-center px-4 py-6 border-b border-gray-300">
-                    <Image source={Course} className="w-3 h-3 mr-4" />
-                    <Text>Courses</Text>
-                    <Image source={ArrowRight} className="ml-auto w-3 h-3" />
-                </TouchableOpacity>
-                <TouchableOpacity
+                />
+                <MenuItem
+                    icon={TrackProgress}
+                    title="Badges"
                     onPress={() => navigation.navigate("SideMenuNavigator", { screen: "Badge" })}
-                    className="flex-row items-center px-4 py-6 border-b border-gray-300">
-                    <Image source={TrackProgress} className="w-3 h-3 mr-4" />
-                    <Text>Badges</Text>
-                    <Image source={ArrowRight} className="ml-auto w-3 h-3" />
-                </TouchableOpacity>
-                <TouchableOpacity
+                />
+                <MenuItem
+                    icon={Certificate}
+                    title="Certificate"
                     onPress={() => navigation.navigate("SideMenuNavigator", { screen: "Certificate" })}
-                    className="flex-row items-center px-4 py-6 border-b border-gray-300">
-                    <Image source={Certificate} className="w-3 h-3 mr-4" />
-                    <Text>Certificate</Text>
-                    <Image source={ArrowRight} className="ml-auto w-3 h-3" />
-                </TouchableOpacity>
-
-                {/* Logout */}
-                <TouchableOpacity onPress={SignOut} className="flex-row items-center px-4 py-6">
-                    <Image source={Logout} className="w-3 h-3 mr-4" />
-                    <Text>Logout</Text>
-                    <Image source={ArrowRight} className="ml-auto w-3 h-3" />
-                </TouchableOpacity>
+                />
+                <MenuItem
+                    icon={Logout}
+                    title="Logout"
+                    onPress={SignOut}
+                />
             </View>
-        </View>
+        </SafeAreaView>
     );
 };
+
+const styles =  StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#064D7D',
+    },
+    header: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingHorizontal: 16,
+        paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+    },
+    backButton: {
+        padding: 8,
+    },
+    greeting: {
+        color: 'white',
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginTop: 32,
+        marginBottom: 16,
+        paddingHorizontal: 16,
+    },
+    menuContainer: {
+        flex: 1,
+        backgroundColor: 'white',
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        paddingTop: 16,
+    },
+    menuItem: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingVertical: 16,
+        paddingHorizontal: 16,
+        borderBottomWidth: 1,
+        borderBottomColor: '#E0E0E0',
+    },
+    menuIcon: {
+        width: 12,
+        height: 12,
+        marginRight: 16,
+    },
+    menuText: {
+        fontSize: 16,
+        color: '#333',
+        flex: 1,
+    },
+    arrowIcon: {
+        width: 16,
+        height: 16,
+    },
+});
 
 export default MenuScreen;

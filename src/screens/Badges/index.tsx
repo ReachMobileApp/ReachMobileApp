@@ -6,6 +6,7 @@ import {
     ScrollView,
     Image,
     TouchableOpacity,
+    StyleSheet
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import axios from "axios";
@@ -14,34 +15,10 @@ import Toast from "react-native-toast-message";
 import { Ionicons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BASE_URL } from "./../../config";
-
+import { LinearGradient } from "expo-linear-gradient";
 import Card from "@/src/components/BadgeCard";
 
-type ApiResponse2 = {
-    success: boolean;
-    status: string;
-    message: string;
-    data: Array<{
-        id: string;
-        name: string;
-        email: string;
-        email_verified_at: string | null;
-        created_at: string;
-        updated_at: string;
-        facility_id: string;
-        profile: {
-            id: number;
-            username: string;
-            occupation: string;
-            city: string;
-            country: string;
-            facility_id: string | null;
-            user_id: string;
-            created_at: string;
-            updated_at: string;
-        };
-    }>;
-};
+
 
 type Module = {
     id: string;
@@ -95,7 +72,9 @@ const BadgesScreen = ({ navigation }: any) => {
 
     return (
         <View className="flex-1">
-            <View className="flex-row justify-between items-center px-4 pt-6 pb-4 bg-[#064D7D]">
+            <LinearGradient colors={["#064D7D", "#1E88E5"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }} className="flex-row justify-between items-center px-4 pt-10 pb-5 bg-[#064D7D]">
                 {/* Back button */}
                 <TouchableOpacity
                     onPress={() => navigation.goBack()}
@@ -103,26 +82,42 @@ const BadgesScreen = ({ navigation }: any) => {
                     <Ionicons name="arrow-back" size={24} color="white" />
                 </TouchableOpacity>
                 {/* Profile image */}
-            </View>
-            <ScrollView className="mt-10 flex-1">
-                {modules.length > 0 ? (
-                    modules
-                        .filter((module) => module.has_completed_quiz)
-                        .map((module) => (
-                            <Card
-                                key={module.id}
-                                header={module.name}
-                                subheader="Completed"
-                            />
-                        ))
-                ) : (
-                    <Text className="text-center text-lg">
-                        No badges earned yet.
-                    </Text>
-                )}
+            </LinearGradient>
+            <ScrollView style={styles.badgesContainer}>
+            {modules.length > 0 ? (
+              modules
+                .filter((module) => module.has_completed_quiz)
+                .map((module) => (
+                  <Card
+                    key={module.id}
+                    header={module.name}
+                    subheader="Completed"
+                  />
+                ))
+            ) : (
+              <Text style={styles.noBadgesText}>No badges earned yet.</Text>
+            )}
             </ScrollView>
         </View>
     );
 };
+
+const styles = StyleSheet.create({
+    badgesContainer: {
+        padding: 15,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3,
+        
+      },
+      noBadgesText: {
+        fontSize: 18,
+        textAlign: "center",
+        color: "#666",
+        marginTop: 20,
+      },
+})
 
 export default BadgesScreen;

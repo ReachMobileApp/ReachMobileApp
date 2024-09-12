@@ -8,11 +8,13 @@ import ModulesNavigator from "./src/navigations/ModulesNavigator";
 import SideMenuNavigator from "./src/navigations/SideMenuNavigator";
 import BottomTabNavigator from "./src/navigations/BottomTabNavigator";
 import Toast from 'react-native-toast-message'
+import { StatusBar } from "react-native";
 
 export default function App() {
   const Stack = createStackNavigator();
   return (
     <PaperProvider>
+      <StatusBar backgroundColor="light" />
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="AuthNavigator" component={AuthNavigator} />

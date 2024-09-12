@@ -24,6 +24,11 @@ const BottomTabNavigator = () => {
 
           return <Ionicons name={iconName as any} size={size} color={color} />;
         },
+        tabBarStyle: {
+          height: 75,
+          paddingTop: 10,
+          paddingBottom: 15,
+        },
       })}
     // Remove the tabBarOptions property
     >

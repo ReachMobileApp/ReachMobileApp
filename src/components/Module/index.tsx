@@ -25,17 +25,17 @@ const Module = ({
     }, [onVideoFinish]);
 
     return (
-        <View className="p-4">
-            <Text className="text-2xl text-[#064d7d] font-bold ">{header}</Text>
-            <Text className="text-sm text-gray-500 mb-1 ">{subheader}</Text>
-            <View className="w-full h-52 px-2">
+        <View className="">
+            <Text className="text-2xl text-[#064d7d] font-bold p-4">{header}</Text>
+            <Text className="text-sm text-gray-500 mb-1 p-4">{subheader}</Text>
+            <View className="w-full h-52 px-4">
                 <Video
                     ref={(ref) => setVideoRef(ref)}
                     source={{ uri: videoUrl }} // Use videoUrl prop here
                     rate={1.0}
                     volume={1.0}
                     isMuted={false}
-                    style={{ width: screenWidth - 32, height: 200 }}
+                    style={{ width: screenWidth -32, height: 200 }}
                     useNativeControls
                     resizeMode={ResizeMode.CONTAIN}
                     onPlaybackStatusUpdate={onPlaybackStatusUpdate}

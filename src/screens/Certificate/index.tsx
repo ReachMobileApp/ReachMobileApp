@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
-import { DrawerNavigationProp } from '@react-navigation/drawer';
+import { View, Text, TouchableOpacity, ActivityIndicator, Alert, SafeAreaView, StatusBar, Platform, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -8,34 +7,36 @@ import * as FileSystem from 'expo-file-system';
 import { StorageAccessFramework } from 'expo-file-system';
 import { Buffer } from 'buffer';
 import { BASE_URL } from '../../config';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const CertificateScreen = ({ navigation }: any) => {
   const [loading, setLoading] = useState(true);
   const [certificate, setCertificate] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchCertificate = async () => {
-      try {
-        const userInfo = await AsyncStorage.getItem('userInfo');
-        if (userInfo) {
-          const parsedUserInfo = JSON.parse(userInfo);
-          const token = parsedUserInfo.data.auth_token;
-          const response = await axios.get(
-            `${BASE_URL}certificate/01j1bdmvf8wk0asczzbgx1c6yy`,
-            { headers: { Authorization: `Bearer ${token}` }, responseType: 'arraybuffer' }
-          );
-          const base64Image = Buffer.from(response.data, 'binary').toString('base64');
-          setCertificate(base64Image);
-        }
-      } catch (error) {
-        console.error('Error fetching certificate:', error);
-        Alert.alert('Error', 'Failed to fetch certificate.');
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchCertificate();
   }, []);
+
+  const fetchCertificate = async () => {
+    try {
+      const userInfo = await AsyncStorage.getItem('userInfo');
+      if (userInfo) {
+        const parsedUserInfo = JSON.parse(userInfo);
+        const token = parsedUserInfo.data.auth_token;
+        const response = await axios.get(
+          `${BASE_URL}certificate/01j1bdmvf8wk0asczzbgx1c6yy`,
+          { headers: { Authorization: `Bearer ${token}` }, responseType: 'arraybuffer' }
+        );
+        const base64Image = Buffer.from(response.data, 'binary').toString('base64');
+        setCertificate(base64Image);
+      }
+    } catch (error) {
+      console.error('Error fetching certificate:', error);
+      Alert.alert('Error', 'Failed to fetch certificate.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const requestFileWritePermission = async () => {
     const permissions = await StorageAccessFramework.requestDirectoryPermissionsAsync();
@@ -54,7 +55,7 @@ const CertificateScreen = ({ navigation }: any) => {
       }
 
       const directoryUri = hasPermissions.directoryUri || '';
-      const fileName = `certificate.png`;
+      const fileName = `certificate_${Date.now()}.png`;
       const fileUri = await StorageAccessFramework.createFileAsync(directoryUri, fileName, 'image/png');
 
       await FileSystem.writeAsStringAsync(fileUri, base64Image, { encoding: FileSystem.EncodingType.Base64 });
@@ -68,45 +69,136 @@ const CertificateScreen = ({ navigation }: any) => {
 
   if (loading) {
     return (
-      <View className="flex-1 justify-center items-center">
+      <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#064d7d" />
       </View>
     );
   }
 
   return (
-    <View className="flex-1 bg-white pt-2">
+    <View style={styles.container}>
       <View className="bg-[#064d7d]">
-        <View className="flex-row justify-between items-center py-3 mb-2 px-3">
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Ionicons name="arrow-back" size={24} color="white" />
-          </TouchableOpacity>
-          <Text className="text-white text-lg font-bold">Certificate</Text>
-          <View style={{ width: 24 }} />
-        </View>
+
+      <LinearGradient
+        colors={['#064D7D', '#1E88E5']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.header}
+      >
+        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <Ionicons name="arrow-back" size={24} color="white" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Certificate</Text>
+      </LinearGradient>
       </View>
 
-      <View className="flex-1 justify-center items-center px-4">
+      <View style={styles.content}>
         {certificate ? (
-          <View className="w-full p-4">
-            <Text className="text-2xl text-[#064d7d] font-bold mb-4 text-center">Congratulations!</Text>
-            <View className="border border-gray-300 rounded-lg p-4 mb-4">
-              <Text className="text-lg text-gray-700 mb-2 text-center">You have successfully completed all modules and earned a certificate.</Text>
-              <Text className="text-lg text-gray-700 text-center">To download your certificate, please click the button below.</Text>
+          <View style={styles.certificateContainer}>
+            <Text style={styles.congratsText}>Congratulations!</Text>
+            <View style={styles.messageBox}>
+              <Text style={styles.messageText}>
+                You have successfully completed all modules and earned a certificate.
+              </Text>
+              <Text style={styles.messageText}>
+                To download your certificate, please click the button below.
+              </Text>
             </View>
             <TouchableOpacity
               onPress={() => downloadCertificate(certificate)}
-              className="bg-[#064d7d] p-4 rounded-lg"
+              style={styles.downloadButton}
             >
-              <Text className="text-white text-center text-lg font-semibold">Download Certificate</Text>
+              <Text style={styles.downloadButtonText}>Download Certificate</Text>
             </TouchableOpacity>
           </View>
         ) : (
-          <Text className="text-lg text-gray-700 text-center">No certificate earned yet.</Text>
+          <Text style={styles.noCertificateText}>No certificate earned yet.</Text>
         )}
       </View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F5F5F5',
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5F5F5',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingTop: 40,
+    paddingBottom: 10,
+    paddingHorizontal: 20,
+},
+  backButton: {
+    padding: 8,
+  },
+  headerTitle: {
+    color: 'white',
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginLeft: 16,
+  },
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 16,
+  },
+  certificateContainer: {
+    width: '100%',
+    backgroundColor: 'white',
+    borderRadius: 12,
+    padding: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  congratsText: {
+    fontSize: 28,
+    color: '#064d7d',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 16,
+  },
+  messageBox: {
+    backgroundColor: '#E3F2FD',
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 24,
+  },
+  messageText: {
+    fontSize: 16,
+    color: '#333',
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  downloadButton: {
+    backgroundColor: '#064d7d',
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    borderRadius: 8,
+  },
+  downloadButtonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  noCertificateText: {
+    fontSize: 18,
+    color: '#666',
+    textAlign: 'center',
+  },
+});
 
 export default CertificateScreen;
