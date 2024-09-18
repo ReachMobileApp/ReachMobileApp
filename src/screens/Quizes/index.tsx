@@ -14,6 +14,8 @@ import axios from "axios";
 import { BASE_URL } from "@/src/config";
 import Toast from "react-native-toast-message";
 import { LinearGradient } from "expo-linear-gradient";
+import { showMessage } from "react-native-flash-message";
+import { COLORS } from "@/src/theme/colors";
 
 interface Answer {
   id: string;
@@ -114,10 +116,17 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
         });
         if (response.data.success) {
           setSubmitLoading(false);
-          Toast.show({
+          // Toast.show({
+          //   type: "success",
+          //   text1: "Success!",
+          //   text2: response.data.message,
+          // });
+          showMessage({
+            message: response.data.message,
             type: "success",
-            text1: "Success!",
-            text2: response.data.message,
+            icon: "success",
+            backgroundColor: COLORS.success[600],
+            statusBarHeight: 22,
           });
         }
         navigation.navigate("BottomTabNavigator", {
@@ -126,10 +135,18 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
       }
     } catch (error: any) {
       setSubmitLoading(false);
-      Toast.show({
-        type: "error",
-        text1: "Error!",
-        text2: error.response?.data?.message || error.message,
+      // Toast.show({
+      //   type: "error",
+      //   text1: "Error!",
+      //   text2: error.response?.data?.message || error.message,
+      // });
+
+      showMessage({
+        message: error.response?.data?.message || error.message,
+        type: "danger",
+        icon: "danger",
+        backgroundColor: COLORS.danger[600],
+        statusBarHeight: 22,
       });
     }
   };
@@ -137,14 +154,14 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#064d7d" />
+        <ActivityIndicator size='large' color='#064d7d' />
       </View>
     );
   }
 
   return (
     <ScrollView style={styles.container}>
-     <LinearGradient
+      <LinearGradient
         colors={["#064D7D", "#1E88E5"]}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
@@ -154,7 +171,7 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
           onPress={() => navigation.goBack()}
           style={styles.backButton}
         >
-          <Ionicons name="arrow-back" size={28} color="white" />
+          <Ionicons name='arrow-back' size={28} color='white' />
         </TouchableOpacity>
       </LinearGradient>
       <View style={styles.content}>
@@ -198,7 +215,7 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
           disabled={submitLoading}
         >
           {submitLoading ? (
-            <ActivityIndicator color="white" />
+            <ActivityIndicator color='white' />
           ) : (
             <Text style={styles.submitButtonText}>Submit</Text>
           )}
@@ -300,7 +317,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     lineHeight: 22,
   },
-  
+
   submitButton: {
     backgroundColor: "#064d7d",
     paddingVertical: 15,

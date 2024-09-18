@@ -30,6 +30,7 @@
     "react-native": "0.74.3",
     "react-native-confirmation-code-field": "^7.4.0",
     "react-native-element-dropdown": "^2.10.4",
+    "react-native-flash-message": "^0.4.2",
     "react-native-gesture-handler": "~2.16.1",
     "react-native-otp-entry": "^1.6.1",
     "react-native-paper": "^5.12.3",
