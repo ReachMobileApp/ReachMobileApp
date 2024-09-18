@@ -42,7 +42,7 @@ const SignInScreen = ({ navigation }: StackNavigationProps) => {
             type: "success",
             icon: "success",
             backgroundColor: COLORS.success[600],
-            statusBarHeight: 22,
+            statusBarHeight: 50,
           });
           setUser(user);
           await AsyncStorage.setItem("userInfo", JSON.stringify(user));
@@ -62,7 +62,7 @@ const SignInScreen = ({ navigation }: StackNavigationProps) => {
               type: "danger",
               icon: "danger",
               backgroundColor: COLORS.danger[600],
-              statusBarHeight: 22,
+              statusBarHeight: 50,
             });
             setUser(user);
             await AsyncStorage.setItem("email", email); // Save email separately
@@ -73,7 +73,7 @@ const SignInScreen = ({ navigation }: StackNavigationProps) => {
               type: "danger",
               icon: "danger",
               backgroundColor: COLORS.danger[600],
-              statusBarHeight: 22,
+              statusBarHeight: 50,
             });
           } else {
             console.log("An unexpected error occurred:", error.message);
@@ -90,7 +90,7 @@ const SignInScreen = ({ navigation }: StackNavigationProps) => {
         type: "danger",
         icon: "danger",
         backgroundColor: COLORS.danger[600],
-        statusBarHeight: 22,
+        statusBarHeight: 50,
       });
     }
   };

@@ -57,7 +57,7 @@ const MenuScreen = ({ navigation }: any) => {
             type: "success",
             icon: "success",
             backgroundColor: COLORS.success[600],
-            statusBarHeight: 22,
+            statusBarHeight: 50,
           });
           navigation.navigate("SignInScreen");
         } else {
@@ -76,7 +76,7 @@ const MenuScreen = ({ navigation }: any) => {
         type: "danger",
         icon: "danger",
         backgroundColor: COLORS.danger[600],
-        statusBarHeight: 22,
+        statusBarHeight: 50,
       });
     } finally {
       setLoading(false);

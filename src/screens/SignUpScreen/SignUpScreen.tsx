@@ -65,7 +65,7 @@ const SignUpScreen = ({ navigation }: StackNavigationProps) => {
           type: "danger",
           icon: "danger",
           backgroundColor: COLORS.danger[600],
-          statusBarHeight: 22,
+          statusBarHeight: 50,
         });
       }
     };
@@ -119,7 +119,7 @@ const SignUpScreen = ({ navigation }: StackNavigationProps) => {
             type: "success",
             icon: "success",
             backgroundColor: COLORS.success[600],
-            statusBarHeight: 22,
+            statusBarHeight: 50,
           });
           setEmail("");
           setPassword("");
@@ -149,7 +149,7 @@ const SignUpScreen = ({ navigation }: StackNavigationProps) => {
             type: "danger",
             icon: "danger",
             backgroundColor: COLORS.danger[600],
-            statusBarHeight: 22,
+            statusBarHeight: 50,
           });
         }
       } catch (error: any) {
@@ -164,7 +164,7 @@ const SignUpScreen = ({ navigation }: StackNavigationProps) => {
           type: "danger",
           icon: "danger",
           backgroundColor: COLORS.danger[600],
-          statusBarHeight: 22,
+          statusBarHeight: 50,
         });
         console.log(error.response?.data?.message);
         setLoading(false);
@@ -182,7 +182,7 @@ const SignUpScreen = ({ navigation }: StackNavigationProps) => {
         type: "danger",
         icon: "danger",
         backgroundColor: COLORS.danger[600],
-        statusBarHeight: 22,
+        statusBarHeight: 50,
       });
     }
   };

@@ -126,7 +126,7 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
             type: "success",
             icon: "success",
             backgroundColor: COLORS.success[600],
-            statusBarHeight: 22,
+            statusBarHeight: 50,
           });
         }
         navigation.navigate("BottomTabNavigator", {
@@ -146,7 +146,7 @@ const QuizScreen = ({ navigation }: QuizScreenProps) => {
         type: "danger",
         icon: "danger",
         backgroundColor: COLORS.danger[600],
-        statusBarHeight: 22,
+        statusBarHeight: 50,
       });
     }
   };

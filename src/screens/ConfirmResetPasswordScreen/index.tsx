@@ -36,7 +36,7 @@ const ConfirmPasswordReset = ({ navigation }: StackNavigationProps) => {
           type: "danger",
           icon: "danger",
           backgroundColor: COLORS.danger[600],
-          statusBarHeight: 22,
+          statusBarHeight: 50,
         });
         return;
       }
@@ -62,7 +62,7 @@ const ConfirmPasswordReset = ({ navigation }: StackNavigationProps) => {
             type: "success",
             icon: "success",
             backgroundColor: COLORS.success[600],
-            statusBarHeight: 22,
+            statusBarHeight: 50,
           });
           setLoading(false);
           navigation.navigate("SignInScreen");
@@ -78,7 +78,7 @@ const ConfirmPasswordReset = ({ navigation }: StackNavigationProps) => {
             type: "danger",
             icon: "danger",
             backgroundColor: COLORS.danger[600],
-            statusBarHeight: 22,
+            statusBarHeight: 50,
           });
         }
       } catch (error: any) {
@@ -93,7 +93,7 @@ const ConfirmPasswordReset = ({ navigation }: StackNavigationProps) => {
           type: "danger",
           icon: "danger",
           backgroundColor: COLORS.danger[600],
-          statusBarHeight: 22,
+          statusBarHeight: 50,
         });
         setLoading(false);
       }
@@ -109,7 +109,7 @@ const ConfirmPasswordReset = ({ navigation }: StackNavigationProps) => {
         type: "danger",
         icon: "danger",
         backgroundColor: COLORS.danger[600],
-        statusBarHeight: 22,
+        statusBarHeight: 50,
       });
     }
   };

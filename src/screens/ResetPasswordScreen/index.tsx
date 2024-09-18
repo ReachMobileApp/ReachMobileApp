@@ -46,7 +46,7 @@ const ResetPasswordScreen = ({ navigation }: StackNavigationProps) => {
             type: "danger",
             icon: "danger",
             backgroundColor: COLORS.danger[600],
-            statusBarHeight: 22,
+            statusBarHeight: 50,
           });
           AsyncStorage.setItem("email", email);
           navigation.navigate("ConfirmPasswordReset");
@@ -63,7 +63,7 @@ const ResetPasswordScreen = ({ navigation }: StackNavigationProps) => {
             type: "danger",
             icon: "danger",
             backgroundColor: COLORS.danger[600],
-            statusBarHeight: 22,
+            statusBarHeight: 50,
           });
         }
       } catch (error: any) {
@@ -78,7 +78,7 @@ const ResetPasswordScreen = ({ navigation }: StackNavigationProps) => {
           type: "danger",
           icon: "danger",
           backgroundColor: COLORS.danger[600],
-          statusBarHeight: 22,
+          statusBarHeight: 50,
         });
         setLoading(false);
       }
@@ -93,7 +93,7 @@ const ResetPasswordScreen = ({ navigation }: StackNavigationProps) => {
         type: "danger",
         icon: "danger",
         backgroundColor: COLORS.danger[600],
-        statusBarHeight: 22,
+        statusBarHeight: 50,
       });
     }
   };
