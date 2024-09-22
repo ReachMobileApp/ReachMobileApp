@@ -4,6 +4,7 @@ import {
   ScrollView,
   StatusBar,
   TouchableOpacity,
+  StyleSheet,
   ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
@@ -15,6 +16,9 @@ import Toast from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { BASE_URL } from "@/src/config";
 import { showMessage } from "react-native-flash-message";
+import { LinearGradient } from "expo-linear-gradient";
+import { Ionicons } from "@expo/vector-icons";
+
 
 const ConfirmPasswordReset = ({ navigation }: StackNavigationProps) => {
   const [otp, setOtp] = useState<string>("");
@@ -115,13 +119,25 @@ const ConfirmPasswordReset = ({ navigation }: StackNavigationProps) => {
   };
 
   return (
-    <ScrollView className='flex-1 bg-white px-4 pt-5'>
-      <StatusBar
-        backgroundColor={COLORS.white}
-        barStyle={"dark-content"}
-        animated
-      />
-      <View>
+    <ScrollView className='flex-1 bg-white '>
+      <LinearGradient
+        colors={["#064D7D", "#1E88E5"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.header}
+      >
+        <View style={styles.headerContent}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}
+          >
+            <Ionicons name="arrow-back" size={24} color="white" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>
+            Confirm Password Reset </Text>
+        </View>
+      </LinearGradient>
+      <View className="px-4 pt-5">
         <CustomPaperTextInput label='OTP' value={otp} onChangeText={setOtp} />
         <CustomPaperTextInput
           label='New Password'
@@ -135,13 +151,13 @@ const ConfirmPasswordReset = ({ navigation }: StackNavigationProps) => {
         />
       </View>
 
-      <View className='w-full flex justify-center items-center my-10'>
+      <View className='w-full flex justify-center items-center my-10 px-4 '>
         <TouchableOpacity
           onPress={verifyOtp}
           className={`w-full  h-14 rounded-[8px]  justify-center items-center bg-[#064D7D] text-white`}
         >
           <Text className='text-white font-extrabold text-2xl'>
-            {loading ? <ActivityIndicator /> : "Verify OTP"}
+            {loading ? <ActivityIndicator /> : "Confirm "}
           </Text>
         </TouchableOpacity>
       </View>
@@ -150,3 +166,25 @@ const ConfirmPasswordReset = ({ navigation }: StackNavigationProps) => {
 };
 
 export default ConfirmPasswordReset;
+
+const styles = StyleSheet.create({
+  header: {
+    paddingTop: 40,
+    paddingBottom: 15,
+    paddingHorizontal: 20,
+  },
+  headerContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  backButton: {
+    padding: 5,
+    marginRight: 15,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "white",
+    flex: 1,
+  },
+})

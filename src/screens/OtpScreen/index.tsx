@@ -1,14 +1,17 @@
+import React, { useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 import { StackNavigationProps } from "@/src/shared";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 import {
   CodeField,
   Cursor,
   useBlurOnFulfill,
   useClearByFocusCell,
 } from 'react-native-confirmation-code-field';
+import { LinearGradient } from "expo-linear-gradient";
+import { Ionicons } from "@expo/vector-icons";
+import { COLORS } from "@/src/theme/colors";
 
 const CELL_COUNT = 6;
 
@@ -48,6 +51,7 @@ const OtpScreen = ({ navigation, route }: StackNavigationProps) => {
       const response = await axios.post('https://uhfiles.ui.edu.ng/api/v1/email/resend-otp', { email });
       console.log(response.data);
       Alert.alert('Success', 'OTP Resent successfully');
+      setCode('');
     } catch (err) {
       console.log(err);
       Alert.alert('Error', 'An error occurred while resending OTP');
@@ -65,7 +69,7 @@ const OtpScreen = ({ navigation, route }: StackNavigationProps) => {
         Alert.alert('Success', 'OTP Verified successfully');
         setUser(user);
         await AsyncStorage.setItem('userInfo', JSON.stringify(user));
-        navigation.navigate('BottomTabNavigator', { screen: 'Home' });
+        navigation.navigate('SignInScreen');
       }
     } catch (error: any) {
       console.log(error.message);
@@ -77,36 +81,60 @@ const OtpScreen = ({ navigation, route }: StackNavigationProps) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.legal}>
-        Please enter the 6-digit activation code sent to your <Text className="font-black text-lg">{email}</Text>.
-      </Text>
+      <LinearGradient
+        colors={["#064D7D", "#1E88E5"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.header}
+      >
+        <View style={styles.headerContent}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}
+          >
+            <Ionicons name="arrow-back" size={24} color="white" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Verify OTP</Text>
+        </View>
+      </LinearGradient>
 
-      <CodeField
-        ref={ref}
-        {...props}
-        value={code}
-        onChangeText={setCode}
-        cellCount={CELL_COUNT}
-        rootStyle={styles.codeFieldRoot}
-        keyboardType="number-pad"
-        textContentType="oneTimeCode"
-        renderCell={({ index, symbol, isFocused }) => (
-          <View
-            onLayout={getCellOnLayoutHandler(index)}
-            key={index}
-            style={[styles.cellRoot, isFocused && styles.focusCell]}>
-            <Text style={styles.cellText}>{symbol || (isFocused ? <Cursor /> : null)}</Text>
-          </View>
-        )}
-      />
+      <View style={styles.content}>
+        <Text style={styles.instructions}>
+          Please enter the 6-digit activation code sent to:
+        </Text>
+        <Text style={styles.email}>{email}</Text>
 
-      <TouchableOpacity style={styles.button} onPress={resendCode}>
-        <Text style={styles.buttonText}>Didn't receive a verification code?</Text>
-      </TouchableOpacity>
+        <CodeField
+          ref={ref}
+          {...props}
+          value={code}
+          onChangeText={setCode}
+          cellCount={CELL_COUNT}
+          rootStyle={styles.codeFieldRoot}
+          keyboardType="number-pad"
+          textContentType="oneTimeCode"
+          renderCell={({ index, symbol, isFocused }) => (
+            <View
+              onLayout={getCellOnLayoutHandler(index)}
+              key={index}
+              style={[styles.cellRoot, isFocused && styles.focusCell]}>
+              <Text style={styles.cellText}>{symbol || (isFocused ? <Cursor /> : null)}</Text>
+            </View>
+          )}
+        />
 
-      <TouchableOpacity onPress={verifyCode} style={[styles.button, styles.verifyButton]}>
-        <Text style={styles.verifyButtonText}>{loading ? <ActivityIndicator /> : 'Verify'}</Text>
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.resendButton} onPress={resendCode}>
+          <Text style={styles.resendButtonText}>Resend verification code</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={verifyCode} style={styles.verifyButton} disabled={loading}>
+          {loading ? (
+            <ActivityIndicator color="white" />
+          ) : (
+            <Text style={styles.verifyButtonText}>Verify</Text>
+          )}
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -114,58 +142,93 @@ const OtpScreen = ({ navigation, route }: StackNavigationProps) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#f5f5f5",
+  },
+  header: {
+    paddingTop: 40,
+    paddingBottom: 15,
+    paddingHorizontal: 20,
+  },
+  headerContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  backButton: {
+    padding: 5,
+    marginRight: 15,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "white",
+    flex: 1,
+  },
+  content: {
+    flex: 1,
     alignItems: 'center',
     padding: 20,
-    backgroundColor: '#EFEEF6',
     gap: 20,
   },
-  legal: {
-    fontSize: 14,
+  instructions: {
+    fontSize: 16,
     textAlign: 'center',
-    color: '#000',
+    color: "black",
+    marginBottom: 5,
   },
-  button: {
-    width: '100%',
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#1063FD',
+  email: {
     fontSize: 18,
+    fontWeight: 'bold',
+    color: "#064d7d",
+    marginBottom: 20,
   },
   codeFieldRoot: {
-    marginTop: 20,
-    width: 260,
+    width: 280,
     marginLeft: 'auto',
     marginRight: 'auto',
-    gap: 4,
+    gap: 8,
   },
   cellRoot: {
     width: 40,
-    height: 40,
+    height: 50,
     justifyContent: 'center',
     alignItems: 'center',
-    borderBottomColor: '#ccc',
-    borderBottomWidth: 1,
+    borderBottomColor: "#064d7d",
+    borderBottomWidth: 2,
+    backgroundColor: "#f5f5f5",
   },
   cellText: {
-    color: '#000',
-    fontSize: 36,
+    color: 'black',
+    fontSize: 24,
     textAlign: 'center',
   },
   focusCell: {
-    paddingBottom: 4,
-    borderBottomColor: '#000',
-    borderBottomWidth: 2,
+    borderBottomColor: "#064d7d",
+    borderBottomWidth: 3,
   },
-  verifyButton: {
-    backgroundColor: '#1063FD',
-    padding: 10,
-    borderRadius: 5,
+  resendButton: {
     marginTop: 20,
   },
+  resendButtonText: {
+    color: "#064d7d",
+    fontSize: 16,
+    textDecorationLine: 'underline',
+  },
+  verifyButton: {
+    backgroundColor: "#064d7d",
+    paddingVertical: 12,
+    paddingHorizontal: 30,
+    borderRadius: 8,
+    marginTop: 30,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
+  },
   verifyButtonText: {
-    color: '#FFF',
+    color: 'white',
     fontSize: 18,
+    fontWeight: 'bold',
   },
 });
 

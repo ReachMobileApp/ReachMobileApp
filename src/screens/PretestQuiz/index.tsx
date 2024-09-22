@@ -56,7 +56,6 @@ const PretestQuizScreen = ({ navigation }: PretestQuizScreenProps) => {
             Authorization: `Bearer ${token}`,
           },
         });
-        console.log(response.data);
         setQuizQuestions(response.data.data.questions);
         setQuizId(response.data?.data?.id);
       }
@@ -110,12 +109,10 @@ const PretestQuizScreen = ({ navigation }: PretestQuizScreenProps) => {
             backgroundColor: COLORS.success[600],
             statusBarHeight: 50,
           });
-          console.log(parsedUserInfo);
           const updatedUserInfo = {
             ...parsedUserInfo,
-            data: { ...parsedUserInfo.data, has_taken_pretest: true },
+            data: { ...parsedUserInfo.data.user, has_taken_pretest: true },
           };
-          console.log(updatedUserInfo);
           await AsyncStorage.setItem(
             "userInfo",
             JSON.stringify(updatedUserInfo)

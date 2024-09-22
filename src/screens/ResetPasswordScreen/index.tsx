@@ -5,7 +5,7 @@ import {
   StatusBar,
   Image,
   TouchableOpacity,
-  Pressable,
+  StyleSheet,
   ScrollView,
   ActivityIndicator,
   Alert,
@@ -16,7 +16,8 @@ import CustomPaperTextInput from "@/src/components/UI/Inputs/CustomPaperTextInpu
 import { COLORS } from "@/src/theme/colors";
 import { StackNavigationProps } from "@/src/shared";
 import Image1 from "@/assets/images/Group 57.png";
-import Toast from "react-native-toast-message";
+import { LinearGradient } from "expo-linear-gradient";
+import { Ionicons } from "@expo/vector-icons";
 import { BASE_URL } from "./../../config";
 import { useFocusEffect } from "@react-navigation/native";
 import { showMessage } from "react-native-flash-message";
@@ -43,8 +44,8 @@ const ResetPasswordScreen = ({ navigation }: StackNavigationProps) => {
           // });
           showMessage({
             message: "success,We have emailed your password reset link.",
-            type: "danger",
-            icon: "danger",
+            type: "success",
+            icon: "success",
             backgroundColor: COLORS.danger[600],
             statusBarHeight: 50,
           });
@@ -106,13 +107,24 @@ const ResetPasswordScreen = ({ navigation }: StackNavigationProps) => {
 
   return (
     <>
-      <ScrollView className='flex-1 bg-white px-4 pt-6 h-full'>
-        <StatusBar
-          backgroundColor={COLORS.white}
-          barStyle={"dark-content"}
-          animated
-        />
-        <View className=''>
+      <ScrollView className='flex-1 bg-white  h-full'>
+      <LinearGradient
+        colors={["#064D7D", "#1E88E5"]}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 1 }}
+        style={styles.header}
+      >
+        <View style={styles.headerContent}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}
+          >
+            <Ionicons name="arrow-back" size={24} color="white" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Reset Password</Text>
+        </View>
+      </LinearGradient>
+        <View className='px-4 pt-6'>
           <Image
             source={Image1}
             resizeMode='cover'
@@ -129,7 +141,7 @@ const ResetPasswordScreen = ({ navigation }: StackNavigationProps) => {
             />
           </View>
         </View>
-        <View className='w-full flex justify-center items-center '>
+        <View className='w-full flex justify-center items-center px-4 '>
           <TouchableOpacity
             onPress={resetPassword}
             className={`w-full mt-10 h-14 rounded-[8px] justify-center items-center bg-[#064D7D]`}
@@ -145,3 +157,25 @@ const ResetPasswordScreen = ({ navigation }: StackNavigationProps) => {
 };
 
 export default ResetPasswordScreen;
+
+const styles = StyleSheet.create({
+  header: {
+    paddingTop: 40,
+    paddingBottom: 15,
+    paddingHorizontal: 20,
+  },
+  headerContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  backButton: {
+    padding: 5,
+    marginRight: 15,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "white",
+    flex: 1,
+  },
+})
