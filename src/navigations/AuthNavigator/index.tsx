@@ -9,6 +9,7 @@ import Header from "@/src/components/UI/Header/Header";
 import OtpScreen from "@/src/screens/OtpScreen";
 import ResetPasswordScreen from "@/src/screens/ResetPasswordScreen";
 import ConfirmPasswordReset from "@/src/screens/ConfirmResetPasswordScreen";
+import PretestQuizScreen from "@/src/screens/PretestQuiz";
 
 
 
@@ -43,6 +44,7 @@ const AuthNavigator = () => {
             headerLeft: () => null, 
           }}  />     
           <Stack.Screen name="ConfirmPasswordReset" component={ConfirmPasswordReset} options={{title:''}}/>   
+          <Stack.Screen name="PretestQuiz" component={PretestQuizScreen}  options={{ headerShown: false }}/>
     </Stack.Navigator>
   );
 };

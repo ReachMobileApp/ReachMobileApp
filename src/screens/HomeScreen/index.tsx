@@ -1,5 +1,5 @@
-import React, { useRef } from "react";
-import { View, Text, TouchableOpacity, Alert, ScrollView, Platform, StyleSheet } from "react-native";
+import React, { useRef, useEffect, useState } from "react";
+import { View, Text, TouchableOpacity, Alert, ScrollView, Platform, StyleSheet, Modal } from "react-native";
 import { Video, ResizeMode } from 'expo-av';
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import * as FileSystem from 'expo-file-system';
@@ -7,7 +7,7 @@ import * as Sharing from 'expo-sharing';
 import { Ionicons } from "@expo/vector-icons";
 import { useFocusEffect } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const HomeScreen = ({
     navigation,
 }: {
@@ -17,9 +17,17 @@ const HomeScreen = ({
 
     const videoUrl = "https://uhfiles.ui.edu.ng/build/assets/introductoryvideo-D_vKyPY2.mp4";
     const pdfUrl = "https://uhfiles.ui.edu.ng/build/assets/Introductory%20module-HEzWMrdI.pdf";
+    const [showPretestModal, setShowPretestModal] = useState(false);
+
+ 
+
+    useEffect(() => {
+        checkPretestStatus();
+    }, []);
 
     useFocusEffect(
         React.useCallback(() => {
+            checkPretestStatus();
             return () => {
                 if (videoRef.current) {
                     videoRef.current.pauseAsync();
@@ -28,6 +36,18 @@ const HomeScreen = ({
         }, [])
     );
 
+    const checkPretestStatus = async () => {
+        try {
+            const userInfo = await AsyncStorage.getItem('userInfo');
+            if (userInfo) {
+                const { has_taken_pretest } = JSON.parse(userInfo);
+                setShowPretestModal(!has_taken_pretest);
+                console.log(has_taken_pretest);
+            }
+        } catch (error) {
+            console.error("Error checking pretest status:", error);
+        }
+    };
     const downloadFile = async (url: string) => {
         try {
             const filename = 'Introductory_note.pdf';
@@ -83,6 +103,11 @@ const HomeScreen = ({
         }
     };
 
+    const goToQuizScreen = () => {
+        navigation.navigate("AuthNavigator", { screen: "PretestQuiz"}); // Make sure you have this screen in your navigation
+    };
+
+
     return (
         <ScrollView style={styles.container}>
             {/* Header */}
@@ -137,6 +162,27 @@ const HomeScreen = ({
                     <Ionicons name="download-outline" size={24} color="#FFFFFF" style={styles.buttonIcon} />
                 </TouchableOpacity>
             </View>
+            <Modal
+                visible={showPretestModal}
+                transparent={true}
+                animationType="fade"
+                onRequestClose={() => {}} // Empty function to prevent closing on back button (Android)
+            >
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.modalTitle}>Welcome!</Text>
+                        <Text style={styles.modalText}>
+                            Before you continue, you need to take a pretest quiz. This will help us understand your current knowledge level.
+                        </Text>
+                        <TouchableOpacity
+                            style={styles.modalButton}
+                            onPress={goToQuizScreen}
+                        >
+                            <Text style={styles.modalButtonText}>Take Pretest Quiz</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
         </ScrollView>
     );
 };
@@ -211,6 +257,51 @@ const styles = StyleSheet.create({
     },
     buttonIcon: {
         marginLeft: 8,
+    },
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    modalContent: {
+        backgroundColor: 'white',
+        borderRadius: 20,
+        padding: 35,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+        elevation: 5,
+        width: '80%',
+    },
+    modalTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 15,
+        textAlign: 'center',
+    },
+    modalText: {
+        marginBottom: 20,
+        textAlign: 'center',
+        fontSize: 16,
+    },
+    modalButton: {
+        backgroundColor: '#064D7D',
+        borderRadius: 20,
+        padding: 10,
+        elevation: 2,
+        marginTop: 10,
+    },
+    modalButtonText: {
+        color: 'white',
+        fontWeight: 'bold',
+        textAlign: 'center',
+        fontSize: 16,
     },
 });
 

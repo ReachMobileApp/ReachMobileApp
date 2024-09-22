@@ -35,6 +35,7 @@ const SignInScreen = ({ navigation }: StackNavigationProps) => {
           password,
         });
         const user = response.data;
+        console.log(user)
         if (response.status === 200) {
           setLoading(false);
           showMessage({

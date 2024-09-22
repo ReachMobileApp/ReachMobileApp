@@ -6,7 +6,7 @@ import { StackNavigationProps } from '@/src/shared'
 const Index = ({ navigation }: StackNavigationProps) => {
   return (
     <ScrollView className='relative'>
-      <SignUpScreen navigation={navigation} />
+      <SignUpScreen navigation={navigation} route={{ key: 'signup', name: 'SignUpScreen' }} />
     </ScrollView>
   )
 }
