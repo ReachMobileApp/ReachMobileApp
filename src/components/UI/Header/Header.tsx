@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import React from "react";
+import { View, Text, StyleSheet } from "react-native";
 
 interface HeaderProps {
   name: string;
@@ -17,15 +17,14 @@ const Header: React.FC<HeaderProps> = (props) => {
       </Text>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    margin: 15,
+    flexDirection: "row",
   },
   text: {
-    fontWeight: 'bold',
+    fontWeight: "bold",
     fontSize: 30,
   },
 });

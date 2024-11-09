@@ -19,6 +19,7 @@ import Toast from "react-native-toast-message";
 import { BASE_URL } from "./../../config";
 import { useFocusEffect } from "@react-navigation/native";
 import { showMessage } from "react-native-flash-message";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 const SignInScreen = ({ navigation }: StackNavigationProps) => {
   const [email, setEmail] = useState("");
@@ -35,7 +36,7 @@ const SignInScreen = ({ navigation }: StackNavigationProps) => {
           password,
         });
         const user = response.data;
-        console.log(user)
+        console.log(user);
         if (response.status === 200) {
           setLoading(false);
           showMessage({
@@ -104,13 +105,13 @@ const SignInScreen = ({ navigation }: StackNavigationProps) => {
   );
 
   return (
-    <>
+    <SafeAreaView>
       <ScrollView className='flex-1 bg-white px-4 pt-6 h-full'>
-        <StatusBar
+        {/* <StatusBar
           backgroundColor={COLORS.white}
           barStyle={"dark-content"}
           animated
-        />
+        /> */}
         <View className=''>
           <Image
             source={Image1}
@@ -160,7 +161,7 @@ const SignInScreen = ({ navigation }: StackNavigationProps) => {
           </Text>
         </View>
       </ScrollView>
-    </>
+    </SafeAreaView>
   );
 };
 

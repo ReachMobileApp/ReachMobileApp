@@ -17,15 +17,15 @@ const AuthNavigator = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="OnboardingScreen"
+        name='OnboardingScreen'
         component={OnboardingScreen}
         options={{ title: "" }}
       />
       <Stack.Screen
-        name="SignUpScreen"
+        name='SignUpScreen'
         component={SignUpScreen}
         options={{
-          headerTitle: () => <Header name="REaCH" names="TRAINING" />,
+          headerTitle: () => <Header name='REaCH' names='TRAINING' />,
           headerStyle: {
             backgroundColor: "#064D7D",
             height: 120,
@@ -34,25 +34,25 @@ const AuthNavigator = () => {
         }}
       />
       <Stack.Screen
-        name="ConfirmEmailScreen"
+        name='ConfirmEmailScreen'
         component={ConfirmEmailScreen}
         options={{ title: "" }}
       />
       <Stack.Screen
-        name="OtpScreen"
+        name='OtpScreen'
         component={OtpScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="ResetPasswordScreen"
+        name='ResetPasswordScreen'
         component={ResetPasswordScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="SignInScreen"
+        name='SignInScreen'
         component={SignInScreen}
         options={{
-          headerTitle: () => <Header name="REaCH" names="TRAINING" />,
+          headerTitle: () => <Header name='REaCH' names='TRAINING' />,
           headerStyle: {
             backgroundColor: "#064D7D",
             height: 100,
@@ -61,12 +61,12 @@ const AuthNavigator = () => {
         }}
       />
       <Stack.Screen
-        name="ConfirmPasswordReset"
+        name='ConfirmPasswordReset'
         component={ConfirmPasswordReset}
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="PretestQuiz"
+        name='PretestQuiz'
         component={PretestQuizScreen}
         options={{ headerShown: false }}
       />
