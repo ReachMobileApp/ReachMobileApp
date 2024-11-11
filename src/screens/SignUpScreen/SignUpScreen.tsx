@@ -238,7 +238,7 @@ const SignUpScreen = ({ navigation }: StackNavigationProps) => {
             valueField='value'
             onFocus={() => setIsFocus(true)}
             onBlur={() => setIsFocus(false)}
-            placeholder='Select Age Group'
+            placeholder='Select Age Group (optional)'
             value={selectedAge}
             onChange={(item) => {
               setSelectedAge(item.value);
@@ -286,7 +286,7 @@ const SignUpScreen = ({ navigation }: StackNavigationProps) => {
             valueField='value'
             onFocus={() => setIsFocus(true)}
             onBlur={() => setIsFocus(false)}
-            placeholder='Select Gender'
+            placeholder='Select Gender (optional)'
             value={selectedGender}
             onChange={(item) => {
               setSelectedGender(item.value);

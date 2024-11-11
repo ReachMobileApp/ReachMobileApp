@@ -17,7 +17,7 @@ import { BASE_URL } from "./../../config";
 import Card from "@/src/components/BadgeCard";
 import { useFocusEffect } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
-import { Button, Modal, Portal } from "react-native-paper";
+import { Button, Portal, Modal } from "react-native-paper";
 
 type ApiResponse2 = {
   success: boolean;
@@ -252,7 +252,9 @@ const ProfileScreen = ({ navigation }: any) => {
             </Text>
             <View style={styles.modalActions}>
               <Button onPress={() => setModalVisible(false)}>Cancel</Button>
-              <Button onPress={handleDeleteAccount}>Yes, Delete</Button>
+              <Button onPress={handleDeleteAccount} textColor='red'>
+                Yes, Delete
+              </Button>
             </View>
           </View>
         </Modal>
