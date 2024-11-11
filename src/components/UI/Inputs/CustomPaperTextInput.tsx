@@ -43,27 +43,24 @@ const CustomPaperTextInput = ({
     if (label === "Password" || label === "Confirm Password") {
       return (
         <TextInput.Icon
-        size={20}
+          size={20}
           icon={showPassword ? "eye-off" : "eye"}
           onPress={() => setShowPassword((show) => !show)}
         />
       );
     } else if (label === "Email Address") {
-    return <TextInput.Icon icon="email" size={15} />;
-    }else if (label === "Full Name") {
-      return <TextInput.Icon icon="account" size={20} />;
-      }
-      else if (label === "Name") {
-        return <TextInput.Icon icon="camera-account" size={20} />;
-        }
-        else if (label === "City/Town") {
-          return <TextInput.Icon icon="account-cowboy-hat" size={20} />;
-          }else if (label === "Occupation") {
-            return <TextInput.Icon icon="tools" size={20} />;
-            }else if (label === " ") {
-              return <TextInput.Icon icon="email" size={20} />;
-              }
-     else {
+      return <TextInput.Icon icon='email' size={15} />;
+    } else if (label === "Full Name") {
+      return <TextInput.Icon icon='account' size={20} />;
+    } else if (label === "Name") {
+      return <TextInput.Icon icon='camera-account' size={20} />;
+    } else if (label === "City/Town") {
+      return <TextInput.Icon icon='account-cowboy-hat' size={20} />;
+    } else if (label === "Occupation") {
+      return <TextInput.Icon icon='tools' size={20} />;
+    } else if (label === " ") {
+      return <TextInput.Icon icon='email' size={20} />;
+    } else {
       return null;
     }
   };
@@ -73,7 +70,7 @@ const CustomPaperTextInput = ({
       className={`bg-[#F7F7F7] text-[18px] border-[#666666] rounded-[20px] mb-4`}
       label={label}
       keyboardType={keyboardType || "default"}
-      underlineColor="transparent"
+      underlineColor='transparent'
       activeUnderlineColor={"#000"}
       secureTextEntry={
         (label === "Password" && !showPassword) ||
@@ -84,9 +81,9 @@ const CustomPaperTextInput = ({
       error={error}
       onChangeText={onChangeText}
       left={getIcon()} // Render the icon based on the label
+      autoCapitalize='none'
     />
   );
 };
 
 export default CustomPaperTextInput;
-

@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   ScrollView,
   StyleSheet,
+  Linking,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Avatar from "@/assets/images/image.png";
@@ -16,6 +17,7 @@ import { BASE_URL } from "./../../config";
 import Card from "@/src/components/BadgeCard";
 import { useFocusEffect } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
+import { Button, Modal, Portal } from "react-native-paper";
 
 type ApiResponse2 = {
   success: boolean;
@@ -49,12 +51,25 @@ type Module = {
   has_completed_quiz: boolean;
 };
 
+const DELETION_URL = "https://uhfiles.ui.edu.ng/account-deletion";
+
 const ProfileScreen = ({ navigation }: any) => {
   const [selectedSection, setSelectedSection] = useState("aboutMe");
   const [userDetails, setUserDetails] = useState<any>([]);
   const [userDetail, setUserDetail] = useState<any>([]);
   const [modules, setModules] = useState<Module[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const [isModalVisible, setModalVisible] = useState(false);
+
+  const confirmAccountDeletion = () => {
+    setModalVisible(true);
+  };
+
+  const handleDeleteAccount = () => {
+    setModalVisible(false);
+    Linking.openURL(DELETION_URL);
+  };
 
   const fetchProfile = async () => {
     try {
@@ -121,7 +136,7 @@ const ProfileScreen = ({ navigation }: any) => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#064d7d" />
+        <ActivityIndicator size='large' color='#064d7d' />
       </View>
     );
   }
@@ -138,7 +153,7 @@ const ProfileScreen = ({ navigation }: any) => {
           onPress={() => navigation.goBack()}
           style={styles.backButton}
         >
-          <Ionicons name="arrow-back" size={24} color="white" />
+          <Ionicons name='arrow-back' size={24} color='white' />
         </TouchableOpacity>
         <View style={styles.profileInfo}>
           <Image source={Avatar} style={styles.avatar} />
@@ -208,7 +223,7 @@ const ProfileScreen = ({ navigation }: any) => {
                   <Card
                     key={module.id}
                     header={module.name}
-                    subheader="Completed"
+                    subheader='Completed'
                   />
                 ))
             ) : (
@@ -217,6 +232,31 @@ const ProfileScreen = ({ navigation }: any) => {
           </View>
         )}
       </ScrollView>
+      <View style={styles.footer}>
+        <Button
+          mode='contained'
+          onPress={confirmAccountDeletion}
+          style={styles.deleteButton}
+        >
+          Delete Account
+        </Button>
+      </View>
+      <Portal>
+        <Modal
+          visible={isModalVisible}
+          onDismiss={() => setModalVisible(false)}
+        >
+          <View style={styles.modalContent}>
+            <Text style={styles.modalText}>
+              Are you sure you want to delete your account?
+            </Text>
+            <View style={styles.modalActions}>
+              <Button onPress={() => setModalVisible(false)}>Cancel</Button>
+              <Button onPress={handleDeleteAccount}>Yes, Delete</Button>
+            </View>
+          </View>
+        </Modal>
+      </Portal>
     </View>
   );
 };
@@ -343,6 +383,29 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: "#666",
     marginTop: 20,
+  },
+
+  footer: {
+    padding: 16,
+    backgroundColor: "#fff",
+  },
+  deleteButton: {
+    backgroundColor: "red",
+  },
+  modalContent: {
+    padding: 20,
+    backgroundColor: "white",
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  modalText: {
+    fontSize: 16,
+    marginBottom: 20,
+  },
+  modalActions: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
   },
 });
 export default ProfileScreen;

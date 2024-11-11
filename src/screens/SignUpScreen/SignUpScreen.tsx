@@ -166,7 +166,6 @@ const SignUpScreen = ({ navigation }: StackNavigationProps) => {
           backgroundColor: COLORS.danger[600],
           statusBarHeight: 50,
         });
-        console.log(error.response?.data?.message);
         setLoading(false);
       }
     } else {

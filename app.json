@@ -4,30 +4,29 @@
     "slug": "my-app",
     "version": "1.0.3",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/apple-touch-icon.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/images/Rectangle.png",
       "resizeMode": "contain",
       "backgroundColor": "#a8bac6"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.devbigboss.myapp"
+      "bundleIdentifier": "com.devbigboss.myapp",
+      "buildNumber": "20"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/android-chrome-512x512.png",
         "backgroundColor": "#ffffff"
       },
       "versionCode": 4,
       "package": "com.devbigboss.myapp"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.ico"
     },
     "extra": {
       "eas": {
