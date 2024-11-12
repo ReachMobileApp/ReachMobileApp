@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
   Alert,
   StyleSheet,
+  Platform,
 } from "react-native";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import { Ionicons } from "@expo/vector-icons";
@@ -90,16 +91,32 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
   };
 
   const requestFileWritePermission = async () => {
-    const permissions =
-      await StorageAccessFramework.requestDirectoryPermissionsAsync();
-    if (!permissions.granted) {
-      Alert.alert(
-        "Permission Denied",
-        "File write permission is required to download files."
-      );
-      return { access: false, directoryUri: null };
+    // Check if the platform is Android
+    if (Platform.OS === "android") {
+      try {
+        // Request directory permissions on Android
+        const permissions =
+          await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
+
+        if (!permissions.granted) {
+          Alert.alert(
+            "Permission Denied",
+            "File write permission is required to download files."
+          );
+          return { access: false, directoryUri: null };
+        }
+
+        // Return access and directory URI if permission is granted
+        return { access: true, directoryUri: permissions.directoryUri };
+      } catch (error) {
+        console.error("Error requesting file write permission:", error);
+        Alert.alert("Error", "An error occurred while requesting permissions.");
+        return { access: false, directoryUri: null };
+      }
+    } else {
+      // iOS case: permission is not needed, use document directory
+      return { access: true, directoryUri: FileSystem.documentDirectory };
     }
-    return { access: true, directoryUri: permissions.directoryUri };
   };
 
   const downloadFile = async (url: string, noteIndex: number) => {
@@ -119,7 +136,6 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
       Alert.alert("Download error", "There was an error downloading the file.");
     }
   };
-
   const saveReportFile = async (
     base64Data: string,
     directoryUri: string,
@@ -129,11 +145,18 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
       const moduleName =
         module?.name.replace(/[^a-zA-Z0-9]/g, "_") || "download";
       const fileName = `${moduleName}_note${noteIndex + 1}.pdf`;
-      const fileUri = await StorageAccessFramework.createFileAsync(
-        directoryUri,
-        fileName,
-        "application/pdf"
-      );
+
+      let fileUri = "";
+
+      if (Platform.OS === "android") {
+        fileUri = await StorageAccessFramework.createFileAsync(
+          directoryUri,
+          fileName,
+          "application/pdf"
+        );
+      } else {
+        fileUri = `${FileSystem.documentDirectory}${fileName}`;
+      }
 
       await FileSystem.writeAsStringAsync(fileUri, base64Data, {
         encoding: FileSystem.EncodingType.Base64,
@@ -149,7 +172,7 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#064d7d" />
+        <ActivityIndicator size='large' color='#064d7d' />
       </View>
     );
   }
@@ -174,7 +197,7 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
           onPress={() => navigation.goBack()}
           style={styles.backButton}
         >
-          <Ionicons name="arrow-back" size={28} color="white" />
+          <Ionicons name='arrow-back' size={28} color='white' />
         </TouchableOpacity>
       </LinearGradient>
 
@@ -198,7 +221,7 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                 />
               </TouchableOpacity>
               <TouchableOpacity onPress={handleQuizPress} style={styles.button}>
-                <ModulesButtons image={Page2} header="Take Quiz" />
+                <ModulesButtons image={Page2} header='Take Quiz' />
               </TouchableOpacity>
             </View>
           </ScrollView>
@@ -235,7 +258,7 @@ const ModuleScreen = ({ navigation }: ModuleScreenProps) => {
                   onPress={handleQuizPress}
                   style={styles.button}
                 >
-                  <ModulesButtons image={Page2} header="Take Quiz" />
+                  <ModulesButtons image={Page2} header='Take Quiz' />
                 </TouchableOpacity>
               </View>
             </ScrollView>
