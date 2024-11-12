@@ -50,8 +50,7 @@ const HomeScreen = ({
       const userInfo = await AsyncStorage.getItem("userInfo");
       if (userInfo) {
         const parsedUserInfo = JSON.parse(userInfo);
-        const  has_taken_pretest  =
-          parsedUserInfo?.data.user.has_taken_pretest;
+        const has_taken_pretest = parsedUserInfo?.data.user.has_taken_pretest;
         if (!has_taken_pretest) {
           setShowPretestModal(true);
         }
@@ -60,6 +59,7 @@ const HomeScreen = ({
       console.error("Error checking pretest status:", error);
     }
   };
+
   const downloadFile = async (url: string) => {
     try {
       const filename = "Introductory_note.pdf";
@@ -141,7 +141,7 @@ const HomeScreen = ({
           }
           style={styles.menuButton}
         >
-          <Ionicons name="menu" size={28} color="#FFFFFF" />
+          <Ionicons name='menu' size={28} color='#FFFFFF' />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Welcome</Text>
       </LinearGradient>
@@ -179,9 +179,9 @@ const HomeScreen = ({
               : "Download Introductory Note"}
           </Text>
           <Ionicons
-            name="download-outline"
+            name='download-outline'
             size={24}
-            color="#FFFFFF"
+            color='#FFFFFF'
             style={styles.buttonIcon}
           />
         </TouchableOpacity>
@@ -189,7 +189,7 @@ const HomeScreen = ({
       <Modal
         visible={showPretestModal}
         transparent={true}
-        animationType="fade"
+        animationType='fade'
         onRequestClose={() => {}} // Empty function to prevent closing on back button (Android)
       >
         <View style={styles.modalOverlay}>

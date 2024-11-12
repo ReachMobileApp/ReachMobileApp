@@ -8,6 +8,7 @@ import {
   Platform,
   StatusBar,
   StyleSheet,
+  Alert,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Toast from "react-native-toast-message";
@@ -29,58 +30,65 @@ const MenuScreen = ({ navigation }: any) => {
   const [loading, setLoading] = useState(true);
 
   const SignOut = async () => {
-    setLoading(true);
-    try {
-      const userInfo = await AsyncStorage.getItem("userInfo");
-      if (userInfo) {
-        const parsedUserInfo = JSON.parse(userInfo);
-        const token = parsedUserInfo.data.auth_token;
-        const response = await axios.post(
-          `${BASE_URL}logout`,
-          {},
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        if (response.status === 200) {
-          await AsyncStorage.multiRemove(["userInfo", "email"]);
-          //   Toast.show({
-          //     type: "success",
-          //     text1: "Success!",
-          //     text2: "Logged out successfully",
-          //   });
-          showMessage({
-            message: "Logged out successfully",
-            type: "success",
-            icon: "success",
-            backgroundColor: COLORS.success[600],
-            statusBarHeight: 50,
-          });
-          navigation.navigate("SignInScreen");
-        } else {
-          throw new Error("Logout failed");
-        }
-      }
-    } catch (error) {
-      console.error("Error logging out:", error);
-      //   Toast.show({
-      //     type: "error",
-      //     text1: "Error!",
-      //     text2: "Failed to log out",
-      //   });
-      showMessage({
-        message: "Failed to log out",
-        type: "danger",
-        icon: "danger",
-        backgroundColor: COLORS.danger[600],
-        statusBarHeight: 50,
-      });
-    } finally {
-      setLoading(false);
-    }
+    Alert.alert(
+      "Confirm Sign Out",
+      "Are you sure you want to log out?",
+      [
+        {
+          text: "Cancel",
+          onPress: () => console.log("Sign out canceled"),
+          style: "cancel",
+        },
+        {
+          text: "Yes, Log Out",
+          onPress: async () => {
+            setLoading(true);
+            try {
+              const userInfo = await AsyncStorage.getItem("userInfo");
+              if (userInfo) {
+                const parsedUserInfo = JSON.parse(userInfo);
+                const token = parsedUserInfo.data.auth_token;
+                const response = await axios.post(
+                  `${BASE_URL}logout`,
+                  {},
+                  {
+                    headers: {
+                      "Content-Type": "application/json",
+                      Authorization: `Bearer ${token}`,
+                    },
+                  }
+                );
+                if (response.status === 200) {
+                  await AsyncStorage.multiRemove(["userInfo", "email"]);
+                  showMessage({
+                    message: "Logged out successfully",
+                    type: "success",
+                    icon: "success",
+                    backgroundColor: COLORS.success[600],
+                    statusBarHeight: 50,
+                  });
+                  navigation.navigate("SignInScreen");
+                } else {
+                  throw new Error("Logout failed");
+                }
+              }
+            } catch (error) {
+              console.error("Error logging out:", error);
+              showMessage({
+                message: "Failed to log out",
+                type: "danger",
+                icon: "danger",
+                backgroundColor: COLORS.danger[600],
+                statusBarHeight: 50,
+              });
+            } finally {
+              setLoading(false);
+            }
+          },
+        },
+      ],
+      { cancelable: false }
+    );
   };
 
   const getData = async () => {
